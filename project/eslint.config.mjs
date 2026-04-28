@@ -19,6 +19,19 @@ export default tseslint.config(
     },
   },
   {
+    files: ['**/*.test.ts', '**/*.spec.ts'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
+  {
+    files: ['**/*.cjs'],
+    languageOptions: {
+      sourceType: 'commonjs',
+      globals: globals.node,
+    },
+  },
+  {
     files: ['apps/frontend/**/*.{ts,tsx,js,jsx}'],
     languageOptions: {
       globals: globals.browser,

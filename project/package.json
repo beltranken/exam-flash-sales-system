@@ -5,9 +5,13 @@
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "pnpm -r --parallel dev",
-    "dev:code-gen": "pnpm -r --parallel --if-present run \"/^generate:.*:watch/\"",
+    "dev:code-gen": "pnpm -r --parallel --if-present run \"/^generate:[A-Za-z]+$/\"",
+    "dev:code-gen:watch": "pnpm -r --parallel --if-present run \"/^generate:[A-Za-z]+:watch$/\"",
     "build": "pnpm -r build",
-    "lint": "pnpm -r lint"
+    "lint": "pnpm -r lint",
+    "test:unit": "pnpm -r --sequential test:unit",
+    "test:integration": "pnpm -r --sequential test:integration",
+    "test:coverage": "pnpm -r --sequential test:coverage"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
