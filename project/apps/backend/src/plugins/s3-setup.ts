@@ -1,12 +1,12 @@
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { FastifyInstance } from "fastify";
-import fp from "fastify-plugin";
+import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { FastifyInstance } from 'fastify'
+import fp from 'fastify-plugin'
 
 const s3PluginImpl = async (fastify: FastifyInstance) => {
-  fastify.log.info("Registering S3 plugin");
+  fastify.log.info('Registering S3 plugin')
 
-  let s3: S3Client | undefined;
+  let s3: S3Client | undefined
 
   if (
     fastify.config.AWS_REGION !== undefined &&
@@ -22,10 +22,10 @@ const s3PluginImpl = async (fastify: FastifyInstance) => {
         accessKeyId: fastify.config.AWS_ACCESS_KEY_ID,
         secretAccessKey: fastify.config.AWS_SECRET_ACCESS_KEY,
       },
-    });
+    })
   }
 
-  fastify.decorate("s3", {
+  fastify.decorate('s3', {
     signUrl: async (key: string) => {
       if (s3) {
         return await getSignedUrl(
@@ -35,14 +35,15 @@ const s3PluginImpl = async (fastify: FastifyInstance) => {
             Key: key,
           }),
           { expiresIn: 3600 },
-        );
+        )
       }
 
-      return "https://fastly.picsum.photos/id/21/3008/2008.jpg?hmac=T8DSVNvP-QldCew7WD4jj_S3mWwxZPqdF0CNPksSko4";
+      // Mock URL for development/testing when S3 is not configured
+      return 'https://fastly.picsum.photos/id/21/3008/2008.jpg?hmac=T8DSVNvP-QldCew7WD4jj_S3mWwxZPqdF0CNPksSko4'
     },
-  });
-};
+  })
+}
 
 export const s3Plugin = fp(s3PluginImpl, {
-  name: "s3",
-});
+  name: 's3',
+})

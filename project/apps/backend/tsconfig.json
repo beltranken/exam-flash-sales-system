@@ -6,6 +6,7 @@
     "declaration": true,
     "sourceMap": true,
     "paths": {
+      "@features": ["./src/features/index.js"],
       "@types": ["./src/common/types/index.js"],
       "@utils": ["./src/common/utils/index.js"]
     }

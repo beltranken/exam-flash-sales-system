@@ -1,39 +1,41 @@
-import fastifyJwt from "@fastify/jwt";
-import { FastifyPluginAsync, FastifyRequest } from "fastify";
-import fp from "fastify-plugin";
-import { Unauthorized } from "http-errors";
+import fastifyJwt from '@fastify/jwt'
+import { FastifyPluginAsync, FastifyRequest } from 'fastify'
+import fp from 'fastify-plugin'
+import { Unauthorized } from 'http-errors'
 
 export function handleJwtVerifyError(err: unknown) {
-  const isError = err instanceof Error;
+  const isError = err instanceof Error
   if (!isError) {
-    throw err;
+    // Unknown error
+    throw err
   }
 
-  if (err.name === "JsonWebTokenError") {
-    throw new Unauthorized("Unable to decode jwt");
-  } else if (err.name === "TokenExpiredError") {
-    throw new Unauthorized("Access token is expired");
+  if (err.name === 'JsonWebTokenError') {
+    throw new Unauthorized('Unable to decode jwt')
+  } else if (err.name === 'TokenExpiredError') {
+    throw new Unauthorized('Access token is expired')
   } else {
-    throw err;
+    // Unknown error
+    throw err
   }
 }
 
 const authSetupPluginImpl: FastifyPluginAsync = async (fastify, _options) => {
-  fastify.log.info("Registering auth setup plugin");
+  fastify.log.info('Registering auth setup plugin')
 
   await fastify.register(fastifyJwt, {
     secret: fastify.config.JWT_ACCESS_SECRET,
-  });
+  })
 
-  fastify.decorate("authenticate", async (req: FastifyRequest) => {
+  fastify.decorate('authenticate', async (req: FastifyRequest) => {
     try {
-      await req.jwtVerify();
+      await req.jwtVerify()
     } catch (err) {
-      handleJwtVerifyError(err);
+      handleJwtVerifyError(err)
     }
-  });
-};
+  })
+}
 
 export const authSetupPlugin = fp(authSetupPluginImpl, {
-  name: "auth-setup",
-});
+  name: 'auth-setup',
+})

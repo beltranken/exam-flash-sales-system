@@ -1,45 +1,48 @@
-import { FastifyJwtNamespace } from "@fastify/jwt";
-import { Db } from "@shared/db";
-import "fastify";
+import 'fastify'
 
-declare module "fastify" {
+import { FastifyJwtNamespace } from '@fastify/jwt'
+import { Db } from '@shared/db'
+import { PublishToQueueArgs } from './plugins/msg-broker.ts'
+
+declare module 'fastify' {
   interface FastifyInstance extends FastifyJwtNamespace<{
-    namespace: "refresh";
+    namespace: 'refresh'
   }> {
     config: {
-      PORT: string;
-      DATABASE_URL: string;
-      CACHE_URL: string;
-      PINO_LOG_LEVEL?: string;
-      NODE_ENV?: string;
-      EMAIL_ENABLED: boolean;
-      EMAIL_FROM: string;
-      JWT_ACCESS_SECRET: string;
-      JWT_ACCESS_EXPIRY: string;
-      AWS_REGION?: string;
-      AWS_ACCESS_KEY_ID?: string;
-      AWS_SECRET_ACCESS_KEY?: string;
-      S3_ENDPOINT?: string;
-      S3_BUCKET_NAME?: string;
-    };
-    authenticate: (
-      request: FastifyRequest,
-      reply: FastifyReply,
-    ) => Promise<void>;
-    db: Db;
+      PORT: string
+      DATABASE_URL: string
+      CACHE_URL: string
+      RABBITMQ_URL: string
+      PINO_LOG_LEVEL?: string
+      NODE_ENV?: string
+      JWT_ACCESS_SECRET: string
+      AWS_REGION?: string
+      AWS_ACCESS_KEY_ID?: string
+      AWS_SECRET_ACCESS_KEY?: string
+      S3_ENDPOINT?: string
+      S3_BUCKET_NAME?: string
+      COOKIE_SECRET: string
+    }
+    authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
+    db: Db
+    mq: {
+      publishToQueue: (args: PublishToQueueArgs) => Promise<void>
+    }
     s3?: {
-      signUrl: (key: string) => Promise<string>;
-    };
+      signUrl: (key: string) => Promise<string>
+    }
   }
 }
 
-declare module "@fastify/jwt" {
+declare module '@fastify/jwt' {
   interface FastifyJWT {
     payload: {
-      userId: number;
-    };
-    user: {
-      userId: number;
-    };
+      userId: number
+      email: string
+    }
+    user?: {
+      userId: number
+      email: string
+    }
   }
 }

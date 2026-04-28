@@ -1,27 +1,73 @@
 import {
-  emailLoginRequestSchema,
-  emailLoginResponseSchema,
+  emailSignInRequestSchema,
   errorResponses,
-} from "@types";
-import { FastifyPluginAsync } from "fastify";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { emailLoginRoute } from "./routes/email-login.route.js";
+  noContentResponse,
+  signInChallengeResponseSchema,
+  signInConfirmRequestSchema,
+  signInConfirmResponseSchema,
+} from '@types'
+import { FastifyPluginAsync } from 'fastify'
+import { ZodTypeProvider } from 'fastify-type-provider-zod'
+import { refreshTokenRoute, signInConfirmRoute, signInRoute, signOutRoute } from './routes/index.js'
 
 export const authPlugin: FastifyPluginAsync = async (fastify, _options) => {
-  const typedFastify = fastify.withTypeProvider<ZodTypeProvider>();
+  const typedFastify = fastify.withTypeProvider<ZodTypeProvider>()
 
   typedFastify.post(
-    "/email-login",
+    '/sign-in',
     {
       schema: {
-        operationId: "signIn",
-        body: emailLoginRequestSchema,
+        operationId: 'signIn',
+        body: emailSignInRequestSchema,
         response: {
-          200: emailLoginResponseSchema,
+          200: signInChallengeResponseSchema,
           ...errorResponses,
         },
       },
     },
-    emailLoginRoute(fastify),
-  );
-};
+    signInRoute(fastify),
+  )
+
+  typedFastify.post(
+    '/sign-in/confirm',
+    {
+      schema: {
+        operationId: 'signInConfirm',
+        body: signInConfirmRequestSchema,
+        response: {
+          200: signInConfirmResponseSchema,
+          ...errorResponses,
+        },
+      },
+    },
+    signInConfirmRoute(fastify),
+  )
+
+  typedFastify.post(
+    '/sign-out',
+    {
+      schema: {
+        operationId: 'signOut',
+        response: {
+          ...noContentResponse,
+          ...errorResponses,
+        },
+      },
+    },
+    signOutRoute,
+  )
+
+  typedFastify.post(
+    '/refresh',
+    {
+      schema: {
+        operationId: 'refreshToken',
+        response: {
+          200: signInConfirmResponseSchema,
+          ...errorResponses,
+        },
+      },
+    },
+    refreshTokenRoute(fastify),
+  )
+}
