@@ -1,6 +1,7 @@
 import { RefreshTokenRequestBody, SignInConfirmResponse } from '@types'
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
-import { BadRequest } from 'http-errors'
+import createHttpError from 'http-errors'
+import { handleJwtVerifyError } from '../../../plugins/auth-setup.js'
 import { getUser } from '../services/get-user.js'
 import { processAccessToken } from '../services/process-access-token.js'
 import { processRefreshToken } from '../services/process-refresh-token.js'
@@ -18,7 +19,7 @@ export function refreshTokenRoute(fastify: FastifyInstance) {
     } else if (req.body.refreshToken) {
       refreshToken = req.body.refreshToken
     } else {
-      throw new BadRequest('Refresh token is required')
+      throw new createHttpError.BadRequest('Refresh token is required')
     }
 
     try {
@@ -49,6 +50,8 @@ export function refreshTokenRoute(fastify: FastifyInstance) {
       })
 
       reply.status(200).send({ token: accessData.token, id: result.id, email: result.email })
-    } catch (err) {}
+    } catch (err) {
+      handleJwtVerifyError(err)
+    }
   }
 }

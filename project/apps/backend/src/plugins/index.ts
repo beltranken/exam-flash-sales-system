@@ -1,4 +1,5 @@
-export * from "./db-setup.js";
-export * from "./env-setup.js";
-export * from "./msg-broker.js";
-export * from "./swagger-steup.js";
+export { authSetupPlugin } from './auth-setup.js'
+export * from './db-setup.js'
+export * from './env-setup.js'
+export * from './msg-broker.js'
+export * from './swagger-steup.js'

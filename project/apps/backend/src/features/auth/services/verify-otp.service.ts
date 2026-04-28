@@ -1,7 +1,7 @@
 import { User } from '@shared/db'
 import { hashOtp } from '@utils'
 import { FastifyInstance } from 'fastify'
-import { Unauthorized } from 'http-errors'
+import createHttpError from 'http-errors'
 import type { ChallengeData } from './generate-otp.service.js'
 import { getUser } from './get-user.js'
 
@@ -11,14 +11,14 @@ export async function verifyOTPService(fastify: FastifyInstance, challengeId: st
   const challengeDataRaw = await fastify.redis.get(`challenge:${challengeId}`)
 
   if (!challengeDataRaw) {
-    throw new Unauthorized('Challenge not found or expired')
+    throw new createHttpError.Unauthorized('Challenge not found or expired')
   }
 
   const challengeData: ChallengeData = JSON.parse(challengeDataRaw)
 
   if (challengeData.attempts >= MAX_ATTEMPTS) {
     await fastify.redis.del(`challenge:${challengeId}`)
-    throw new Unauthorized('Too many attempts. Challenge revoked')
+    throw new createHttpError.Unauthorized('Too many attempts. Challenge revoked')
   }
 
   const hashedInput = hashOtp(otp)
@@ -26,7 +26,7 @@ export async function verifyOTPService(fastify: FastifyInstance, challengeId: st
   if (hashedInput !== challengeData.hashedOtp) {
     challengeData.attempts += 1
     await fastify.redis.set(`challenge:${challengeId}`, JSON.stringify(challengeData), 'EX', 5 * 60)
-    throw new Unauthorized('Invalid OTP')
+    throw new createHttpError.Unauthorized('Invalid OTP')
   }
 
   await fastify.redis.del(`challenge:${challengeId}`)

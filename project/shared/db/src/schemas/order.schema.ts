@@ -1,12 +1,10 @@
 import { integer, pgTable, text } from "drizzle-orm/pg-core";
 import { OrderStatus } from "../types/enums.js";
 import { timestamps } from "./common.js";
-import {
-  orderStatusEnum,
-  productsTable,
-  promosTable,
-  usersTable,
-} from "./index.js";
+import { orderStatusEnum } from "./enums.js";
+import { productsTable } from "./products.schema.js";
+import { promosTable } from "./promo.schema.js";
+import { usersTable } from "./users.schema.js";
 
 export const ordersTable = pgTable("orders", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),

@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify'
-import { Unauthorized } from 'http-errors'
+import createHttpError from 'http-errors'
 
 export async function getUser(fastify: FastifyInstance, userId: number) {
   const user = await fastify.db.query.usersTable.findFirst({
@@ -9,7 +9,7 @@ export async function getUser(fastify: FastifyInstance, userId: number) {
   })
 
   if (!user) {
-    throw new Unauthorized('User not found')
+    throw new createHttpError.Unauthorized('User not found')
   }
 
   return user

@@ -1,7 +1,19 @@
-import { defineRelations } from "drizzle-orm";
-import * as schema from "./schemas/index.js";
+import { defineRelations } from 'drizzle-orm'
+import { productsTable } from './schemas/products.schema.js'
+import { promoProductsTable, promosTable } from './schemas/promo.schema.js'
+import { stockEntriesTable, stockTransactionsTable } from './schemas/stock.schema.js'
+import { usersTable } from './schemas/users.schema.js'
 
-export const relations = defineRelations(schema, (r) => ({
+const relationSchema = {
+  stockTransactionsTable,
+  stockEntriesTable,
+  productsTable,
+  promosTable,
+  promoProductsTable,
+  usersTable,
+}
+
+export const relations = defineRelations(relationSchema, (r) => ({
   stockTransactionsTable: {
     entries: r.many.stockEntriesTable({
       from: r.stockTransactionsTable.id,
@@ -44,4 +56,5 @@ export const relations = defineRelations(schema, (r) => ({
       to: r.productsTable.id,
     }),
   },
-}));
+  usersTable: {},
+}))

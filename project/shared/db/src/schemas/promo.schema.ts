@@ -1,6 +1,6 @@
 import { integer, pgTable, text, varchar } from "drizzle-orm/pg-core";
 import { timestamps } from "./common.js";
-import { productsTable } from "./index.js";
+import { productsTable } from "./products.schema.js";
 
 export const promosTable = pgTable("promos", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),

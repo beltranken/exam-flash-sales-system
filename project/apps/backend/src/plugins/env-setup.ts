@@ -1,15 +1,16 @@
 import env from '@fastify/env'
 import { FastifyPluginAsync } from 'fastify'
+import fp from 'fastify-plugin'
 import pino, { Level } from 'pino'
 
 export type { Level }
 
 type CreateLoggerArgs = {
-  level: Level
+  level?: Level
   isDev: boolean
 }
 
-export const createLogger = ({ level, isDev }: CreateLoggerArgs) =>
+export const createLogger = ({ level = 'debug', isDev }: CreateLoggerArgs) =>
   pino({
     level,
     redact: ['req.headers.authorization'],
@@ -72,9 +73,13 @@ const schema = {
   },
 }
 
-export const envStepupPlugin: FastifyPluginAsync = async (fastify) => {
+const envSetupPluginImpl: FastifyPluginAsync = async (fastify) => {
   await fastify.register(env, {
     schema,
     dotenv: true,
   })
 }
+
+export const envStepupPlugin = fp(envSetupPluginImpl, {
+  name: 'env-setup',
+})

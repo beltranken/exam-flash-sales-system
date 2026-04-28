@@ -10,7 +10,7 @@ import { FastifyPluginAsync } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { refreshTokenRoute, signInConfirmRoute, signInRoute, signOutRoute } from './routes/index.js'
 
-export const authPlugin: FastifyPluginAsync = async (fastify, _options) => {
+export const authPlugin: FastifyPluginAsync = async (fastify) => {
   const typedFastify = fastify.withTypeProvider<ZodTypeProvider>()
 
   typedFastify.post(

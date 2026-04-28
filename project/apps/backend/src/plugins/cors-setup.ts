@@ -1,5 +1,5 @@
-import cors from "@fastify/cors";
-import { FastifyPluginAsync } from "fastify";
+import cors from '@fastify/cors'
+import { FastifyPluginAsync } from 'fastify'
 
 export const corsSetupPlugin: FastifyPluginAsync = async (fastify) => {
   await fastify.register(cors, {
@@ -7,20 +7,25 @@ export const corsSetupPlugin: FastifyPluginAsync = async (fastify) => {
     origin: (origin, cb) => {
       try {
         if (!origin) {
-          cb(null, true);
-          return;
+          cb(null, true)
+          return
         }
 
-        const hostname = new URL(origin).hostname;
-        if (hostname === "localhost") {
-          cb(null, true);
-          return;
+        const hostname = new URL(origin).hostname
+        if (hostname === 'localhost') {
+          cb(null, true)
+          return
         }
 
-        cb(new Error("Not allowed"), false);
+        cb(new Error('Not allowed'), false)
       } catch (err) {
-        cb(new Error("Invalid origin"), false);
+        fastify.log.error(err)
+        if (err instanceof Error) {
+          cb(err, false)
+        } else {
+          cb(new Error('Invalid origin'), false)
+        }
       }
     },
-  });
-};
+  })
+}

@@ -1,19 +1,16 @@
-import { usersTable } from "@shared/db";
-import { FastifyInstance } from "fastify";
-import { Conflict } from "http-errors";
+import { usersTable } from '@shared/db'
+import { FastifyInstance } from 'fastify'
+import createHttpError from 'http-errors'
 
-export async function resolveUserService(
-  fastify: FastifyInstance,
-  email: string,
-) {
+export async function resolveUserService(fastify: FastifyInstance, email: string) {
   const existingUser = await fastify.db.query.usersTable.findFirst({
     where: {
       email,
     },
-  });
+  })
 
   if (existingUser) {
-    return existingUser;
+    return existingUser
   }
 
   const [newUser] = await fastify.db
@@ -21,11 +18,11 @@ export async function resolveUserService(
     .values({
       email,
     })
-    .returning();
+    .returning()
 
   if (!newUser) {
-    throw new Conflict("Unable to create new user");
+    throw new createHttpError.Conflict('Unable to create new user')
   }
 
-  return newUser;
+  return newUser
 }
