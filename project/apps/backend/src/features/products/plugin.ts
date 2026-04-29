@@ -1,5 +1,6 @@
 import { productSchema } from '@shared/db'
 import { errorResponses } from '@types'
+import { numberParamSchema } from '@utils'
 import { FastifyPluginAsync } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import z from 'zod/v4'
@@ -27,7 +28,7 @@ export const productsPlugin: FastifyPluginAsync = async (fastify) => {
     {
       schema: {
         operationId: 'getProductById',
-        params: z.object({ productId: productSchema.shape.id }),
+        params: numberParamSchema('productId'),
         response: {
           200: productSchema,
           ...errorResponses,
@@ -42,7 +43,7 @@ export const productsPlugin: FastifyPluginAsync = async (fastify) => {
     {
       schema: {
         operationId: 'getProductStockById',
-        params: z.object({ productId: productSchema.shape.id }),
+        params: numberParamSchema('productId'),
         response: {
           200: z.number().int(),
           ...errorResponses,

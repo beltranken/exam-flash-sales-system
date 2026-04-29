@@ -1,3 +1,5 @@
 export * from './generate-otp.js'
 export * from './get-cache-data.js'
+export * from './get-or-set-number-cache.js'
 export * from './hash-otp.js'
+export * from './number-param-schema.js'

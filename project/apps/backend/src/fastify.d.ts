@@ -40,10 +40,12 @@ declare module '@fastify/jwt' {
     payload: {
       userId: number
       email: string
+      isAdmin?: boolean
     }
     user?: {
       userId: number
       email: string
+      isAdmin?: boolean
     }
   }
 }

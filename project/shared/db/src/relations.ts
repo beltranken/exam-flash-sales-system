@@ -1,4 +1,5 @@
 import { defineRelations } from 'drizzle-orm'
+import { orderItemsTable, ordersTable } from './schemas/orders.schema.js'
 import { productsTable, productStocksTable } from './schemas/products.schema.js'
 import { promosTable } from './schemas/promo.schema.js'
 import { stockEntriesTable, stockTransactionsTable } from './schemas/stock.schema.js'
@@ -11,6 +12,8 @@ const relationSchema = {
   productStocksTable,
   promosTable,
   usersTable,
+  ordersTable,
+  orderItemsTable,
 }
 
 export const relations = defineRelations(relationSchema, (r) => ({
@@ -57,4 +60,24 @@ export const relations = defineRelations(relationSchema, (r) => ({
     }),
   },
   usersTable: {},
+  ordersTable: {
+    orderItems: r.many.orderItemsTable({
+      from: r.ordersTable.id,
+      to: r.orderItemsTable.orderId,
+    }),
+  },
+  orderItemsTable: {
+    order: r.one.ordersTable({
+      from: r.orderItemsTable.orderId,
+      to: r.ordersTable.id,
+    }),
+    product: r.one.productsTable({
+      from: r.orderItemsTable.productId,
+      to: r.productsTable.id,
+    }),
+    appliedPromo: r.one.promosTable({
+      from: r.orderItemsTable.appliedPromoId,
+      to: r.promosTable.id,
+    }),
+  },
 }))
