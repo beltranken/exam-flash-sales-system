@@ -22,7 +22,7 @@ export const createLogger = ({ level = 'debug', isDev }: CreateLoggerArgs) =>
     ...(isDev && { transport: { target: 'pino-pretty' } }),
   })
 
-const schema = {
+const schema: env.FastifyEnvOptions['schema'] = {
   type: 'object',
   required: ['PORT', 'DATABASE_URL', 'CACHE_URL', 'RABBITMQ_URL', 'JWT_ACCESS_SECRET'],
   properties: {
@@ -69,6 +69,10 @@ const schema = {
     COOKIE_SECRET: {
       type: 'string',
       default: 'secret',
+    },
+    SKIP_LOGIN: {
+      type: 'boolean',
+      default: true,
     },
   },
 }

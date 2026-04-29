@@ -1,6 +1,6 @@
 import { defineRelations } from 'drizzle-orm'
-import { productsTable } from './schemas/products.schema.js'
-import { promoProductsTable, promosTable } from './schemas/promo.schema.js'
+import { productsTable, productStocksTable } from './schemas/products.schema.js'
+import { promosTable } from './schemas/promo.schema.js'
 import { stockEntriesTable, stockTransactionsTable } from './schemas/stock.schema.js'
 import { usersTable } from './schemas/users.schema.js'
 
@@ -8,8 +8,8 @@ const relationSchema = {
   stockTransactionsTable,
   stockEntriesTable,
   productsTable,
+  productStocksTable,
   promosTable,
-  promoProductsTable,
   usersTable,
 }
 
@@ -35,24 +35,24 @@ export const relations = defineRelations(relationSchema, (r) => ({
       from: r.productsTable.id,
       to: r.stockEntriesTable.productId,
     }),
-    promoProducts: r.many.promoProductsTable({
+    productStock: r.one.productStocksTable({
       from: r.productsTable.id,
-      to: r.promoProductsTable.productId,
+      to: r.productStocksTable.productId,
+    }),
+    promos: r.many.promosTable({
+      from: r.productsTable.id,
+      to: r.promosTable.productId,
+    }),
+  },
+  productStocksTable: {
+    product: r.one.productsTable({
+      from: r.productStocksTable.productId,
+      to: r.productsTable.id,
     }),
   },
   promosTable: {
-    promoProducts: r.many.promoProductsTable({
-      from: r.promosTable.id,
-      to: r.promoProductsTable.promoId,
-    }),
-  },
-  promoProductsTable: {
-    promo: r.one.promosTable({
-      from: r.promoProductsTable.promoId,
-      to: r.promosTable.id,
-    }),
-    product: r.one.productsTable({
-      from: r.promoProductsTable.productId,
+    promoProduct: r.one.productsTable({
+      from: r.promosTable.productId,
       to: r.productsTable.id,
     }),
   },

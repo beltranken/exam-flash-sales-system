@@ -1,3 +1,4 @@
+import type { AmqpConnectionManager, ChannelWrapper, Options } from 'amqp-connection-manager'
 import amqp from 'amqp-connection-manager'
 import { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
@@ -7,7 +8,7 @@ type BrokerMessage = Buffer | Record<string, unknown> | string
 export type PublishToQueueArgs = {
   queue: string
   message: BrokerMessage
-  options?: amqp.Options.Publish
+  options?: Options.Publish
   durable?: boolean
 }
 
@@ -24,8 +25,8 @@ const toBuffer = (message: BrokerMessage) => {
 }
 
 const msgBrokerPluginImpl: FastifyPluginAsync = async (fastify) => {
-  let connection: amqp.AmqpConnectionManager | undefined
-  let channel: amqp.ChannelWrapper | undefined
+  let connection: AmqpConnectionManager | undefined
+  let channel: ChannelWrapper | undefined
 
   const publishToQueue = async ({ queue, message, options, durable = true }: PublishToQueueArgs) => {
     if (!fastify.config.RABBITMQ_URL) {

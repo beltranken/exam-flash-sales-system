@@ -22,6 +22,7 @@ declare module 'fastify' {
       S3_ENDPOINT?: string
       S3_BUCKET_NAME?: string
       COOKIE_SECRET: string
+      SKIP_LOGIN: string
     }
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
     db: Db

@@ -1,8 +1,8 @@
 export enum Warehouse {
-  SUPPLIER = "supplier",
-  MAIN = "main",
-  RESERVE = "reserve",
-  SALES = "sales",
+  SUPPLIER = 'supplier',
+  MAIN = 'main',
+  RESERVE = 'reserve',
+  SALES = 'sales',
 
   /* // These types are not used for this example
   RETURN = "return",
@@ -11,10 +11,10 @@ export enum Warehouse {
 }
 
 export enum StockTransactionType {
-  PURCHASE = "purchase", // SUPPLIER -> MAIN
-  RESERVE = "reserve", // MAIN -> RESERVE (order is placed but not yet paid)
-  SALE = "sale", // RESERVE -> SALES (order is paid)
-  RESERVE_CANCEL = "reserve_cancel", // RESERVE -> MAIN (payment failed or order cancelled)
+  PURCHASE = 'purchase', // SUPPLIER -> MAIN
+  RESERVE = 'reserve', // MAIN -> RESERVE (order is placed but not yet paid)
+  SALE = 'sale', // RESERVE -> SALES (order is paid)
+  RESERVE_CANCEL = 'reserve_cancel', // RESERVE -> MAIN (payment failed or order cancelled)
 
   /* // These types are not used for this example
   RETURN_IN = "return_in", // SALES -> MAIN
@@ -25,18 +25,25 @@ export enum StockTransactionType {
 }
 
 export enum OrderStatus {
-  PENDING = "pending",
-  SUBMITTED = "submitted",
-  CANCELLED = "cancelled",
+  PENDING = 'pending',
+  SUBMITTED = 'submitted',
+  CANCELLED = 'cancelled',
 }
 
 export enum PaymentStatus {
-  PENDING = "pending",
-  PAID = "paid",
-  FAILED = "failed",
+  PENDING = 'pending',
+  PAID = 'paid',
+  FAILED = 'failed',
 }
 
 export enum PaymentProvider {
-  STRIPE = "stripe",
-  MOCK = "mock",
+  STRIPE = 'stripe',
+  MOCK = 'mock',
+}
+
+export enum PromoStatus {
+  UPCOMING = 'upcoming',
+  ACTIVE = 'active',
+  CANCELLED = 'cancelled',
+  EXPIRED = 'expired',
 }

@@ -1,11 +1,11 @@
-import { bigint, integer, pgTable, text } from 'drizzle-orm/pg-core'
+import { bigint, integer, pgTable, text, uuid } from 'drizzle-orm/pg-core'
 import { timestamps } from './common.js'
 import { stockTransactionTypeEnum, warehouseEnum } from './enums.js'
 import { productsTable } from './products.schema.js'
 
 export const stockTransactionsTable = pgTable('stock_transactions', {
   id: bigint({ mode: 'number' }).primaryKey().generatedAlwaysAsIdentity(),
-  referenceId: integer('reference_id'),
+  referenceId: uuid('reference_id'),
   type: stockTransactionTypeEnum('type').notNull(),
   note: text('note'),
   createdAt: timestamps.createdAt,

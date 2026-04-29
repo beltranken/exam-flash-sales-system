@@ -9,7 +9,8 @@
     "paths": {
       "@features": ["./src/features/index.js"],
       "@types": ["./src/common/types/index.js"],
-      "@utils": ["./src/common/utils/index.js"]
+      "@utils": ["./src/common/utils/index.js"],
+      "@plugins": ["./src/plugins/index.js"]
     }
   },
   "include": ["src"]

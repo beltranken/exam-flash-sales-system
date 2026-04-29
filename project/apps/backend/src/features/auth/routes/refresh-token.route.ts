@@ -2,9 +2,9 @@ import { RefreshTokenRequestBody, SignInConfirmResponse } from '@types'
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import createHttpError from 'http-errors'
 import { handleJwtVerifyError } from '../../../plugins/auth-setup.js'
-import { getUser } from '../services/get-user.js'
-import { processAccessToken } from '../services/process-access-token.js'
-import { processRefreshToken } from '../services/process-refresh-token.js'
+import { getUser } from '../services/get-user.service.js'
+import { processAccessToken } from '../services/process-access-token.service.js'
+import { processRefreshToken } from '../services/process-refresh-token.service.js'
 
 type RefreshRoute = {
   Body: RefreshTokenRequestBody

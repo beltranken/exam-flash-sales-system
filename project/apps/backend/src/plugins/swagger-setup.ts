@@ -2,13 +2,22 @@ import swagger from '@fastify/swagger'
 import swaggerUI from '@fastify/swagger-ui'
 import { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
-import { jsonSchemaTransform, jsonSchemaTransformObject, validatorCompiler } from 'fastify-type-provider-zod'
+import {
+  jsonSchemaTransform,
+  jsonSchemaTransformObject,
+  serializerCompiler,
+  validatorCompiler,
+} from 'fastify-type-provider-zod'
+
+export const disabledSerializerCompiler = () => {
+  return (data: unknown) => JSON.stringify(data)
+}
 
 const swaggerSetupPluginImpl: FastifyPluginAsync = async (fastify) => {
   fastify.setValidatorCompiler(validatorCompiler)
-  fastify.setSerializerCompiler(() => {
-    return (data) => JSON.stringify(data)
-  })
+  fastify.setSerializerCompiler(
+    fastify.config.NODE_ENV === 'production' ? disabledSerializerCompiler : serializerCompiler,
+  )
 
   await fastify.register(swagger, {
     openapi: {
@@ -19,10 +28,10 @@ const swaggerSetupPluginImpl: FastifyPluginAsync = async (fastify) => {
       },
       components: {
         securitySchemes: {
-          apiKey: {
-            type: 'apiKey',
-            name: 'apiKey',
-            in: 'header',
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
           },
         },
       },

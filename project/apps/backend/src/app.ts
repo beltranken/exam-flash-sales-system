@@ -1,18 +1,20 @@
 import 'dotenv/config'
 
 import cookie from '@fastify/cookie'
-import { authPlugin } from '@features'
-import Fastify from 'fastify'
-import { corsSetupPlugin } from './plugins/cors-setup.js'
-import { errorHandlerPlugin } from './plugins/error-handler.js'
+import { authPlugin, productsPlugin } from '@features'
 import {
+  authSetupPlugin,
+  cacheSetupPlugin,
   createLogger,
   dbSetupPlugin,
   envStepupPlugin,
   Level,
   msgBrokerPlugin,
   swaggerSetupPlugin,
-} from './plugins/index.js'
+} from '@plugins'
+import Fastify from 'fastify'
+import { corsSetupPlugin } from './plugins/cors-setup.js'
+import { errorHandlerPlugin } from './plugins/error-handler.js'
 
 const level = process.env.PINO_LOG_LEVEL as Level
 const isDev = process.env.NODE_ENV === 'development'
@@ -36,11 +38,16 @@ export const createApp = async () => {
     secret: fastify.config.COOKIE_SECRET,
   })
   await fastify.register(swaggerSetupPlugin)
+
   await fastify.register(dbSetupPlugin)
+  await fastify.register(cacheSetupPlugin)
   await fastify.register(msgBrokerPlugin)
+
   await fastify.register(corsSetupPlugin)
+  await fastify.register(authSetupPlugin)
 
   await fastify.register(authPlugin, { prefix: '/auth' })
+  await fastify.register(productsPlugin, { prefix: '/products' })
 
   await fastify.ready()
 

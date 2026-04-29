@@ -3,7 +3,7 @@ import { hashOtp } from '@utils'
 import { FastifyInstance } from 'fastify'
 import createHttpError from 'http-errors'
 import type { ChallengeData } from './generate-otp.service.js'
-import { getUser } from './get-user.js'
+import { getUser } from './get-user.service.js'
 
 const MAX_ATTEMPTS = 5
 
@@ -23,7 +23,8 @@ export async function verifyOTPService(fastify: FastifyInstance, challengeId: st
 
   const hashedInput = hashOtp(otp)
 
-  if (hashedInput !== challengeData.hashedOtp) {
+  // if SKIP_LOGIN is true, we skip OTP verification for easier testing
+  if (!fastify.config.SKIP_LOGIN && hashedInput !== challengeData.hashedOtp) {
     challengeData.attempts += 1
     await fastify.redis.set(`challenge:${challengeId}`, JSON.stringify(challengeData), 'EX', 5 * 60)
     throw new createHttpError.Unauthorized('Invalid OTP')

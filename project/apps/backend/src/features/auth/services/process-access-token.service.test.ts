@@ -1,4 +1,4 @@
-import { processAccessToken } from './process-access-token.js'
+import { processAccessToken } from './process-access-token.service.js'
 
 describe('processAccessToken', () => {
   it('signs access token with one minute expiry', async () => {

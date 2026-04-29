@@ -1,5 +1,5 @@
 import { hashOtp } from '@utils'
-import { getUser } from './get-user.js'
+import { getUser } from './get-user.service.js'
 import { verifyOTPService } from './verify-otp.service.js'
 
 jest.mock('@utils', () => ({

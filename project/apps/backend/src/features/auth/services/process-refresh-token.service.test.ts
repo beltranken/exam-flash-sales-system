@@ -1,4 +1,4 @@
-import { processRefreshToken } from './process-refresh-token.js'
+import { processRefreshToken } from './process-refresh-token.service.js'
 
 describe('processRefreshToken', () => {
   it('signs refresh token with seven day expiry', async () => {

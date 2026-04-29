@@ -2,6 +2,7 @@
 module.exports = {
   preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
+  setupFilesAfterEnv: ['<rootDir>/src/tests/jest-setup.ts'],
   roots: ['<rootDir>/src'],
   testMatch: ['**/*.test.ts'],
   extensionsToTreatAsEsm: ['.ts'],
@@ -11,6 +12,7 @@ module.exports = {
     '^@features$': '<rootDir>/src/features/index.ts',
     '^@types$': '<rootDir>/src/common/types/index.ts',
     '^@utils$': '<rootDir>/src/common/utils/index.ts',
+    '^@plugins$': '<rootDir>/src/plugins/index.ts',
   },
   transform: {
     '^.+\\.ts$': [

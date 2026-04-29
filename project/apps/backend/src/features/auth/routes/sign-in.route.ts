@@ -14,6 +14,8 @@ export function signInRoute(fastify: FastifyInstance) {
     const user = await resolveUserService(fastify, email)
     const { challengeId } = await generateAndSaveOTPService(fastify, user.id)
 
+    fastify.redis.set(`user:${user.id}:email`, email, 'EX', 5 * 60)
+
     reply.status(200).send({ challengeId })
   }
 }

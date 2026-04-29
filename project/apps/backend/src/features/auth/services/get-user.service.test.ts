@@ -1,4 +1,4 @@
-import { getUser } from './get-user.js'
+import { getUser } from './get-user.service.js'
 
 describe('getUser', () => {
   it('returns user when found', async () => {

@@ -1,7 +1,7 @@
 import { handleJwtVerifyError } from '../../../plugins/auth-setup.js'
-import { getUser } from '../services/get-user.js'
-import { processAccessToken } from '../services/process-access-token.js'
-import { processRefreshToken } from '../services/process-refresh-token.js'
+import { getUser } from '../services/get-user.service.js'
+import { processAccessToken } from '../services/process-access-token.service.js'
+import { processRefreshToken } from '../services/process-refresh-token.service.js'
 import { refreshTokenRoute } from './refresh-token.route.js'
 
 jest.mock('../../../plugins/auth-setup.js', () => ({
