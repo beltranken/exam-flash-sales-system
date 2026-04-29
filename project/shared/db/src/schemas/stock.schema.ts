@@ -23,14 +23,3 @@ export const stockEntriesTable = pgTable('stock_entries', {
   quantity: integer('quantity').notNull(),
   createdAt: timestamps.createdAt,
 })
-
-/* export const stocksView = pgMaterializedView('stocks').as((qb) =>
-  qb
-    .select({
-      productId: stockEntriesTable.productId,
-      warehouse: stockEntriesTable.warehouse,
-      quantity: sum(stockEntriesTable.quantity).as('quantity'),
-    })
-    .from(stockEntriesTable)
-    .groupBy(stockEntriesTable.productId, stockEntriesTable.warehouse),
-) */

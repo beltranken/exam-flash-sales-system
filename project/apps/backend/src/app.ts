@@ -1,7 +1,7 @@
 import 'dotenv/config'
 
 import cookie from '@fastify/cookie'
-import { authPlugin, productsPlugin } from '@features'
+import { authPlugin, ordersPlugin, productsPlugin } from '@features'
 import {
   authSetupPlugin,
   cacheSetupPlugin,
@@ -48,6 +48,7 @@ export const createApp = async () => {
 
   await fastify.register(authPlugin, { prefix: '/auth' })
   await fastify.register(productsPlugin, { prefix: '/products' })
+  await fastify.register(ordersPlugin, { prefix: '/orders' })
 
   await fastify.ready()
 

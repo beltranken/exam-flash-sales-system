@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify'
 import z from 'zod/v4'
 
-export async function getCacheData<TSchema extends z.ZodTypeAny>(
+export async function getCacheData<TSchema extends z.ZodType>(
   fastify: FastifyInstance,
   cacheKey: string,
   schema: TSchema,

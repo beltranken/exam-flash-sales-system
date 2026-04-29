@@ -1,5 +1,5 @@
 import { integer, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core'
-import { PromoStatus } from '../types/index.js'
+import { PromoStatus } from '../types/enums.js'
 import { timestamps } from './common.js'
 import { promoStatusEnum } from './enums.js'
 import { productsTable } from './products.schema.js'
@@ -17,5 +17,6 @@ export const promosTable = pgTable('promos', {
   productId: integer('product_id')
     .notNull()
     .references(() => productsTable.id, { onDelete: 'restrict' }),
+  limitQuantityPerUser: integer('limit_quantity_per_user').notNull().default(1),
   ...timestamps,
 })
