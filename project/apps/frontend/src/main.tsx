@@ -1,22 +1,9 @@
 import './index.css'
 
-import { createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router'
+import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-
-const rootRoute = createRootRoute({
-  component: App,
-  notFoundComponent: () => {
-    return (
-      <div>
-        <p>This is the notFoundComponent configured on root route</p>
-      </div>
-    )
-  },
-})
-
-const routeTree = rootRoute.addChildren([])
+import { routeTree } from './routeTree.gen'
 
 // Set up a Router instance
 const router = createRouter({
@@ -25,6 +12,13 @@ const router = createRouter({
   defaultStaleTime: 5000,
   scrollRestoration: true,
 })
+
+// Register things for typesafety
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router
+  }
+}
 
 const rootElement = document.getElementById('app')!
 
