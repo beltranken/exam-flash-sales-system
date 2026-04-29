@@ -5,7 +5,13 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/*.d.ts', 'shared/db/src/migrations/**'],
+    ignores: [
+      '**/dist/**',
+      '**/node_modules/**',
+      '**/*.d.ts',
+      'shared/db/src/migrations/**',
+      'apps/frontend/src/api/**',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -19,7 +25,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.test.ts', '**/*.spec.ts'],
+    files: ['**/*.test.ts', '**/*.spec.ts', 'apps/frontend/src/api/**'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
     },

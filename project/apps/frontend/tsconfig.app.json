@@ -19,7 +19,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    "paths": {
+      "@/api": ["./src/api/index"],
+      "@/api/*": ["./src/api/*"]
+    }
   },
   "include": ["src"]
 }

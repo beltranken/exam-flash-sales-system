@@ -1,9 +1,15 @@
 import './index.css'
 
+import { client } from '@/api/client.gen'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { routeTree } from './routeTree.gen'
+
+client.setConfig({
+  baseURL: `${import.meta.env.VITE_BACK_API_URL}`,
+  withCredentials: true,
+})
 
 // Set up a Router instance
 const router = createRouter({

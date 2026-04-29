@@ -46,9 +46,9 @@ export const createApp = async () => {
   await fastify.register(corsSetupPlugin)
   await fastify.register(authSetupPlugin)
 
-  await fastify.register(authPlugin, { prefix: '/auth' })
-  await fastify.register(productsPlugin, { prefix: '/products' })
-  await fastify.register(ordersPlugin, { prefix: '/orders' })
+  await fastify.register(authPlugin, { prefix: '/api/auth' })
+  await fastify.register(productsPlugin, { prefix: '/api/products' })
+  await fastify.register(ordersPlugin, { prefix: '/api/orders' })
 
   await fastify.ready()
 
