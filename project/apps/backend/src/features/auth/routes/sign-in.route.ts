@@ -3,7 +3,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import { generateAndSaveOTPService } from '../services/generate-otp.service.js'
 import { resolveUserService } from '../services/index.js'
 
-type SignInRoute = {
+export type SignInRoute = {
   Body: EmailSignInRequest
   Reply: SignInChallengeResponse
 }

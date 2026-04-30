@@ -4,12 +4,19 @@ import { numberParamSchema } from '@utils'
 import { FastifyPluginAsync } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import z from 'zod/v4'
-import { getProductRoute, getProductStockRoute, getProductsRoute } from './routes/index.js'
+import {
+  GetProductRoute,
+  GetProductStockRoute,
+  GetProductsRoute,
+  getProductRoute,
+  getProductStockRoute,
+  getProductsRoute,
+} from './routes/index.js'
 
 export const productsPlugin: FastifyPluginAsync = async (fastify) => {
   const typedFastify = fastify.withTypeProvider<ZodTypeProvider>()
 
-  typedFastify.get(
+  typedFastify.get<GetProductsRoute>(
     '/',
     {
       schema: {
@@ -23,7 +30,7 @@ export const productsPlugin: FastifyPluginAsync = async (fastify) => {
     getProductsRoute(fastify),
   )
 
-  typedFastify.get(
+  typedFastify.get<GetProductRoute>(
     '/:productId',
     {
       schema: {
@@ -38,7 +45,7 @@ export const productsPlugin: FastifyPluginAsync = async (fastify) => {
     getProductRoute(fastify),
   )
 
-  typedFastify.get(
+  typedFastify.get<GetProductStockRoute>(
     '/:productId/stock',
     {
       schema: {

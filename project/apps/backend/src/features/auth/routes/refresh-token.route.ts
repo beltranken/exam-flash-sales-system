@@ -6,7 +6,7 @@ import { getUser } from '../services/get-user.service.js'
 import { processAccessToken } from '../services/process-access-token.service.js'
 import { processRefreshToken } from '../services/process-refresh-token.service.js'
 
-type RefreshRoute = {
+export type RefreshRoute = {
   Body: RefreshTokenRequestBody
   Reply: SignInConfirmResponse
 }

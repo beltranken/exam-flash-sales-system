@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import { getProductStockService } from '../services/get-procuct-stock.service.js'
 
-type GetProductStockRoute = {
+export type GetProductStockRoute = {
   Params: {
     productId: number
   }

@@ -2,7 +2,7 @@ import { Product } from '@shared/db'
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import { getProductsService } from '../services/index.js'
 
-type GetProductsRoute = {
+export type GetProductsRoute = {
   Reply: Product[]
 }
 

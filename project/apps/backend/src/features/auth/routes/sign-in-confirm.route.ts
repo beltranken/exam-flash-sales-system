@@ -4,7 +4,7 @@ import { processAccessToken } from '../services/process-access-token.service.js'
 import { processRefreshToken } from '../services/process-refresh-token.service.js'
 import { verifyOTPService } from '../services/verify-otp.service.js'
 
-type SignInConfirmRoute = {
+export type SignInConfirmRoute = {
   Body: SignInConfirmRequest
   Reply: SignInConfirmResponse
 }

@@ -3,7 +3,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import createHttpError from 'http-errors'
 import { getMyOrderByIdService } from '../services/index.js'
 
-type GetMyOrderByIdRoute = {
+export type GetMyOrderByIdRoute = {
   Params: {
     orderId: Order['id']
   }

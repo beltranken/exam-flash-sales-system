@@ -8,12 +8,20 @@ import {
 } from '@types'
 import { FastifyPluginAsync } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
-import { refreshTokenRoute, signInConfirmRoute, signInRoute, signOutRoute } from './routes/index.js'
+import {
+  RefreshRoute,
+  SignInConfirmRoute,
+  SignInRoute,
+  refreshTokenRoute,
+  signInConfirmRoute,
+  signInRoute,
+  signOutRoute,
+} from './routes/index.js'
 
 export const authPlugin: FastifyPluginAsync = async (fastify) => {
   const typedFastify = fastify.withTypeProvider<ZodTypeProvider>()
 
-  typedFastify.post(
+  typedFastify.post<SignInRoute>(
     '/sign-in',
     {
       schema: {
@@ -28,7 +36,7 @@ export const authPlugin: FastifyPluginAsync = async (fastify) => {
     signInRoute(fastify),
   )
 
-  typedFastify.post(
+  typedFastify.post<SignInConfirmRoute>(
     '/sign-in/confirm',
     {
       schema: {
@@ -57,7 +65,7 @@ export const authPlugin: FastifyPluginAsync = async (fastify) => {
     signOutRoute,
   )
 
-  typedFastify.post(
+  typedFastify.post<RefreshRoute>(
     '/refresh',
     {
       schema: {

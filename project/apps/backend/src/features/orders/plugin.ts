@@ -2,12 +2,12 @@ import { orderSchema } from '@shared/db'
 import { errorResponses } from '@types'
 import { FastifyPluginAsync } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
-import { getMyOrderByIdRoute, getMyOrdersRoute } from './routes/index.js'
+import { GetMyOrderByIdRoute, GetMyOrdersRoute, getMyOrderByIdRoute, getMyOrdersRoute } from './routes/index.js'
 
 export const ordersPlugin: FastifyPluginAsync = async (fastify) => {
   const typedFastify = fastify.withTypeProvider<ZodTypeProvider>()
 
-  typedFastify.get(
+  typedFastify.get<GetMyOrdersRoute>(
     '/my',
     {
       schema: {
@@ -22,7 +22,7 @@ export const ordersPlugin: FastifyPluginAsync = async (fastify) => {
     getMyOrdersRoute(fastify),
   )
 
-  typedFastify.get(
+  typedFastify.get<GetMyOrderByIdRoute>(
     '/my/:orderId',
     {
       schema: {
