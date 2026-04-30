@@ -1,6 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
-import Index from '../components'
+import { mainCategories, subCategories } from '@/constants/categories'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
-  component: Index,
+  beforeLoad: async () => {
+    throw redirect({
+      to: '/$mainCategory/$subCategory',
+      params: { mainCategory: mainCategories[0].slug, subCategory: subCategories[0].slug },
+    })
+  },
 })

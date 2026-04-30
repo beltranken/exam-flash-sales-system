@@ -1,14 +1,15 @@
+import { loginSearchSchema } from '@/schemas/loginSearchSchema'
 import { createRootRoute } from '@tanstack/react-router'
-import RootComponent from '../components/root'
+import RootLayout from '../pages/RootLayout'
 
 export const Route = createRootRoute({
-  component: RootComponent,
+  component: RootLayout,
   notFoundComponent: () => {
     return (
       <div>
         <p>This is the notFoundComponent configured on root route</p>
-        {/* <Link to="/">Start Over</Link> */}
       </div>
     )
   },
+  validateSearch: loginSearchSchema,
 })

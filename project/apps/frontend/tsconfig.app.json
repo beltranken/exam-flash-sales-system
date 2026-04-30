@@ -23,7 +23,16 @@
 
     "paths": {
       "@/api": ["./src/api/index"],
-      "@/api/*": ["./src/api/*"]
+      "@/api/*": ["./src/api/*"],
+      "@/schemas/*": ["./src/libs/schemas/*"],
+      "@/schemas": ["./src/libs/schemas/index"],
+      "@/constants/*": ["./src/libs/constants/*"],
+      "@/constants": ["./src/libs/constants/index"],
+      "@/libs/*": ["./src/libs/*"],
+      "@/icons/*": ["./src/components/icons/*"],
+      "@/features/*": ["./src/components/features/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/pages/*": ["./src/pages/*"]
     }
   },
   "include": ["src"]

@@ -1,10 +1,15 @@
 @import 'tailwindcss';
+@import 'flowbite-react/plugin/tailwindcss';
+
+@source '../.flowbite-react/class-list.json';
+
+@plugin 'flowbite-typography';
 
 @theme {
   --color-text: #6b6375;
   --color-text-heading: #08060d;
   --color-bg: #fff;
-  --color-border: #e5e4e7;
+  --color-border: #e5e5e5;
   --color-code-bg: #f4f3ec;
   --color-accent: #aa3bff;
   --color-accent-bg: rgba(170, 59, 255, 0.1);
@@ -16,4 +21,10 @@
   --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --font-heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, Consolas, monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
 }
