@@ -3,11 +3,11 @@ import { processRefreshToken } from '../services/process-refresh-token.service.j
 import { verifyOTPService } from '../services/verify-otp.service.js'
 import { signInConfirmRoute } from './sign-in-confirm.route.js'
 
-jest.mock('../services/process-access-token.js', () => ({
+jest.mock('../services/process-access-token.service.js', () => ({
   processAccessToken: jest.fn(),
 }))
 
-jest.mock('../services/process-refresh-token.js', () => ({
+jest.mock('../services/process-refresh-token.service.js', () => ({
   processRefreshToken: jest.fn(),
 }))
 

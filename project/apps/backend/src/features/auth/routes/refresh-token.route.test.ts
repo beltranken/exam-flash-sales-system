@@ -8,15 +8,15 @@ jest.mock('../../../plugins/auth-setup.js', () => ({
   handleJwtVerifyError: jest.fn(),
 }))
 
-jest.mock('../services/get-user.js', () => ({
+jest.mock('../services/get-user.service.js', () => ({
   getUser: jest.fn(),
 }))
 
-jest.mock('../services/process-access-token.js', () => ({
+jest.mock('../services/process-access-token.service.js', () => ({
   processAccessToken: jest.fn(),
 }))
 
-jest.mock('../services/process-refresh-token.js', () => ({
+jest.mock('../services/process-refresh-token.service.js', () => ({
   processRefreshToken: jest.fn(),
 }))
 

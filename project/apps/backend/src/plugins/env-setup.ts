@@ -1,4 +1,4 @@
-import env from '@fastify/env'
+import env, { type FastifyEnvOptions } from '@fastify/env'
 import { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
 import pino, { Level } from 'pino'
@@ -22,7 +22,7 @@ export const createLogger = ({ level = 'debug', isDev }: CreateLoggerArgs) =>
     ...(isDev && { transport: { target: 'pino-pretty' } }),
   })
 
-const schema: env.FastifyEnvOptions['schema'] = {
+const schema: FastifyEnvOptions['schema'] = {
   type: 'object',
   required: ['PORT', 'DATABASE_URL', 'CACHE_URL', 'RABBITMQ_URL', 'JWT_ACCESS_SECRET'],
   properties: {

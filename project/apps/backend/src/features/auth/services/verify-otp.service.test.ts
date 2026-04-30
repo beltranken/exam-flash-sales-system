@@ -6,14 +6,16 @@ jest.mock('@utils', () => ({
   hashOtp: jest.fn(),
 }))
 
-jest.mock('./get-user.js', () => ({
+jest.mock('./get-user.service.js', () => ({
   getUser: jest.fn(),
 }))
 
 describe('verifyOTPService', () => {
+  const config = { SKIP_LOGIN: false }
+
   it('throws when challenge does not exist', async () => {
     const get = jest.fn().mockResolvedValue(null)
-    const fastify = { redis: { get } } as any
+    const fastify = { redis: { get }, config } as any
 
     await expect(verifyOTPService(fastify, 'missing', '123456')).rejects.toThrow('Challenge not found or expired')
   })
@@ -28,7 +30,7 @@ describe('verifyOTPService', () => {
 
     const get = jest.fn().mockResolvedValue(JSON.stringify(challenge))
     const del = jest.fn().mockResolvedValue(1)
-    const fastify = { redis: { get, del } } as any
+    const fastify = { redis: { get, del }, config } as any
 
     await expect(verifyOTPService(fastify, 'challenge-1', '123456')).rejects.toThrow(
       'Too many attempts. Challenge revoked',
@@ -49,7 +51,7 @@ describe('verifyOTPService', () => {
 
     const get = jest.fn().mockResolvedValue(JSON.stringify(challenge))
     const set = jest.fn().mockResolvedValue('OK')
-    const fastify = { redis: { get, set } } as any
+    const fastify = { redis: { get, set }, config } as any
 
     await expect(verifyOTPService(fastify, 'challenge-2', '123456')).rejects.toThrow('Invalid OTP')
 
@@ -76,7 +78,7 @@ describe('verifyOTPService', () => {
 
     const get = jest.fn().mockResolvedValue(JSON.stringify(challenge))
     const del = jest.fn().mockResolvedValue(1)
-    const fastify = { redis: { get, del } } as any
+    const fastify = { redis: { get, del }, config } as any
 
     const result = await verifyOTPService(fastify, 'challenge-3', '123456')
 
