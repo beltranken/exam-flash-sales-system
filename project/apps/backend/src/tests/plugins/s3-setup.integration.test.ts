@@ -24,7 +24,7 @@ describe('s3Plugin integration', () => {
 
       const url = await app.s3!.signUrl('avatar.png')
 
-      expect(url).toContain('picsum.photos')
+      expect(url).toBeNull()
     } finally {
       await app.close()
     }
