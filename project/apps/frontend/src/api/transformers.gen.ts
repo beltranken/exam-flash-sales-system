@@ -19,6 +19,15 @@ export const getProductsResponseTransformer = async (data: any): Promise<GetProd
         item.productStock.product.updatedAt = new Date(item.productStock.product.updatedAt)
       }
     }
+    if (item.activePromos) {
+      item.activePromos = item.activePromos.map((item: any) => {
+        item.startDate = new Date(item.startDate)
+        item.endDate = new Date(item.endDate)
+        item.createdAt = new Date(item.createdAt)
+        item.updatedAt = new Date(item.updatedAt)
+        return item
+      })
+    }
     return item
   })
   return data
@@ -34,6 +43,15 @@ export const getProductByIdResponseTransformer = async (data: any): Promise<GetP
       data.productStock.product.createdAt = new Date(data.productStock.product.createdAt)
       data.productStock.product.updatedAt = new Date(data.productStock.product.updatedAt)
     }
+  }
+  if (data.activePromos) {
+    data.activePromos = data.activePromos.map((item: any) => {
+      item.startDate = new Date(item.startDate)
+      item.endDate = new Date(item.endDate)
+      item.createdAt = new Date(item.createdAt)
+      item.updatedAt = new Date(item.updatedAt)
+      return item
+    })
   }
   return data
 }
@@ -56,6 +74,15 @@ export const getMyOrdersResponseTransformer = async (data: any): Promise<GetMyOr
               item.product.productStock.product.createdAt = new Date(item.product.productStock.product.createdAt)
               item.product.productStock.product.updatedAt = new Date(item.product.productStock.product.updatedAt)
             }
+          }
+          if (item.product.activePromos) {
+            item.product.activePromos = item.product.activePromos.map((item: any) => {
+              item.startDate = new Date(item.startDate)
+              item.endDate = new Date(item.endDate)
+              item.createdAt = new Date(item.createdAt)
+              item.updatedAt = new Date(item.updatedAt)
+              return item
+            })
           }
         }
         if (item.appliedPromo) {
@@ -89,6 +116,15 @@ export const getMyOrderByIdResponseTransformer = async (data: any): Promise<GetM
             item.product.productStock.product.createdAt = new Date(item.product.productStock.product.createdAt)
             item.product.productStock.product.updatedAt = new Date(item.product.productStock.product.updatedAt)
           }
+        }
+        if (item.product.activePromos) {
+          item.product.activePromos = item.product.activePromos.map((item: any) => {
+            item.startDate = new Date(item.startDate)
+            item.endDate = new Date(item.endDate)
+            item.createdAt = new Date(item.createdAt)
+            item.updatedAt = new Date(item.updatedAt)
+            return item
+          })
         }
       }
       if (item.appliedPromo) {

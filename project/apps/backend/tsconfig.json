@@ -8,9 +8,10 @@
     "types": ["node", "jest"],
     "paths": {
       "@features": ["./src/features/index.js"],
-      "@types": ["./src/common/types/index.js"],
+      "@types": ["./src/common/schemas/index.js"],
       "@utils": ["./src/common/utils/index.js"],
-      "@plugins": ["./src/plugins/index.js"]
+      "@plugins": ["./src/plugins/index.js"],
+      "@features/*": ["./src/features/*"]
     }
   },
   "include": ["src"]

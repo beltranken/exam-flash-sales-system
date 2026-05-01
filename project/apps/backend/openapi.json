@@ -521,6 +521,16 @@
                         "minimum": -2147483648,
                         "maximum": 2147483647
                       },
+                      "limitPerUser": {
+                        "type": "integer",
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      "limitResetIntervalDays": {
+                        "type": "integer",
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
                       "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -529,103 +539,87 @@
                         "type": "string",
                         "format": "date-time"
                       },
-                      "productStock": {
-                        "nullable": true,
-                        "type": "object",
-                        "properties": {
-                          "productId": {
-                            "type": "integer",
-                            "minimum": -2147483648,
-                            "maximum": 2147483647
-                          },
-                          "warehouse": {
-                            "type": "string",
-                            "maxLength": 50
-                          },
-                          "availableQuantity": {
-                            "type": "integer",
-                            "minimum": -2147483648,
-                            "maximum": 2147483647
-                          },
-                          "reservedQuantity": {
-                            "type": "integer",
-                            "minimum": -2147483648,
-                            "maximum": 2147483647
-                          },
-                          "soldQuantity": {
-                            "type": "integer",
-                            "minimum": -2147483648,
-                            "maximum": 2147483647
-                          },
-                          "createdAt": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "updatedAt": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "product": {
-                            "nullable": true,
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "integer",
-                                "minimum": -2147483648,
-                                "maximum": 2147483647
-                              },
-                              "name": {
-                                "type": "string",
-                                "maxLength": 255
-                              },
-                              "description": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "image": {
-                                "nullable": true,
-                                "type": "string",
-                                "maxLength": 500
-                              },
-                              "priceInCents": {
-                                "type": "integer",
-                                "minimum": -2147483648,
-                                "maximum": 2147483647
-                              },
-                              "createdAt": {
-                                "type": "string",
-                                "format": "date-time"
-                              },
-                              "updatedAt": {
-                                "type": "string",
-                                "format": "date-time"
-                              }
+                      "availableQuantity": {
+                        "type": "integer",
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      "activePromos": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "minimum": -2147483648,
+                              "maximum": 2147483647
                             },
-                            "required": [
-                              "id",
-                              "name",
-                              "description",
-                              "image",
-                              "priceInCents",
-                              "createdAt",
-                              "updatedAt"
-                            ],
-                            "additionalProperties": false
-                          }
-                        },
-                        "required": [
-                          "productId",
-                          "warehouse",
-                          "availableQuantity",
-                          "reservedQuantity",
-                          "soldQuantity",
-                          "createdAt",
-                          "updatedAt"
-                        ],
-                        "additionalProperties": false
+                            "name": {
+                              "type": "string",
+                              "maxLength": 255
+                            },
+                            "description": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "imageUrl": {
+                              "nullable": true,
+                              "type": "string",
+                              "maxLength": 255
+                            },
+                            "discountPercentage": {
+                              "type": "integer",
+                              "minimum": -2147483648,
+                              "maximum": 2147483647
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": ["upcoming", "active", "cancelled", "expired"]
+                            },
+                            "startDate": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "endDate": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "description",
+                            "imageUrl",
+                            "discountPercentage",
+                            "status",
+                            "startDate",
+                            "endDate",
+                            "createdAt",
+                            "updatedAt"
+                          ],
+                          "additionalProperties": false
+                        }
                       }
                     },
-                    "required": ["id", "name", "description", "image", "priceInCents", "createdAt", "updatedAt"],
+                    "required": [
+                      "id",
+                      "name",
+                      "description",
+                      "image",
+                      "priceInCents",
+                      "limitPerUser",
+                      "limitResetIntervalDays",
+                      "createdAt",
+                      "updatedAt"
+                    ],
                     "additionalProperties": false
                   }
                 }
@@ -756,6 +750,16 @@
                       "minimum": -2147483648,
                       "maximum": 2147483647
                     },
+                    "limitPerUser": {
+                      "type": "integer",
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "limitResetIntervalDays": {
+                      "type": "integer",
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time"
@@ -764,95 +768,87 @@
                       "type": "string",
                       "format": "date-time"
                     },
-                    "productStock": {
-                      "nullable": true,
-                      "type": "object",
-                      "properties": {
-                        "productId": {
-                          "type": "integer",
-                          "minimum": -2147483648,
-                          "maximum": 2147483647
-                        },
-                        "warehouse": {
-                          "type": "string",
-                          "maxLength": 50
-                        },
-                        "availableQuantity": {
-                          "type": "integer",
-                          "minimum": -2147483648,
-                          "maximum": 2147483647
-                        },
-                        "reservedQuantity": {
-                          "type": "integer",
-                          "minimum": -2147483648,
-                          "maximum": 2147483647
-                        },
-                        "soldQuantity": {
-                          "type": "integer",
-                          "minimum": -2147483648,
-                          "maximum": 2147483647
-                        },
-                        "createdAt": {
-                          "type": "string",
-                          "format": "date-time"
-                        },
-                        "updatedAt": {
-                          "type": "string",
-                          "format": "date-time"
-                        },
-                        "product": {
-                          "nullable": true,
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "integer",
-                              "minimum": -2147483648,
-                              "maximum": 2147483647
-                            },
-                            "name": {
-                              "type": "string",
-                              "maxLength": 255
-                            },
-                            "description": {
-                              "nullable": true,
-                              "type": "string"
-                            },
-                            "image": {
-                              "nullable": true,
-                              "type": "string",
-                              "maxLength": 500
-                            },
-                            "priceInCents": {
-                              "type": "integer",
-                              "minimum": -2147483648,
-                              "maximum": 2147483647
-                            },
-                            "createdAt": {
-                              "type": "string",
-                              "format": "date-time"
-                            },
-                            "updatedAt": {
-                              "type": "string",
-                              "format": "date-time"
-                            }
+                    "availableQuantity": {
+                      "type": "integer",
+                      "minimum": -2147483648,
+                      "maximum": 2147483647
+                    },
+                    "activePromos": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "minimum": -2147483648,
+                            "maximum": 2147483647
                           },
-                          "required": ["id", "name", "description", "image", "priceInCents", "createdAt", "updatedAt"],
-                          "additionalProperties": false
-                        }
-                      },
-                      "required": [
-                        "productId",
-                        "warehouse",
-                        "availableQuantity",
-                        "reservedQuantity",
-                        "soldQuantity",
-                        "createdAt",
-                        "updatedAt"
-                      ],
-                      "additionalProperties": false
+                          "name": {
+                            "type": "string",
+                            "maxLength": 255
+                          },
+                          "description": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "imageUrl": {
+                            "nullable": true,
+                            "type": "string",
+                            "maxLength": 255
+                          },
+                          "discountPercentage": {
+                            "type": "integer",
+                            "minimum": -2147483648,
+                            "maximum": 2147483647
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["upcoming", "active", "cancelled", "expired"]
+                          },
+                          "startDate": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "endDate": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "description",
+                          "imageUrl",
+                          "discountPercentage",
+                          "status",
+                          "startDate",
+                          "endDate",
+                          "createdAt",
+                          "updatedAt"
+                        ],
+                        "additionalProperties": false
+                      }
                     }
                   },
-                  "required": ["id", "name", "description", "image", "priceInCents", "createdAt", "updatedAt"],
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "image",
+                    "priceInCents",
+                    "limitPerUser",
+                    "limitResetIntervalDays",
+                    "createdAt",
+                    "updatedAt"
+                  ],
                   "additionalProperties": false
                 }
               }
@@ -1158,6 +1154,16 @@
                                   "minimum": -2147483648,
                                   "maximum": 2147483647
                                 },
+                                "limitPerUser": {
+                                  "type": "integer",
+                                  "minimum": -2147483648,
+                                  "maximum": 2147483647
+                                },
+                                "limitResetIntervalDays": {
+                                  "type": "integer",
+                                  "minimum": -2147483648,
+                                  "maximum": 2147483647
+                                },
                                 "createdAt": {
                                   "type": "string",
                                   "format": "date-time"
@@ -1166,100 +1172,74 @@
                                   "type": "string",
                                   "format": "date-time"
                                 },
-                                "productStock": {
-                                  "nullable": true,
-                                  "type": "object",
-                                  "properties": {
-                                    "productId": {
-                                      "type": "integer",
-                                      "minimum": -2147483648,
-                                      "maximum": 2147483647
-                                    },
-                                    "warehouse": {
-                                      "type": "string",
-                                      "maxLength": 50
-                                    },
-                                    "availableQuantity": {
-                                      "type": "integer",
-                                      "minimum": -2147483648,
-                                      "maximum": 2147483647
-                                    },
-                                    "reservedQuantity": {
-                                      "type": "integer",
-                                      "minimum": -2147483648,
-                                      "maximum": 2147483647
-                                    },
-                                    "soldQuantity": {
-                                      "type": "integer",
-                                      "minimum": -2147483648,
-                                      "maximum": 2147483647
-                                    },
-                                    "createdAt": {
-                                      "type": "string",
-                                      "format": "date-time"
-                                    },
-                                    "updatedAt": {
-                                      "type": "string",
-                                      "format": "date-time"
-                                    },
-                                    "product": {
-                                      "nullable": true,
-                                      "type": "object",
-                                      "properties": {
-                                        "id": {
-                                          "type": "integer",
-                                          "minimum": -2147483648,
-                                          "maximum": 2147483647
-                                        },
-                                        "name": {
-                                          "type": "string",
-                                          "maxLength": 255
-                                        },
-                                        "description": {
-                                          "nullable": true,
-                                          "type": "string"
-                                        },
-                                        "image": {
-                                          "nullable": true,
-                                          "type": "string",
-                                          "maxLength": 500
-                                        },
-                                        "priceInCents": {
-                                          "type": "integer",
-                                          "minimum": -2147483648,
-                                          "maximum": 2147483647
-                                        },
-                                        "createdAt": {
-                                          "type": "string",
-                                          "format": "date-time"
-                                        },
-                                        "updatedAt": {
-                                          "type": "string",
-                                          "format": "date-time"
-                                        }
+                                "availableQuantity": {
+                                  "type": "integer",
+                                  "minimum": -2147483648,
+                                  "maximum": 2147483647
+                                },
+                                "activePromos": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "integer",
+                                        "minimum": -2147483648,
+                                        "maximum": 2147483647
                                       },
-                                      "required": [
-                                        "id",
-                                        "name",
-                                        "description",
-                                        "image",
-                                        "priceInCents",
-                                        "createdAt",
-                                        "updatedAt"
-                                      ],
-                                      "additionalProperties": false
-                                    }
-                                  },
-                                  "required": [
-                                    "productId",
-                                    "warehouse",
-                                    "availableQuantity",
-                                    "reservedQuantity",
-                                    "soldQuantity",
-                                    "createdAt",
-                                    "updatedAt"
-                                  ],
-                                  "additionalProperties": false
+                                      "name": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                      },
+                                      "description": {
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "imageUrl": {
+                                        "nullable": true,
+                                        "type": "string",
+                                        "maxLength": 255
+                                      },
+                                      "discountPercentage": {
+                                        "type": "integer",
+                                        "minimum": -2147483648,
+                                        "maximum": 2147483647
+                                      },
+                                      "status": {
+                                        "type": "string",
+                                        "enum": ["upcoming", "active", "cancelled", "expired"]
+                                      },
+                                      "startDate": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                      },
+                                      "endDate": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                      },
+                                      "createdAt": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                      },
+                                      "updatedAt": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "name",
+                                      "description",
+                                      "imageUrl",
+                                      "discountPercentage",
+                                      "status",
+                                      "startDate",
+                                      "endDate",
+                                      "createdAt",
+                                      "updatedAt"
+                                    ],
+                                    "additionalProperties": false
+                                  }
                                 }
                               },
                               "required": [
@@ -1268,6 +1248,8 @@
                                 "description",
                                 "image",
                                 "priceInCents",
+                                "limitPerUser",
+                                "limitResetIntervalDays",
                                 "createdAt",
                                 "updatedAt"
                               ],
@@ -1312,11 +1294,6 @@
                                   "type": "string",
                                   "format": "date-time"
                                 },
-                                "productId": {
-                                  "type": "integer",
-                                  "minimum": -2147483648,
-                                  "maximum": 2147483647
-                                },
                                 "createdAt": {
                                   "type": "string",
                                   "format": "date-time"
@@ -1335,7 +1312,6 @@
                                 "status",
                                 "startDate",
                                 "endDate",
-                                "productId",
                                 "createdAt",
                                 "updatedAt"
                               ],
@@ -1364,6 +1340,98 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Bad Request",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Unauthorized",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Forbidden",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Conflict",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Internal Server Error",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/orders/my/{orderId}/status": {
+      "get": {
+        "operationId": "getMyOrderStatus",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "orderId",
+            "required": true
+          }
+        ],
+        "responses": {
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1568,6 +1636,16 @@
                                 "minimum": -2147483648,
                                 "maximum": 2147483647
                               },
+                              "limitPerUser": {
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                              },
+                              "limitResetIntervalDays": {
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                              },
                               "createdAt": {
                                 "type": "string",
                                 "format": "date-time"
@@ -1576,100 +1654,74 @@
                                 "type": "string",
                                 "format": "date-time"
                               },
-                              "productStock": {
-                                "nullable": true,
-                                "type": "object",
-                                "properties": {
-                                  "productId": {
-                                    "type": "integer",
-                                    "minimum": -2147483648,
-                                    "maximum": 2147483647
-                                  },
-                                  "warehouse": {
-                                    "type": "string",
-                                    "maxLength": 50
-                                  },
-                                  "availableQuantity": {
-                                    "type": "integer",
-                                    "minimum": -2147483648,
-                                    "maximum": 2147483647
-                                  },
-                                  "reservedQuantity": {
-                                    "type": "integer",
-                                    "minimum": -2147483648,
-                                    "maximum": 2147483647
-                                  },
-                                  "soldQuantity": {
-                                    "type": "integer",
-                                    "minimum": -2147483648,
-                                    "maximum": 2147483647
-                                  },
-                                  "createdAt": {
-                                    "type": "string",
-                                    "format": "date-time"
-                                  },
-                                  "updatedAt": {
-                                    "type": "string",
-                                    "format": "date-time"
-                                  },
-                                  "product": {
-                                    "nullable": true,
-                                    "type": "object",
-                                    "properties": {
-                                      "id": {
-                                        "type": "integer",
-                                        "minimum": -2147483648,
-                                        "maximum": 2147483647
-                                      },
-                                      "name": {
-                                        "type": "string",
-                                        "maxLength": 255
-                                      },
-                                      "description": {
-                                        "nullable": true,
-                                        "type": "string"
-                                      },
-                                      "image": {
-                                        "nullable": true,
-                                        "type": "string",
-                                        "maxLength": 500
-                                      },
-                                      "priceInCents": {
-                                        "type": "integer",
-                                        "minimum": -2147483648,
-                                        "maximum": 2147483647
-                                      },
-                                      "createdAt": {
-                                        "type": "string",
-                                        "format": "date-time"
-                                      },
-                                      "updatedAt": {
-                                        "type": "string",
-                                        "format": "date-time"
-                                      }
+                              "availableQuantity": {
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                              },
+                              "activePromos": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "integer",
+                                      "minimum": -2147483648,
+                                      "maximum": 2147483647
                                     },
-                                    "required": [
-                                      "id",
-                                      "name",
-                                      "description",
-                                      "image",
-                                      "priceInCents",
-                                      "createdAt",
-                                      "updatedAt"
-                                    ],
-                                    "additionalProperties": false
-                                  }
-                                },
-                                "required": [
-                                  "productId",
-                                  "warehouse",
-                                  "availableQuantity",
-                                  "reservedQuantity",
-                                  "soldQuantity",
-                                  "createdAt",
-                                  "updatedAt"
-                                ],
-                                "additionalProperties": false
+                                    "name": {
+                                      "type": "string",
+                                      "maxLength": 255
+                                    },
+                                    "description": {
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "imageUrl": {
+                                      "nullable": true,
+                                      "type": "string",
+                                      "maxLength": 255
+                                    },
+                                    "discountPercentage": {
+                                      "type": "integer",
+                                      "minimum": -2147483648,
+                                      "maximum": 2147483647
+                                    },
+                                    "status": {
+                                      "type": "string",
+                                      "enum": ["upcoming", "active", "cancelled", "expired"]
+                                    },
+                                    "startDate": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    },
+                                    "endDate": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    },
+                                    "createdAt": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    },
+                                    "updatedAt": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "name",
+                                    "description",
+                                    "imageUrl",
+                                    "discountPercentage",
+                                    "status",
+                                    "startDate",
+                                    "endDate",
+                                    "createdAt",
+                                    "updatedAt"
+                                  ],
+                                  "additionalProperties": false
+                                }
                               }
                             },
                             "required": [
@@ -1678,6 +1730,8 @@
                               "description",
                               "image",
                               "priceInCents",
+                              "limitPerUser",
+                              "limitResetIntervalDays",
                               "createdAt",
                               "updatedAt"
                             ],
@@ -1722,11 +1776,6 @@
                                 "type": "string",
                                 "format": "date-time"
                               },
-                              "productId": {
-                                "type": "integer",
-                                "minimum": -2147483648,
-                                "maximum": 2147483647
-                              },
                               "createdAt": {
                                 "type": "string",
                                 "format": "date-time"
@@ -1745,7 +1794,6 @@
                               "status",
                               "startDate",
                               "endDate",
-                              "productId",
                               "createdAt",
                               "updatedAt"
                             ],
@@ -1769,6 +1817,194 @@
                   },
                   "required": ["id", "userId", "status", "note", "createdAt", "updatedAt"],
                   "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Bad Request",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Unauthorized",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Forbidden",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Conflict",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Internal Server Error",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "operationId": "getPromos",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      "name": {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "description": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "imageUrl": {
+                        "nullable": true,
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "discountPercentage": {
+                        "type": "integer",
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": ["upcoming", "active", "cancelled", "expired"]
+                      },
+                      "startDate": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "endDate": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "promoItems": {
+                        "nullable": true,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "minimum": -2147483648,
+                              "maximum": 2147483647
+                            },
+                            "promoId": {
+                              "type": "integer",
+                              "minimum": -2147483648,
+                              "maximum": 2147483647
+                            },
+                            "productId": {
+                              "type": "integer",
+                              "minimum": -2147483648,
+                              "maximum": 2147483647
+                            },
+                            "limitPerUser": {
+                              "type": "integer",
+                              "minimum": -2147483648,
+                              "maximum": 2147483647
+                            }
+                          },
+                          "required": ["id", "promoId", "productId", "limitPerUser"],
+                          "additionalProperties": false
+                        }
+                      },
+                      "temporalStatus": {
+                        "type": "string",
+                        "enum": ["upcoming", "active", "expired"]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "description",
+                      "imageUrl",
+                      "discountPercentage",
+                      "status",
+                      "startDate",
+                      "endDate",
+                      "createdAt",
+                      "updatedAt"
+                    ],
+                    "additionalProperties": false
+                  }
                 }
               }
             }
@@ -1878,6 +2114,782 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Bad Request",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Unauthorized",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Forbidden",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Conflict",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Internal Server Error",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/validate-cart": {
+      "post": {
+        "operationId": "validateCart",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "appliedPromoId": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "productId": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "quantity": {
+                          "type": "integer",
+                          "exclusiveMinimum": true,
+                          "maximum": 9007199254740991
+                        },
+                        "appliedPromoId": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": ["productId", "quantity"]
+                    }
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "required": ["items"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "appliedPromo": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "minimum": -2147483648,
+                          "maximum": 2147483647
+                        },
+                        "name": {
+                          "type": "string",
+                          "maxLength": 255
+                        },
+                        "description": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "imageUrl": {
+                          "nullable": true,
+                          "type": "string",
+                          "maxLength": 255
+                        },
+                        "discountPercentage": {
+                          "type": "integer",
+                          "minimum": -2147483648,
+                          "maximum": 2147483647
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["upcoming", "active", "cancelled", "expired"]
+                        },
+                        "startDate": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "endDate": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "promoItems": {
+                          "nullable": true,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                              },
+                              "promoId": {
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                              },
+                              "productId": {
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                              },
+                              "limitPerUser": {
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                              }
+                            },
+                            "required": ["id", "promoId", "productId", "limitPerUser"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "temporalStatus": {
+                          "type": "string",
+                          "enum": ["upcoming", "active", "expired"]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "description",
+                        "imageUrl",
+                        "discountPercentage",
+                        "status",
+                        "startDate",
+                        "endDate",
+                        "createdAt",
+                        "updatedAt"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "product": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                              },
+                              "name": {
+                                "type": "string",
+                                "maxLength": 255
+                              },
+                              "description": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "image": {
+                                "nullable": true,
+                                "type": "string",
+                                "maxLength": 500
+                              },
+                              "priceInCents": {
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                              },
+                              "limitPerUser": {
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                              },
+                              "limitResetIntervalDays": {
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "availableQuantity": {
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                              },
+                              "activePromos": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "integer",
+                                      "minimum": -2147483648,
+                                      "maximum": 2147483647
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "maxLength": 255
+                                    },
+                                    "description": {
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "imageUrl": {
+                                      "nullable": true,
+                                      "type": "string",
+                                      "maxLength": 255
+                                    },
+                                    "discountPercentage": {
+                                      "type": "integer",
+                                      "minimum": -2147483648,
+                                      "maximum": 2147483647
+                                    },
+                                    "status": {
+                                      "type": "string",
+                                      "enum": ["upcoming", "active", "cancelled", "expired"]
+                                    },
+                                    "startDate": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    },
+                                    "endDate": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    },
+                                    "createdAt": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    },
+                                    "updatedAt": {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "name",
+                                    "description",
+                                    "imageUrl",
+                                    "discountPercentage",
+                                    "status",
+                                    "startDate",
+                                    "endDate",
+                                    "createdAt",
+                                    "updatedAt"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "description",
+                              "image",
+                              "priceInCents",
+                              "limitPerUser",
+                              "limitResetIntervalDays",
+                              "createdAt",
+                              "updatedAt"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "appliedPromo": {
+                            "nullable": true,
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                              },
+                              "name": {
+                                "type": "string",
+                                "maxLength": 255
+                              },
+                              "description": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "imageUrl": {
+                                "nullable": true,
+                                "type": "string",
+                                "maxLength": 255
+                              },
+                              "discountPercentage": {
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": ["upcoming", "active", "cancelled", "expired"]
+                              },
+                              "startDate": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "endDate": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "promoItems": {
+                                "nullable": true,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "integer",
+                                      "minimum": -2147483648,
+                                      "maximum": 2147483647
+                                    },
+                                    "promoId": {
+                                      "type": "integer",
+                                      "minimum": -2147483648,
+                                      "maximum": 2147483647
+                                    },
+                                    "productId": {
+                                      "type": "integer",
+                                      "minimum": -2147483648,
+                                      "maximum": 2147483647
+                                    },
+                                    "limitPerUser": {
+                                      "type": "integer",
+                                      "minimum": -2147483648,
+                                      "maximum": 2147483647
+                                    }
+                                  },
+                                  "required": ["id", "promoId", "productId", "limitPerUser"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "temporalStatus": {
+                                "type": "string",
+                                "enum": ["upcoming", "active", "expired"]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "description",
+                              "imageUrl",
+                              "discountPercentage",
+                              "status",
+                              "startDate",
+                              "endDate",
+                              "createdAt",
+                              "updatedAt"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "quantity": {
+                            "type": "integer",
+                            "exclusiveMinimum": true,
+                            "maximum": 9007199254740991
+                          },
+                          "subtotalInCents": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "discountInCents": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "totalInCents": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "issues": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "OUT_OF_STOCK",
+                                "PROMO_NOT_FOUND",
+                                "PROMO_NOT_APPLICABLE",
+                                "PROMO_CHANGE",
+                                "PROMO_REMOVED",
+                                "PROMO_USAGE_LIMIT_EXCEEDED",
+                                "PRODUCT_USAGE_LIMIT_EXCEEDED"
+                              ]
+                            }
+                          }
+                        },
+                        "required": ["product", "quantity", "subtotalInCents", "discountInCents", "totalInCents"],
+                        "additionalProperties": false
+                      }
+                    },
+                    "subtotalInCents": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "totalDiscountInCents": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "totalInCents": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "issues": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "OUT_OF_STOCK",
+                          "PROMO_NOT_FOUND",
+                          "PROMO_NOT_APPLICABLE",
+                          "PROMO_CHANGE",
+                          "PROMO_REMOVED",
+                          "PROMO_USAGE_LIMIT_EXCEEDED",
+                          "PRODUCT_USAGE_LIMIT_EXCEEDED"
+                        ]
+                      }
+                    }
+                  },
+                  "required": ["items", "subtotalInCents", "totalDiscountInCents", "totalInCents"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Bad Request",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Unauthorized",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Forbidden",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Conflict",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Internal Server Error",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/apply-promo": {
+      "post": {
+        "operationId": "applyPromo",
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Bad Request",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Unauthorized",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Forbidden",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Conflict",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Internal Server Error",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/checkout": {
+      "post": {
+        "operationId": "checkout",
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Bad Request",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Unauthorized",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Forbidden",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Conflict",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Internal Server Error",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/start-payment": {
+      "post": {
+        "operationId": "startPayment",
+        "responses": {
           "400": {
             "description": "Bad Request",
             "content": {

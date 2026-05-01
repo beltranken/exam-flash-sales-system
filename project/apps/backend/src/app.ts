@@ -1,7 +1,7 @@
 import 'dotenv/config'
 
 import cookie from '@fastify/cookie'
-import { authPlugin, checkoutPlugin, ordersPlugin, productsPlugin } from '@features'
+import { authPlugin, checkoutPlugin, ordersPlugin, productsPlugin, promosPlugin } from '@features'
 import {
   authSetupPlugin,
   cacheSetupPlugin,
@@ -18,7 +18,7 @@ import { corsSetupPlugin } from './plugins/cors-setup.js'
 import { errorHandlerPlugin } from './plugins/error-handler.js'
 
 const level = process.env.PINO_LOG_LEVEL as Level
-const isDev = process.env.NODE_ENV === 'development'
+const isDev = process.env.NODE_ENV !== 'production'
 const logger = createLogger({ level, isDev })
 
 export const createApp = async () => {
@@ -51,6 +51,7 @@ export const createApp = async () => {
   await fastify.register(authPlugin, { prefix: '/api/auth' })
   await fastify.register(productsPlugin, { prefix: '/api/products' })
   await fastify.register(ordersPlugin, { prefix: '/api/orders' })
+  await fastify.register(promosPlugin, { prefix: '/api/promos' })
   await fastify.register(checkoutPlugin, { prefix: '/api' })
 
   await fastify.ready()

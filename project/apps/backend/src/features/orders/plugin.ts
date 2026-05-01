@@ -2,6 +2,7 @@ import { orderSchema } from '@shared/db'
 import { errorResponses } from '@types'
 import { FastifyPluginAsync } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
+import createHttpError from 'http-errors'
 import { GetMyOrderByIdRoute, GetMyOrdersRoute, getMyOrderByIdRoute, getMyOrdersRoute } from './routes/index.js'
 
 export const ordersPlugin: FastifyPluginAsync = async (fastify) => {
@@ -20,6 +21,21 @@ export const ordersPlugin: FastifyPluginAsync = async (fastify) => {
       preHandler: fastify.authenticate,
     },
     getMyOrdersRoute(fastify),
+  )
+
+  typedFastify.get(
+    '/my/:orderId/status',
+    {
+      schema: {
+        operationId: 'getMyOrderStatus',
+        response: {
+          ...errorResponses,
+        },
+      },
+    },
+    () => {
+      throw new createHttpError.NotImplemented()
+    },
   )
 
   typedFastify.get<GetMyOrderByIdRoute>(

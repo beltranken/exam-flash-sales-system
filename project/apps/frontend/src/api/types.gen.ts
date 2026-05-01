@@ -237,6 +237,8 @@ export type GetProductsResponses = {
     description: string | null
     image: string | null
     priceInCents: number
+    limitPerUser: number
+    limitResetIntervalDays: number
     createdAt: Date
     updatedAt: Date
     productStock?: {
@@ -253,10 +255,24 @@ export type GetProductsResponses = {
         description: string | null
         image: string | null
         priceInCents: number
+        limitPerUser: number
+        limitResetIntervalDays: number
         createdAt: Date
         updatedAt: Date
       } | null
     } | null
+    activePromos?: Array<{
+      id: number
+      name: string
+      description: string | null
+      imageUrl: string | null
+      discountPercentage: number
+      status: 'upcoming' | 'active' | 'cancelled' | 'expired'
+      startDate: Date
+      endDate: Date
+      createdAt: Date
+      updatedAt: Date
+    }>
   }>
 }
 
@@ -306,6 +322,8 @@ export type GetProductByIdResponses = {
     description: string | null
     image: string | null
     priceInCents: number
+    limitPerUser: number
+    limitResetIntervalDays: number
     createdAt: Date
     updatedAt: Date
     productStock?: {
@@ -322,10 +340,24 @@ export type GetProductByIdResponses = {
         description: string | null
         image: string | null
         priceInCents: number
+        limitPerUser: number
+        limitResetIntervalDays: number
         createdAt: Date
         updatedAt: Date
       } | null
     } | null
+    activePromos?: Array<{
+      id: number
+      name: string
+      description: string | null
+      imageUrl: string | null
+      discountPercentage: number
+      status: 'upcoming' | 'active' | 'cancelled' | 'expired'
+      startDate: Date
+      endDate: Date
+      createdAt: Date
+      updatedAt: Date
+    }>
   }
 }
 
@@ -433,6 +465,8 @@ export type GetMyOrdersResponses = {
         description: string | null
         image: string | null
         priceInCents: number
+        limitPerUser: number
+        limitResetIntervalDays: number
         createdAt: Date
         updatedAt: Date
         productStock?: {
@@ -449,10 +483,24 @@ export type GetMyOrdersResponses = {
             description: string | null
             image: string | null
             priceInCents: number
+            limitPerUser: number
+            limitResetIntervalDays: number
             createdAt: Date
             updatedAt: Date
           } | null
         } | null
+        activePromos?: Array<{
+          id: number
+          name: string
+          description: string | null
+          imageUrl: string | null
+          discountPercentage: number
+          status: 'upcoming' | 'active' | 'cancelled' | 'expired'
+          startDate: Date
+          endDate: Date
+          createdAt: Date
+          updatedAt: Date
+        }>
       } | null
       appliedPromo?: {
         id: number
@@ -463,7 +511,6 @@ export type GetMyOrdersResponses = {
         status: 'upcoming' | 'active' | 'cancelled' | 'expired'
         startDate: Date
         endDate: Date
-        productId: number
         createdAt: Date
         updatedAt: Date
       } | null
@@ -534,6 +581,8 @@ export type GetMyOrderByIdResponses = {
         description: string | null
         image: string | null
         priceInCents: number
+        limitPerUser: number
+        limitResetIntervalDays: number
         createdAt: Date
         updatedAt: Date
         productStock?: {
@@ -550,10 +599,24 @@ export type GetMyOrderByIdResponses = {
             description: string | null
             image: string | null
             priceInCents: number
+            limitPerUser: number
+            limitResetIntervalDays: number
             createdAt: Date
             updatedAt: Date
           } | null
         } | null
+        activePromos?: Array<{
+          id: number
+          name: string
+          description: string | null
+          imageUrl: string | null
+          discountPercentage: number
+          status: 'upcoming' | 'active' | 'cancelled' | 'expired'
+          startDate: Date
+          endDate: Date
+          createdAt: Date
+          updatedAt: Date
+        }>
       } | null
       appliedPromo?: {
         id: number
@@ -564,7 +627,6 @@ export type GetMyOrderByIdResponses = {
         status: 'upcoming' | 'active' | 'cancelled' | 'expired'
         startDate: Date
         endDate: Date
-        productId: number
         createdAt: Date
         updatedAt: Date
       } | null

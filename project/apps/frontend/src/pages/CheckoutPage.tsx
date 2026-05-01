@@ -18,7 +18,7 @@ export default function CheckoutPage() {
   })
 
   return (
-    <div className="flex w-full gap-16 py-24">
+    <div className="flex w-full flex-col gap-16 py-24 md:flex-row">
       <div className="flex flex-1 flex-col gap-12">
         <div className="flex flex-col gap-8">
           <h1 className="text-4xl font-bold">Checkout</h1>
@@ -33,7 +33,7 @@ export default function CheckoutPage() {
         </CheckoutSection>
       </div>
 
-      <div className="w-100">
+      <div className="w-full md:w-100">
         <OrderSummary cartItems={products ?? []} />
       </div>
     </div>

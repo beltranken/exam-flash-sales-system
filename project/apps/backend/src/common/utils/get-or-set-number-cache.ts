@@ -6,6 +6,7 @@ export async function getOrSetNumberCache(
   fastify: FastifyInstance,
   cacheKey: string,
   loadValue: NumberLoader,
+  ttlSeconds?: number,
 ): Promise<number> {
   const cachedValue = await fastify.redis.get(cacheKey)
 
@@ -20,7 +21,12 @@ export async function getOrSetNumberCache(
   }
 
   const value = await loadValue()
-  await fastify.redis.set(cacheKey, String(value))
+
+  if (ttlSeconds) {
+    await fastify.redis.set(cacheKey, String(value), 'EX', ttlSeconds)
+  } else {
+    await fastify.redis.set(cacheKey, String(value))
+  }
 
   return value
 }

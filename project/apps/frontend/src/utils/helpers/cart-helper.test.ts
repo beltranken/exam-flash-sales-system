@@ -33,7 +33,22 @@ describe('cart utils', () => {
     it('stores a cart item in localStorage', () => {
       addToCart(12, 3)
 
-      expect(localStorage.getItem('cart')).toBe(JSON.stringify([{ productId: 12, quantity: 3 }]))
+      expect(localStorage.getItem('cart')).toBe(
+        JSON.stringify({
+          items: [{ productId: 12, quantity: 3 }],
+        }),
+      )
+    })
+
+    it('stores the applied promo id when provided', () => {
+      addToCart(12, 3, 7)
+
+      expect(localStorage.getItem('cart')).toBe(
+        JSON.stringify({
+          appliedPromoId: 7,
+          items: [{ productId: 12, quantity: 3 }],
+        }),
+      )
     })
   })
 
@@ -45,16 +60,22 @@ describe('cart utils', () => {
     it('returns the parsed cart when localStorage contains valid cart data', () => {
       localStorage.setItem(
         'cart',
-        JSON.stringify([
-          { productId: 1, quantity: 2 },
-          { productId: 2, quantity: 1 },
-        ]),
+        JSON.stringify({
+          appliedPromoId: 10,
+          items: [
+            { productId: 1, quantity: 2 },
+            { productId: 2, quantity: 1 },
+          ],
+        }),
       )
 
-      expect(getCart()).toEqual([
-        { productId: 1, quantity: 2 },
-        { productId: 2, quantity: 1 },
-      ])
+      expect(getCart()).toEqual({
+        appliedPromoId: 10,
+        items: [
+          { productId: 1, quantity: 2 },
+          { productId: 2, quantity: 1 },
+        ],
+      })
     })
 
     it('returns an empty array and logs an error when stored cart JSON is invalid', () => {
@@ -67,7 +88,7 @@ describe('cart utils', () => {
 
     it('returns an empty array and logs an error when stored cart data fails schema validation', () => {
       const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
-      localStorage.setItem('cart', JSON.stringify([{ productId: 1, quantity: 0 }]))
+      localStorage.setItem('cart', JSON.stringify({ items: [{ productId: 1, quantity: 0 }] }))
 
       expect(getCart()).toEqual([])
       expect(consoleError).toHaveBeenCalled()

@@ -3,6 +3,8 @@ import { FastifyPluginAsync, FastifyRequest } from 'fastify'
 import fp from 'fastify-plugin'
 import createHttpError from 'http-errors'
 
+export const authSetupPluginName = 'auth-setup'
+
 export function handleJwtVerifyError(err: unknown) {
   const isError = err instanceof Error
   if (!isError) {
@@ -39,5 +41,5 @@ const authSetupPluginImpl: FastifyPluginAsync = async (fastify) => {
 }
 
 export const authSetupPlugin = fp(authSetupPluginImpl, {
-  name: 'auth-setup',
+  name: authSetupPluginName,
 })

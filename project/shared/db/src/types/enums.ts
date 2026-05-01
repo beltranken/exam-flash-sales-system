@@ -24,6 +24,12 @@ export enum StockTransactionType {
   TRANSFER_OUT = "TRANSFER_OUT", // To MAIN from MOVING */
 }
 
+export enum TemporalStatus {
+  UPCOMING = 'upcoming',
+  ACTIVE = 'active',
+  EXPIRED = 'expired',
+}
+
 export enum OrderStatus {
   PENDING = 'pending',
   SUBMITTED = 'submitted',

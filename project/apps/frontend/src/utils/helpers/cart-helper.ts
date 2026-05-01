@@ -1,7 +1,13 @@
-import { cartSchema } from '@/schemas/cartSchema'
+import { cartRequest } from '@/schemas/cartSchema'
 
-export function addToCart(productId: number, quantity: number) {
-  localStorage.setItem('cart', JSON.stringify([{ productId, quantity }]))
+export function addToCart(productId: number, quantity: number, promoId?: number) {
+  localStorage.setItem(
+    'cart',
+    JSON.stringify({
+      appliedPromoId: promoId,
+      items: [{ productId, quantity }],
+    }),
+  )
 }
 
 export function getCart() {
@@ -13,7 +19,7 @@ export function getCart() {
 
   try {
     const rawCart = JSON.parse(rawCartStr)
-    const cart = cartSchema.parse(rawCart)
+    const cart = cartRequest.parse(rawCart)
     return cart
   } catch (error) {
     console.error('Failed to parse cart from localStorage:', error)

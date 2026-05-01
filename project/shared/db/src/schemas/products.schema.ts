@@ -7,6 +7,8 @@ export const productsTable = pgTable('products', {
   description: text('description'),
   image: varchar('image', { length: 500 }),
   priceInCents: integer('price_in_cents').notNull(),
+  limitPerUser: integer('limit_per_user').notNull().default(1),
+  limitResetIntervalDays: integer('limit_reset_interval_days').notNull().default(7),
   ...timestamps,
 })
 

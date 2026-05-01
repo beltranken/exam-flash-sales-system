@@ -4,7 +4,7 @@ import { timestamps } from './common.js'
 import { promoStatusEnum } from './enums.js'
 import { productsTable } from './products.schema.js'
 
-// simple promo table for flash sales, single product and percentage discount for simplicity
+// simple promo table for flash sales
 export const promosTable = pgTable('promos', {
   id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
   name: varchar('name', { length: 255 }).notNull(),
@@ -14,9 +14,6 @@ export const promosTable = pgTable('promos', {
   status: promoStatusEnum('status').notNull().default(PromoStatus.ACTIVE),
   startDate: timestamp('start_date').notNull(),
   endDate: timestamp('end_date').notNull(),
-  productId: integer('product_id')
-    .notNull()
-    .references(() => productsTable.id, { onDelete: 'restrict' }),
   ...timestamps,
 })
 
@@ -28,4 +25,5 @@ export const promoItemsTable = pgTable('promo_items', {
   productId: integer('product_id')
     .notNull()
     .references(() => productsTable.id, { onDelete: 'restrict' }),
+  limitPerUser: integer('limit_per_user').notNull().default(1),
 })

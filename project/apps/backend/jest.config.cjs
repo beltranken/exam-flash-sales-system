@@ -10,9 +10,11 @@ module.exports = {
     '^(\\.{1,2}/.*)\\.js$': '$1',
     '^@shared/db$': '<rootDir>/../../shared/db/src/index.ts',
     '^@features$': '<rootDir>/src/features/index.ts',
-    '^@types$': '<rootDir>/src/common/types/index.ts',
+    '^@schemas$': '<rootDir>/src/common/schemas/index.ts',
     '^@utils$': '<rootDir>/src/common/utils/index.ts',
     '^@plugins$': '<rootDir>/src/plugins/index.ts',
+    '^@types$': '<rootDir>/src/common/schemas/index.ts',
+    '^@features/(.*)$': '<rootDir>/src/features/$1',
   },
   transform: {
     '^.+\\.ts$': [

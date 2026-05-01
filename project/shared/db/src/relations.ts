@@ -1,7 +1,8 @@
 import { defineRelations } from 'drizzle-orm'
 import { orderItemsTable, ordersTable } from './schemas/orders.schema.js'
+import { paymentsTable } from './schemas/payments.schema.js'
 import { productsTable, productStocksTable } from './schemas/products.schema.js'
-import { promosTable } from './schemas/promo.schema.js'
+import { promoItemsTable, promosTable } from './schemas/promo.schema.js'
 import { stockEntriesTable, stockTransactionsTable } from './schemas/stock.schema.js'
 import { usersTable } from './schemas/users.schema.js'
 
@@ -10,10 +11,12 @@ const relationSchema = {
   stockEntriesTable,
   productsTable,
   productStocksTable,
+  promoItemsTable,
   promosTable,
   usersTable,
   ordersTable,
   orderItemsTable,
+  paymentsTable,
 }
 
 export const relations = defineRelations(relationSchema, (r) => ({
@@ -42,9 +45,13 @@ export const relations = defineRelations(relationSchema, (r) => ({
       from: r.productsTable.id,
       to: r.productStocksTable.productId,
     }),
-    promos: r.many.promosTable({
+    promoItems: r.many.promoItemsTable({
       from: r.productsTable.id,
-      to: r.promosTable.productId,
+      to: r.promoItemsTable.productId,
+    }),
+    activePromos: r.many.promosTable({
+      from: r.productsTable.id.through(r.promoItemsTable.productId),
+      to: r.promosTable.id.through(r.promoItemsTable.promoId),
     }),
   },
   productStocksTable: {
@@ -54,16 +61,39 @@ export const relations = defineRelations(relationSchema, (r) => ({
     }),
   },
   promosTable: {
-    promoProduct: r.one.productsTable({
-      from: r.promosTable.productId,
+    promoItems: r.many.promoItemsTable({
+      from: r.promosTable.id,
+      to: r.promoItemsTable.promoId,
+    }),
+  },
+  promoItemsTable: {
+    promo: r.one.promosTable({
+      from: r.promoItemsTable.promoId,
+      to: r.promosTable.id,
+    }),
+    product: r.one.productsTable({
+      from: r.promoItemsTable.productId,
       to: r.productsTable.id,
     }),
   },
-  usersTable: {},
+  usersTable: {
+    orders: r.many.ordersTable({
+      from: r.usersTable.id,
+      to: r.ordersTable.userId,
+    }),
+  },
   ordersTable: {
     orderItems: r.many.orderItemsTable({
       from: r.ordersTable.id,
       to: r.orderItemsTable.orderId,
+    }),
+    user: r.one.usersTable({
+      from: r.ordersTable.userId,
+      to: r.usersTable.id,
+    }),
+    payment: r.one.paymentsTable({
+      from: r.ordersTable.id,
+      to: r.paymentsTable.orderId,
     }),
   },
   orderItemsTable: {
@@ -78,6 +108,12 @@ export const relations = defineRelations(relationSchema, (r) => ({
     appliedPromo: r.one.promosTable({
       from: r.orderItemsTable.appliedPromoId,
       to: r.promosTable.id,
+    }),
+  },
+  paymentsTable: {
+    order: r.one.ordersTable({
+      from: r.paymentsTable.orderId,
+      to: r.ordersTable.id,
     }),
   },
 }))

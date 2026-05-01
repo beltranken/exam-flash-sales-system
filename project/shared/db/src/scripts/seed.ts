@@ -1,5 +1,6 @@
 import 'dotenv/config'
 
+import { faker } from '@faker-js/faker'
 import {
   StockTransactionType,
   Warehouse,
@@ -13,11 +14,13 @@ import {
   stockTransactionsTable,
 } from '../index.js'
 
-const description = `
+const description1 = `
 Built for everyday movement, the AeroStride Runner pairs a lightweight knit upper with a cushioned sole that keeps each step comfortable from morning errands to evening walks. Its clean profile makes it easy to style with activewear, denim, or casual weekend outfits.
 
 The breathable construction helps keep your feet cool, while the flexible outsole gives steady traction on city streets, gym floors, and light outdoor paths. Designed for comfort without looking overly sporty, it is a reliable go-to shoe for busy days.
 `
+const description2 = faker.lorem.paragraphs(2)
+const description3 = faker.lorem.paragraphs(3)
 
 const DEFAULT_SEED_QUANTITY = 10000
 
@@ -46,12 +49,15 @@ async function seed() {
       await tx.delete(productStocksTable)
       await tx.delete(productsTable)
 
+      const priceInCents = faker.number.int({ min: 1000, max: 30000 })
+      const description = faker.helpers.arrayElement([description1, description2, description3])
+
       const [product] = await tx
         .insert(productsTable)
         .values({
           name: 'AeroStride Runner',
           description,
-          priceInCents: 19900,
+          priceInCents,
         })
         .returning({
           id: productsTable.id,

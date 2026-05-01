@@ -1,6 +1,7 @@
 import { createSelectSchema } from 'drizzle-orm/zod'
 import z from 'zod/v4'
 import { productsTable, productStocksTable } from '../schemas/products.schema.js'
+import { basePromoSchema } from './promos.type.js'
 
 export const baseProductSchema = createSelectSchema(productsTable)
 export const baseProductStockSchema = createSelectSchema(productStocksTable)
@@ -11,6 +12,14 @@ export const productStockSchema = baseProductStockSchema.extend({
 export type ProductStock = z.infer<typeof productStockSchema>
 
 export const productSchema = baseProductSchema.extend({
-  productStock: productStockSchema.optional().nullable(),
+  availableQuantity: productStockSchema.shape.availableQuantity.optional(),
+  activePromos: basePromoSchema.array().optional(),
 })
 export type Product = z.infer<typeof productSchema>
+
+export const paginatedProductsSchema = z.object({
+  products: productSchema.array(),
+  total: z.number().int().nonnegative(),
+  hasMore: z.boolean(),
+})
+export type PaginatedProducts = z.infer<typeof paginatedProductsSchema>
