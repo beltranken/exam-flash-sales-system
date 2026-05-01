@@ -1,4 +1,4 @@
-import { createLogger, envStepupPlugin } from './env-setup.js'
+import { createLogger, envSetupPlugin } from './env-setup.js'
 
 describe('createLogger', () => {
   it('uses debug as default log level', () => {
@@ -14,11 +14,11 @@ describe('createLogger', () => {
   })
 })
 
-describe('envStepupPlugin', () => {
+describe('envSetupPlugin', () => {
   it('registers @fastify/env with schema and dotenv support', async () => {
     const register = jest.fn().mockResolvedValue(undefined)
 
-    await envStepupPlugin({ register } as any, {} as any)
+    await envSetupPlugin({ register } as any, {} as any)
 
     expect(register).toHaveBeenCalledTimes(1)
 
@@ -30,5 +30,10 @@ describe('envStepupPlugin', () => {
       expect.arrayContaining(['PORT', 'DATABASE_URL', 'CACHE_URL', 'RABBITMQ_URL', 'JWT_ACCESS_SECRET']),
     )
     expect(options.schema.properties.COOKIE_SECRET.default).toBe('secret')
+    expect(options.schema.properties.PAYMENT_METHODS).toMatchObject({
+      type: 'string',
+      separator: ',',
+      default: 'Skip Payment,Stripe',
+    })
   })
 })

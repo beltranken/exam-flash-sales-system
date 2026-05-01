@@ -1,13 +1,13 @@
 import 'dotenv/config'
 
 import cookie from '@fastify/cookie'
-import { authPlugin, ordersPlugin, productsPlugin } from '@features'
+import { authPlugin, checkoutPlugin, ordersPlugin, productsPlugin } from '@features'
 import {
   authSetupPlugin,
   cacheSetupPlugin,
   createLogger,
   dbSetupPlugin,
-  envStepupPlugin,
+  envSetupPlugin,
   Level,
   msgBrokerPlugin,
   s3Plugin,
@@ -26,7 +26,7 @@ export const createApp = async () => {
     loggerInstance: logger,
   })
 
-  await fastify.register(envStepupPlugin)
+  await fastify.register(envSetupPlugin)
 
   // Error handler
   await fastify.register(errorHandlerPlugin)
@@ -51,6 +51,7 @@ export const createApp = async () => {
   await fastify.register(authPlugin, { prefix: '/api/auth' })
   await fastify.register(productsPlugin, { prefix: '/api/products' })
   await fastify.register(ordersPlugin, { prefix: '/api/orders' })
+  await fastify.register(checkoutPlugin, { prefix: '/api' })
 
   await fastify.ready()
 

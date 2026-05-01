@@ -1,24 +1,40 @@
 import './index.css'
 
-import { client } from '@/api/client.gen'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { createTheme, ThemeProvider } from 'flowbite-react'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { ThemeInit } from '../.flowbite-react/init'
+import { setupApiClient } from './libs/api/setup-api-client'
+import { AuthProvider } from './libs/auth'
 import { routeTree } from './routeTree.gen'
 
 const queryClient = new QueryClient()
 
-// Set up the API client
-client.setConfig({
-  baseURL: import.meta.env.VITE_BACK_API_URL,
-  withCredentials: true,
-})
+setupApiClient()
 
 const customTheme = createTheme({
   button: {
     base: 'relative flex items-center justify-center rounded-none text-center font-medium focus:outline-none focus:ring-4',
+  },
+  textInput: {
+    field: {
+      input: {
+        base: 'block w-full border-0 border-b border-gray-300 bg-transparent focus:border-gray-900 focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50',
+        colors: {
+          gray: 'text-gray-900 placeholder-gray-500',
+          failure: 'bg-transparent',
+        },
+        withAddon: {
+          on: 'rounded-none',
+          off: 'rounded-none',
+        },
+      },
+      rightIcon: {
+        svg: 'h-10 w-10 text-green-600',
+      },
+    },
   },
 })
 
@@ -44,9 +60,12 @@ if (!rootElement.innerHTML) {
 
   root.render(
     <StrictMode>
+      <ThemeInit />
       <ThemeProvider theme={customTheme}>
         <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
+          <AuthProvider>
+            <RouterProvider router={router} />
+          </AuthProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </StrictMode>,

@@ -21,7 +21,7 @@ export default function PromoCard() {
 
         <PromoCounter endTime={dayjs().add(10, 'hours').toDate()} />
 
-        <Button type="button" size="xl" className="mt-10 bg-white">
+        <Button type="button" size="xl" className="mt-10">
           Shop Now
         </Button>
       </div>

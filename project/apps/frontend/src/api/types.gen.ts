@@ -573,3 +573,47 @@ export type GetMyOrderByIdResponses = {
 }
 
 export type GetMyOrderByIdResponse = GetMyOrderByIdResponses[keyof GetMyOrderByIdResponses]
+
+export type GetPaymentMethodsData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/api/payment-methods'
+}
+
+export type GetPaymentMethodsErrors = {
+  /**
+   * Bad Request
+   */
+  400: ErrorResponse
+  /**
+   * Unauthorized
+   */
+  401: ErrorResponse
+  /**
+   * Forbidden
+   */
+  403: ErrorResponse
+  /**
+   * Conflict
+   */
+  409: ErrorResponse
+  /**
+   * Internal Server Error
+   */
+  500: ErrorResponse
+}
+
+export type GetPaymentMethodsError = GetPaymentMethodsErrors[keyof GetPaymentMethodsErrors]
+
+export type GetPaymentMethodsResponses = {
+  /**
+   * Default Response
+   */
+  200: Array<{
+    name: string
+    description?: string
+  }>
+}
+
+export type GetPaymentMethodsResponse = GetPaymentMethodsResponses[keyof GetPaymentMethodsResponses]

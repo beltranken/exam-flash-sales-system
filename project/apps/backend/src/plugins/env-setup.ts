@@ -75,12 +75,9 @@ const schema: FastifyEnvOptions['schema'] = {
       default: true,
     },
     PAYMENT_METHODS: {
-      type: 'array',
-      items: {
-        type: 'string',
-        separator: ',',
-      },
-      default: ['Skip Payment', 'Stripe'],
+      type: 'string',
+      separator: ',',
+      default: 'Skip Payment,Stripe',
     },
   },
 }
@@ -92,6 +89,6 @@ const envSetupPluginImpl: FastifyPluginAsync = async (fastify) => {
   })
 }
 
-export const envStepupPlugin = fp(envSetupPluginImpl, {
+export const envSetupPlugin = fp(envSetupPluginImpl, {
   name: 'env-setup',
 })

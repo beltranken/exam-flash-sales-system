@@ -15,6 +15,9 @@ import type {
   GetMyOrdersData,
   GetMyOrdersErrors,
   GetMyOrdersResponses,
+  GetPaymentMethodsData,
+  GetPaymentMethodsErrors,
+  GetPaymentMethodsResponses,
   GetProductByIdData,
   GetProductByIdErrors,
   GetProductByIdResponses,
@@ -136,5 +139,14 @@ export const getMyOrderById = <ThrowOnError extends boolean = false>(
     responseTransformer: getMyOrderByIdResponseTransformer,
     responseType: 'json',
     url: '/api/orders/my/{orderId}',
+    ...options,
+  })
+
+export const getPaymentMethods = <ThrowOnError extends boolean = false>(
+  options?: Options<GetPaymentMethodsData, ThrowOnError>,
+) =>
+  (options?.client ?? client).get<GetPaymentMethodsResponses, GetPaymentMethodsErrors, ThrowOnError>({
+    responseType: 'json',
+    url: '/api/payment-methods',
     ...options,
   })
