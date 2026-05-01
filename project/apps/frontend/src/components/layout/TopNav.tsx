@@ -1,17 +1,18 @@
 import { mainCategories } from '@/constants/categories'
+import BurgerIcon from '@/icons/BurgerIcon'
 import CartIcon from '@/icons/CartIcon'
 import CloseIcon from '@/icons/CloseIcon'
 import HeartIcon from '@/icons/HeartIcon'
+import LogoIcon from '@/icons/LogoIcon'
 import UserIcon from '@/icons/UserIcon'
-import { getRouteApi, Link } from '@tanstack/react-router'
+import { Link, useParams } from '@tanstack/react-router'
 import clsx from 'clsx'
 import { useState } from 'react'
 
 const routeKey = '/$mainCategory/$subCategory'
-const routeApi = getRouteApi(routeKey)
 
 export default function TopNav() {
-  const { mainCategory } = routeApi.useParams()
+  const { mainCategory } = useParams({ strict: false })
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -20,11 +21,11 @@ export default function TopNav() {
   }
 
   return (
-    <nav className="bg-neutral-primary border-border inset-s-0 top-0 z-20 flex w-full flex-col items-center border-b px-5 py-5">
-      <div className="flex w-full max-w-5xl flex-wrap items-center justify-between py-4">
+    <nav className="bg-neutral-primary border-border inset-s-0 top-0 z-20 flex w-full flex-col items-center border-b bg-white px-5 py-5">
+      <div className="flex w-full max-w-7xl flex-wrap items-center justify-between py-4">
         <div className="flex items-center space-x-3 rtl:space-x-reverse">
-          <img src="https://flowbite.com/docs/images/logo.svg" className="h-7" alt="Flowbite Logo" />
-          <span className="text-heading self-center text-xl font-semibold whitespace-nowrap">Flowbite</span>
+          <LogoIcon className="h-7 w-7" />
+          <span className="text-heading self-center text-xl font-semibold whitespace-nowrap">EX Shop</span>
         </div>
 
         <div
@@ -90,17 +91,7 @@ export default function TopNav() {
             onClick={handleToggleMenu}
           >
             <span className="sr-only">Open main menu</span>
-            <svg
-              className="h-6 w-6"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14" />
-            </svg>
+            <BurgerIcon />
           </button>
         </div>
       </div>

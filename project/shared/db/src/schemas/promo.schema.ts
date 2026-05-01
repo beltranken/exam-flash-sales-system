@@ -17,6 +17,15 @@ export const promosTable = pgTable('promos', {
   productId: integer('product_id')
     .notNull()
     .references(() => productsTable.id, { onDelete: 'restrict' }),
-  limitQuantityPerUser: integer('limit_quantity_per_user').notNull().default(1),
   ...timestamps,
+})
+
+export const promoItemsTable = pgTable('promo_items', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  promoId: integer('promo_id')
+    .notNull()
+    .references(() => promosTable.id, { onDelete: 'cascade' }),
+  productId: integer('product_id')
+    .notNull()
+    .references(() => productsTable.id, { onDelete: 'restrict' }),
 })

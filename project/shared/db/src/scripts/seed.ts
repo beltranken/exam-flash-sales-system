@@ -6,11 +6,18 @@ import {
   createDbClient,
   ordersTable,
   paymentsTable,
+  productStocksTable,
   productsTable,
   promosTable,
   stockEntriesTable,
   stockTransactionsTable,
 } from '../index.js'
+
+const description = `
+Built for everyday movement, the AeroStride Runner pairs a lightweight knit upper with a cushioned sole that keeps each step comfortable from morning errands to evening walks. Its clean profile makes it easy to style with activewear, denim, or casual weekend outfits.
+
+The breathable construction helps keep your feet cool, while the flexible outsole gives steady traction on city streets, gym floors, and light outdoor paths. Designed for comfort without looking overly sporty, it is a reliable go-to shoe for busy days.
+`
 
 const DEFAULT_SEED_QUANTITY = 10000
 
@@ -36,13 +43,14 @@ async function seed() {
       await tx.delete(paymentsTable)
       await tx.delete(ordersTable)
       await tx.delete(promosTable)
+      await tx.delete(productStocksTable)
       await tx.delete(productsTable)
 
       const [product] = await tx
         .insert(productsTable)
         .values({
-          name: 'Flash Sale Product',
-          description: 'Sample seeded product for local development',
+          name: 'AeroStride Runner',
+          description,
           priceInCents: 19900,
         })
         .returning({

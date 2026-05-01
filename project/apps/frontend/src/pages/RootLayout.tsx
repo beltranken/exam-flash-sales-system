@@ -14,7 +14,7 @@ export default function RootLayout() {
         <TopNav />
 
         <div className="flex w-full flex-1 flex-col items-center px-5">
-          <div className="w-full max-w-5xl">
+          <div className="w-full max-w-7xl">
             <Outlet />
           </div>
         </div>
@@ -22,7 +22,7 @@ export default function RootLayout() {
 
       {login && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">Login Modal</div>}
 
-      <TanStackRouterDevtools position="bottom-right" />
+      <TanStackRouterDevtools position="bottom-left" />
       <ReactQueryDevtools initialIsOpen={false} />
     </>
   )

@@ -1,13 +1,17 @@
-export default function CloseIcon() {
+import type { SVGProps } from 'react'
+import { twMerge } from 'tailwind-merge'
+
+export default function CloseIcon({ className, ...props }: Readonly<SVGProps<SVGSVGElement>>) {
   return (
     <svg
-      className="h-6 w-6"
+      className={twMerge('h-6 w-6', className)}
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
       fill="none"
       viewBox="0 0 24 24"
+      {...props}
     >
       <path
         stroke="currentColor"

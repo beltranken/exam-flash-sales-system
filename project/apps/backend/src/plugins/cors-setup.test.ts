@@ -41,6 +41,17 @@ describe('corsSetupPlugin', () => {
     expect(result).toEqual({ err: null, allowed: true })
   })
 
+  it('allows loopback ip origin', async () => {
+    const register = jest.fn().mockResolvedValue(undefined)
+
+    await corsSetupPlugin(createFastifyMock(register), {})
+
+    const [, options] = register.mock.calls[0]
+    const result = await runOrigin('http://127.0.0.1:5173', options.origin)
+
+    expect(result).toEqual({ err: null, allowed: true })
+  })
+
   it('rejects non-localhost origin', async () => {
     const register = jest.fn().mockResolvedValue(undefined)
 

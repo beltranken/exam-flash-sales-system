@@ -29,6 +29,7 @@
       "@/constants/*": ["./src/libs/constants/*"],
       "@/constants": ["./src/libs/constants/index"],
       "@/libs/*": ["./src/libs/*"],
+      "@/utils/*": ["./src/utils/*"],
       "@/icons/*": ["./src/components/icons/*"],
       "@/features/*": ["./src/components/features/*"],
       "@/components/*": ["./src/components/*"],

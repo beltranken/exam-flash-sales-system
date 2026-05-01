@@ -26,7 +26,7 @@ const s3PluginImpl = async (fastify: FastifyInstance) => {
   }
 
   fastify.decorate('s3', {
-    signUrl: async (key: string) => {
+    signUrl: async (key: string): Promise<string | null> => {
       if (s3) {
         return await getSignedUrl(
           s3,
@@ -38,8 +38,7 @@ const s3PluginImpl = async (fastify: FastifyInstance) => {
         )
       }
 
-      // Mock URL for development/testing when S3 is not configured
-      return 'https://fastly.picsum.photos/id/21/3008/2008.jpg?hmac=T8DSVNvP-QldCew7WD4jj_S3mWwxZPqdF0CNPksSko4'
+      return null
     },
   })
 }

@@ -51,9 +51,7 @@
                     "maxLength": 255
                   }
                 },
-                "required": [
-                  "email"
-                ]
+                "required": ["email"]
               }
             }
           }
@@ -72,9 +70,7 @@
                       "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
                     }
                   },
-                  "required": [
-                    "challengeId"
-                  ],
+                  "required": ["challengeId"],
                   "additionalProperties": false
                 }
               }
@@ -179,10 +175,7 @@
                     "maxLength": 6
                   }
                 },
-                "required": [
-                  "challengeId",
-                  "otp"
-                ]
+                "required": ["challengeId", "otp"]
               }
             }
           }
@@ -208,11 +201,7 @@
                       "maxLength": 255
                     }
                   },
-                  "required": [
-                    "token",
-                    "id",
-                    "email"
-                  ],
+                  "required": ["token", "id", "email"],
                   "additionalProperties": false
                 }
               }
@@ -412,11 +401,7 @@
                       "maxLength": 255
                     }
                   },
-                  "required": [
-                    "token",
-                    "id",
-                    "email"
-                  ],
+                  "required": ["token", "id", "email"],
                   "additionalProperties": false
                 }
               }
@@ -526,6 +511,11 @@
                         "nullable": true,
                         "type": "string"
                       },
+                      "image": {
+                        "nullable": true,
+                        "type": "string",
+                        "maxLength": 500
+                      },
                       "priceInCents": {
                         "type": "integer",
                         "minimum": -2147483648,
@@ -592,6 +582,11 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "image": {
+                                "nullable": true,
+                                "type": "string",
+                                "maxLength": 500
+                              },
                               "priceInCents": {
                                 "type": "integer",
                                 "minimum": -2147483648,
@@ -610,6 +605,7 @@
                               "id",
                               "name",
                               "description",
+                              "image",
                               "priceInCents",
                               "createdAt",
                               "updatedAt"
@@ -629,14 +625,7 @@
                         "additionalProperties": false
                       }
                     },
-                    "required": [
-                      "id",
-                      "name",
-                      "description",
-                      "priceInCents",
-                      "createdAt",
-                      "updatedAt"
-                    ],
+                    "required": ["id", "name", "description", "image", "priceInCents", "createdAt", "updatedAt"],
                     "additionalProperties": false
                   }
                 }
@@ -757,6 +746,11 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "image": {
+                      "nullable": true,
+                      "type": "string",
+                      "maxLength": 500
+                    },
                     "priceInCents": {
                       "type": "integer",
                       "minimum": -2147483648,
@@ -823,6 +817,11 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "image": {
+                              "nullable": true,
+                              "type": "string",
+                              "maxLength": 500
+                            },
                             "priceInCents": {
                               "type": "integer",
                               "minimum": -2147483648,
@@ -837,14 +836,7 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "id",
-                            "name",
-                            "description",
-                            "priceInCents",
-                            "createdAt",
-                            "updatedAt"
-                          ],
+                          "required": ["id", "name", "description", "image", "priceInCents", "createdAt", "updatedAt"],
                           "additionalProperties": false
                         }
                       },
@@ -860,14 +852,7 @@
                       "additionalProperties": false
                     }
                   },
-                  "required": [
-                    "id",
-                    "name",
-                    "description",
-                    "priceInCents",
-                    "createdAt",
-                    "updatedAt"
-                  ],
+                  "required": ["id", "name", "description", "image", "priceInCents", "createdAt", "updatedAt"],
                   "additionalProperties": false
                 }
               }
@@ -1082,11 +1067,7 @@
                       },
                       "status": {
                         "type": "string",
-                        "enum": [
-                          "pending",
-                          "submitted",
-                          "cancelled"
-                        ]
+                        "enum": ["pending", "submitted", "cancelled"]
                       },
                       "note": {
                         "nullable": true,
@@ -1167,6 +1148,11 @@
                                   "nullable": true,
                                   "type": "string"
                                 },
+                                "image": {
+                                  "nullable": true,
+                                  "type": "string",
+                                  "maxLength": 500
+                                },
                                 "priceInCents": {
                                   "type": "integer",
                                   "minimum": -2147483648,
@@ -1233,6 +1219,11 @@
                                           "nullable": true,
                                           "type": "string"
                                         },
+                                        "image": {
+                                          "nullable": true,
+                                          "type": "string",
+                                          "maxLength": 500
+                                        },
                                         "priceInCents": {
                                           "type": "integer",
                                           "minimum": -2147483648,
@@ -1251,6 +1242,7 @@
                                         "id",
                                         "name",
                                         "description",
+                                        "image",
                                         "priceInCents",
                                         "createdAt",
                                         "updatedAt"
@@ -1274,6 +1266,7 @@
                                 "id",
                                 "name",
                                 "description",
+                                "image",
                                 "priceInCents",
                                 "createdAt",
                                 "updatedAt"
@@ -1309,12 +1302,7 @@
                                 },
                                 "status": {
                                   "type": "string",
-                                  "enum": [
-                                    "upcoming",
-                                    "active",
-                                    "cancelled",
-                                    "expired"
-                                  ]
+                                  "enum": ["upcoming", "active", "cancelled", "expired"]
                                 },
                                 "startDate": {
                                   "type": "string",
@@ -1325,11 +1313,6 @@
                                   "format": "date-time"
                                 },
                                 "productId": {
-                                  "type": "integer",
-                                  "minimum": -2147483648,
-                                  "maximum": 2147483647
-                                },
-                                "limitQuantityPerUser": {
                                   "type": "integer",
                                   "minimum": -2147483648,
                                   "maximum": 2147483647
@@ -1353,7 +1336,6 @@
                                 "startDate",
                                 "endDate",
                                 "productId",
-                                "limitQuantityPerUser",
                                 "createdAt",
                                 "updatedAt"
                               ],
@@ -1375,14 +1357,7 @@
                         }
                       }
                     },
-                    "required": [
-                      "id",
-                      "userId",
-                      "status",
-                      "note",
-                      "createdAt",
-                      "updatedAt"
-                    ],
+                    "required": ["id", "userId", "status", "note", "createdAt", "updatedAt"],
                     "additionalProperties": false
                   }
                 }
@@ -1502,11 +1477,7 @@
                     },
                     "status": {
                       "type": "string",
-                      "enum": [
-                        "pending",
-                        "submitted",
-                        "cancelled"
-                      ]
+                      "enum": ["pending", "submitted", "cancelled"]
                     },
                     "note": {
                       "nullable": true,
@@ -1587,6 +1558,11 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "image": {
+                                "nullable": true,
+                                "type": "string",
+                                "maxLength": 500
+                              },
                               "priceInCents": {
                                 "type": "integer",
                                 "minimum": -2147483648,
@@ -1653,6 +1629,11 @@
                                         "nullable": true,
                                         "type": "string"
                                       },
+                                      "image": {
+                                        "nullable": true,
+                                        "type": "string",
+                                        "maxLength": 500
+                                      },
                                       "priceInCents": {
                                         "type": "integer",
                                         "minimum": -2147483648,
@@ -1671,6 +1652,7 @@
                                       "id",
                                       "name",
                                       "description",
+                                      "image",
                                       "priceInCents",
                                       "createdAt",
                                       "updatedAt"
@@ -1694,6 +1676,7 @@
                               "id",
                               "name",
                               "description",
+                              "image",
                               "priceInCents",
                               "createdAt",
                               "updatedAt"
@@ -1729,12 +1712,7 @@
                               },
                               "status": {
                                 "type": "string",
-                                "enum": [
-                                  "upcoming",
-                                  "active",
-                                  "cancelled",
-                                  "expired"
-                                ]
+                                "enum": ["upcoming", "active", "cancelled", "expired"]
                               },
                               "startDate": {
                                 "type": "string",
@@ -1745,11 +1723,6 @@
                                 "format": "date-time"
                               },
                               "productId": {
-                                "type": "integer",
-                                "minimum": -2147483648,
-                                "maximum": 2147483647
-                              },
-                              "limitQuantityPerUser": {
                                 "type": "integer",
                                 "minimum": -2147483648,
                                 "maximum": 2147483647
@@ -1773,7 +1746,6 @@
                               "startDate",
                               "endDate",
                               "productId",
-                              "limitQuantityPerUser",
                               "createdAt",
                               "updatedAt"
                             ],
@@ -1795,14 +1767,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "id",
-                    "userId",
-                    "status",
-                    "note",
-                    "createdAt",
-                    "updatedAt"
-                  ],
+                  "required": ["id", "userId", "status", "note", "createdAt", "updatedAt"],
                   "additionalProperties": false
                 }
               }

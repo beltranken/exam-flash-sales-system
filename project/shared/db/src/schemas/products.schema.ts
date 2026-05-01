@@ -5,6 +5,7 @@ export const productsTable = pgTable('products', {
   id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
+  image: varchar('image', { length: 500 }),
   priceInCents: integer('price_in_cents').notNull(),
   ...timestamps,
 })

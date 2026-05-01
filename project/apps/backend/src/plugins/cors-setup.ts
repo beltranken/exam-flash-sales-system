@@ -1,7 +1,10 @@
 import cors from '@fastify/cors'
 import { FastifyPluginAsync } from 'fastify'
+import fp from 'fastify-plugin'
 
-export const corsSetupPlugin: FastifyPluginAsync = async (fastify) => {
+const allowedLocalhostNames = new Set(['localhost', '127.0.0.1', '[::1]'])
+
+const corsSetupPluginImpl: FastifyPluginAsync = async (fastify) => {
   await fastify.register(cors, {
     credentials: true,
     origin: (origin, cb) => {
@@ -12,7 +15,7 @@ export const corsSetupPlugin: FastifyPluginAsync = async (fastify) => {
         }
 
         const hostname = new URL(origin).hostname
-        if (hostname === 'localhost') {
+        if (allowedLocalhostNames.has(hostname)) {
           cb(null, true)
           return
         }
@@ -29,3 +32,7 @@ export const corsSetupPlugin: FastifyPluginAsync = async (fastify) => {
     },
   })
 }
+
+export const corsSetupPlugin = fp(corsSetupPluginImpl, {
+  name: 'cors-setup',
+})

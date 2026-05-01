@@ -10,6 +10,7 @@ import {
   envStepupPlugin,
   Level,
   msgBrokerPlugin,
+  s3Plugin,
   swaggerSetupPlugin,
 } from '@plugins'
 import Fastify from 'fastify'
@@ -42,6 +43,7 @@ export const createApp = async () => {
   await fastify.register(dbSetupPlugin)
   await fastify.register(cacheSetupPlugin)
   await fastify.register(msgBrokerPlugin)
+  await fastify.register(s3Plugin)
 
   await fastify.register(corsSetupPlugin)
   await fastify.register(authSetupPlugin)

@@ -1,3 +1,3 @@
-export * from './get-procuct-stock.service.js'
-export * from './get-procuct.service.js'
-export * from './get-procucts.service.js'
+export * from './get-product-stock.service.js'
+export * from './get-product.service.js'
+export * from './get-products.service.js'

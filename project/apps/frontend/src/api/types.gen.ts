@@ -235,6 +235,7 @@ export type GetProductsResponses = {
     id: number
     name: string
     description: string | null
+    image: string | null
     priceInCents: number
     createdAt: Date
     updatedAt: Date
@@ -250,6 +251,7 @@ export type GetProductsResponses = {
         id: number
         name: string
         description: string | null
+        image: string | null
         priceInCents: number
         createdAt: Date
         updatedAt: Date
@@ -302,6 +304,7 @@ export type GetProductByIdResponses = {
     id: number
     name: string
     description: string | null
+    image: string | null
     priceInCents: number
     createdAt: Date
     updatedAt: Date
@@ -317,6 +320,7 @@ export type GetProductByIdResponses = {
         id: number
         name: string
         description: string | null
+        image: string | null
         priceInCents: number
         createdAt: Date
         updatedAt: Date
@@ -427,6 +431,7 @@ export type GetMyOrdersResponses = {
         id: number
         name: string
         description: string | null
+        image: string | null
         priceInCents: number
         createdAt: Date
         updatedAt: Date
@@ -442,6 +447,7 @@ export type GetMyOrdersResponses = {
             id: number
             name: string
             description: string | null
+            image: string | null
             priceInCents: number
             createdAt: Date
             updatedAt: Date
@@ -458,7 +464,6 @@ export type GetMyOrdersResponses = {
         startDate: Date
         endDate: Date
         productId: number
-        limitQuantityPerUser: number
         createdAt: Date
         updatedAt: Date
       } | null
@@ -527,6 +532,7 @@ export type GetMyOrderByIdResponses = {
         id: number
         name: string
         description: string | null
+        image: string | null
         priceInCents: number
         createdAt: Date
         updatedAt: Date
@@ -542,6 +548,7 @@ export type GetMyOrderByIdResponses = {
             id: number
             name: string
             description: string | null
+            image: string | null
             priceInCents: number
             createdAt: Date
             updatedAt: Date
@@ -558,7 +565,6 @@ export type GetMyOrderByIdResponses = {
         startDate: Date
         endDate: Date
         productId: number
-        limitQuantityPerUser: number
         createdAt: Date
         updatedAt: Date
       } | null

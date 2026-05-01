@@ -74,6 +74,14 @@ const schema: FastifyEnvOptions['schema'] = {
       type: 'boolean',
       default: true,
     },
+    PAYMENT_METHODS: {
+      type: 'array',
+      items: {
+        type: 'string',
+        separator: ',',
+      },
+      default: ['Skip Payment', 'Stripe'],
+    },
   },
 }
 

@@ -26,7 +26,7 @@ export default function SideBarCategories({ mainCategory, subCategory }: Readonl
   return (
     <aside
       aria-label="Category filter"
-      className="flex max-h-full min-h-137.5 w-auto min-w-75 flex-col gap-10 bg-white p-10"
+      className="flex max-h-full min-h-137.5 w-auto min-w-80 flex-col gap-10 bg-white p-10"
     >
       <div>
         <h3 className="text-lg font-medium">Categories</h3>
