@@ -1,10 +1,14 @@
+import type { ValidateCartResponse } from '@/api'
+import { centToDollars } from '@/utils/centToDollars'
 import { Button, HR } from 'flowbite-react'
+import OrderItems from './OrderItems'
 
 interface OrderSummaryProps {
-  cartItems: { productId: number }[]
+  cart: ValidateCartResponse
+  onRemoveItem: (productId: number) => void
 }
 
-export default function OrderSummary({ cartItems }: Readonly<OrderSummaryProps>) {
+export default function OrderSummary({ cart, onRemoveItem }: Readonly<OrderSummaryProps>) {
   return (
     <section className="border-border w-full border bg-white p-8 shadow">
       <h2 className="text-sm font-medium tracking-wider uppercase">Order Summary</h2>
@@ -12,18 +16,14 @@ export default function OrderSummary({ cartItems }: Readonly<OrderSummaryProps>)
       <div className="flex flex-col gap-4">
         <HR />
 
-        <div className="flex flex-col gap-6">
-          {cartItems.map((item) => (
-            <div>{item.productId}</div>
-          ))}
-        </div>
+        <OrderItems items={cart.items} onRemoveItem={onRemoveItem} />
 
         <HR />
 
         <div className="mb-4 flex flex-col gap-4">
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Subtotal</span>
-            <span>$123.45</span>
+            <span>${centToDollars(cart.subtotalInCents)}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Shipping</span>
@@ -32,7 +32,7 @@ export default function OrderSummary({ cartItems }: Readonly<OrderSummaryProps>)
 
           <div className="border-border flex justify-between border-t pt-4">
             <span className="text-lg font-medium">Total</span>
-            <span className="font-medium">$123.45</span>
+            <span className="font-medium">${centToDollars(cart.totalInCents)}</span>
           </div>
         </div>
 

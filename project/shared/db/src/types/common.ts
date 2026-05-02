@@ -13,3 +13,9 @@ export const pagingRequestSchema = z.object({
 })
 
 export type PagingRequest = z.infer<typeof pagingRequestSchema>
+
+export const timeStampSchema = z.object({
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+export type TimeStamp = z.infer<typeof timeStampSchema>

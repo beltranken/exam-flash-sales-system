@@ -9,7 +9,7 @@ import { getRouteApi } from '@tanstack/react-router'
 
 const routeApi = getRouteApi('/$mainCategory/$subCategory')
 
-export default function ProductListsPage() {
+export default function ProductListPage() {
   const { mainCategory, subCategory } = routeApi.useParams()
 
   const { data, isPending, isLoading } = useInfiniteQuery({
@@ -33,7 +33,7 @@ export default function ProductListsPage() {
   const subCategoryTitle = subCategories.find((c) => c.slug === subCategory)?.name
 
   return (
-    <div className="flex w-full gap-5">
+    <div className="flex w-full flex-col gap-5 lg:flex-row">
       <SideBarCategories mainCategory={mainCategory} subCategory={subCategory} />
 
       <section className="flex flex-1 flex-col gap-8" aria-labelledby="products-heading">

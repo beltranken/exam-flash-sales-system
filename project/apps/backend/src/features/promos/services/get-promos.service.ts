@@ -48,5 +48,16 @@ export async function getPromosService(
     limit,
   })
 
-  return promos
+  return promos.map((promo) => {
+    let temporalStatus
+    if (promo.startDate > now) {
+      temporalStatus = TemporalStatus.UPCOMING
+    } else if (promo.endDate < now) {
+      temporalStatus = TemporalStatus.EXPIRED
+    } else {
+      temporalStatus = TemporalStatus.ACTIVE
+    }
+
+    return { ...promo, temporalStatus }
+  })
 }

@@ -7,7 +7,7 @@ export const Route = createFileRoute('/checkout')({
   component: CheckoutPage,
   beforeLoad: () => {
     const cart = getCart()
-    if (cart.length === 0) {
+    if (cart && cart.items.length === 0) {
       const mainCategory = mainCategories[0].slug
 
       throw redirect({

@@ -1,5 +1,5 @@
 import { mainCategories, subCategories } from '@/constants/categories'
-import ProductListsPage from '@/pages/ProductListsPage'
+import ProductListsPage from '@/pages/ProductListPage'
 import { createFileRoute, notFound } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/$mainCategory/$subCategory')({

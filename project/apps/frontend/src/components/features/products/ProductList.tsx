@@ -15,8 +15,8 @@ export default function ProductList({ isLoading, products }: Readonly<ProductLis
 
   return (
     <div className="pb-40">
-      <ul className="grid grid-cols-3 gap-x-4 gap-y-16">
-        {[...products, ...products, ...products, ...products, ...products].map((product) => (
+      <ul className="grid grid-cols-1 gap-x-4 gap-y-16 md:grid-cols-2 lg:grid-cols-3">
+        {products.map((product) => (
           <li key={product.id}>
             <ProductCard
               product={product}

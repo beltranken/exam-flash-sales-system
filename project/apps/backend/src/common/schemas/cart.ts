@@ -1,4 +1,4 @@
-import { productSchema, promoSchema } from '@shared/db'
+import { baseProductSchema, basePromoSchema, promoSchema } from '@shared/db'
 import z from 'zod/v4'
 
 export enum LineIssues {
@@ -9,10 +9,11 @@ export enum LineIssues {
   PROMO_REMOVED = 'PROMO_REMOVED',
   PROMO_USAGE_LIMIT_EXCEEDED = 'PROMO_USAGE_LIMIT_EXCEEDED',
   PRODUCT_USAGE_LIMIT_EXCEEDED = 'PRODUCT_USAGE_LIMIT_EXCEEDED',
+  PRODUCT_NOT_FOUND = 'PRODUCT_NOT_FOUND',
 }
 
 export const cartItemSchema = z.object({
-  product: productSchema,
+  product: baseProductSchema,
   appliedPromo: promoSchema.optional().nullable(), // promo applied to this specific item, if any
   quantity: z.number().int().positive(),
   subtotalInCents: z.number().nonnegative(),
@@ -23,15 +24,18 @@ export const cartItemSchema = z.object({
 export type CartItem = z.infer<typeof cartItemSchema>
 
 export const cartSchema = z.object({
-  appliedPromo: promoSchema.optional(), // only one promo can be applied to the cart
+  appliedPromo: basePromoSchema.optional(), // only one promo can be applied to the cart
   items: cartItemSchema.array(),
   subtotalInCents: z.number().nonnegative(),
   totalDiscountInCents: z.number().nonnegative(),
   totalInCents: z.number().nonnegative(),
   issues: z.array(z.enum(LineIssues)).optional(),
+  test: z.string().optional(), // for testing purposes only, should not be used in production
 })
 
 export type Cart = z.infer<typeof cartSchema>
+
+z.globalRegistry.add(cartSchema, { id: 'Cart' })
 
 export const cartItemRequest = z.object({
   productId: z.number().int(),

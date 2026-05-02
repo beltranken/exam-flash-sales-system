@@ -3,21 +3,19 @@ import swaggerUI from '@fastify/swagger-ui'
 import { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
 import {
-  jsonSchemaTransform,
-  jsonSchemaTransformObject,
+  createJsonSchemaTransform,
+  createJsonSchemaTransformObject,
   serializerCompiler,
   validatorCompiler,
 } from 'fastify-type-provider-zod'
 
-export const disabledSerializerCompiler = () => {
-  return (data: unknown) => JSON.stringify(data)
-}
+const zodToJsonConfig = {
+  target: 'openapi-3.0',
+} as const
 
 const swaggerSetupPluginImpl: FastifyPluginAsync = async (fastify) => {
   fastify.setValidatorCompiler(validatorCompiler)
-  fastify.setSerializerCompiler(
-    fastify.config.NODE_ENV === 'production' ? disabledSerializerCompiler : serializerCompiler,
-  )
+  fastify.setSerializerCompiler(serializerCompiler)
 
   await fastify.register(swagger, {
     openapi: {
@@ -36,8 +34,8 @@ const swaggerSetupPluginImpl: FastifyPluginAsync = async (fastify) => {
         },
       },
     },
-    transform: jsonSchemaTransform,
-    transformObject: jsonSchemaTransformObject,
+    transform: createJsonSchemaTransform({ zodToJsonConfig }),
+    transformObject: createJsonSchemaTransformObject({ zodToJsonConfig }),
   })
 
   await fastify.register(swaggerUI, {

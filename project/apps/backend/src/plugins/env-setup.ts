@@ -10,13 +10,23 @@ type CreateLoggerArgs = {
   isDev: boolean
 }
 
-export const createLogger = ({ level = 'debug', isDev }: CreateLoggerArgs) =>
+const logLevels: Level[] = ['fatal', 'error', 'warn', 'info', 'debug', 'trace']
+
+export const createLogger = ({ level = 'info', isDev }: CreateLoggerArgs) =>
   pino({
     level,
-    redact: ['req.headers.authorization'],
+    redact: [
+      'req.headers.authorization',
+      'req.headers.cookie',
+      'res.headers.set-cookie',
+      '*.accessToken',
+      '*.refreshToken',
+      '*.token',
+      '*.password',
+    ],
     formatters: {
       level: (label) => {
-        return { level: label.toUpperCase() }
+        return { level: label }
       },
     },
     ...(isDev && { transport: { target: 'pino-pretty' } }),
@@ -36,7 +46,8 @@ const schema: FastifyEnvOptions['schema'] = {
     },
     PINO_LOG_LEVEL: {
       type: 'string',
-      default: 'error',
+      enum: logLevels,
+      default: 'info',
     },
     DATABASE_URL: {
       type: 'string',

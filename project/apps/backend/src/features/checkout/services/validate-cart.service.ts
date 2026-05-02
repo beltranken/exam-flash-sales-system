@@ -8,6 +8,7 @@ export async function validateCartService(
   fastify: FastifyInstance,
   cartRequest: CartRequest,
   userId?: number,
+  findActivePromo?: boolean,
 ): Promise<Cart> {
   const issues: LineIssues[] = []
 
@@ -22,20 +23,43 @@ export async function validateCartService(
     if (!promo) {
       issues.push(LineIssues.PROMO_NOT_FOUND)
     }
-  } else {
-    // If no promo applied, check if there's an active promo for the products in the cart
+  } else if (findActivePromo) {
+    // For simplicity, if no promo applied, check if there's an active promo for the products in the cart
     const productIds = cartRequest.items.map((item) => item.productId)
     const results = await getPromosService(fastify, { productIds, temporalStatus: TemporalStatus.ACTIVE })
     promo = results.at(0)
   }
 
   const cartItemPromises = cartRequest.items.map(async ({ quantity, appliedPromoId, productId }) => {
-    const product = await getProductService(fastify, productId)
+    let product
+    try {
+      product = await getProductService(fastify, productId)
+    } catch (e) {
+      fastify.log.warn(e)
+      return {
+        product: {
+          id: productId,
+          name: 'Product Not Found',
+          description: null,
+          image: null,
+          limitPerUser: 1,
+          limitResetIntervalDays: 7,
+          priceInCents: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        quantity,
+        subtotalInCents: 0,
+        discountInCents: 0,
+        totalInCents: 0,
+        issues: [LineIssues.PRODUCT_NOT_FOUND],
+      }
+    }
 
     const subtotalInCents = product.priceInCents * quantity
     let discountInCents = 0
 
-    const issues: LineIssues[] = []
+    const issues: LineIssues[] = [LineIssues.PRODUCT_NOT_FOUND, LineIssues.PROMO_CHANGE]
 
     const promoItem = promo?.promoItems?.find((promoItem) => promoItem.productId === productId)
     if (promo && promoItem) {
@@ -69,6 +93,11 @@ export async function validateCartService(
       if (productUsage + quantity > product.limitPerUser) {
         issues.push(LineIssues.PRODUCT_USAGE_LIMIT_EXCEEDED)
       }
+    }
+
+    fastify.log.info(`Available quantity for product ${productId}: ${product.availableQuantity}`)
+    if (quantity > product.availableQuantity) {
+      issues.push(LineIssues.OUT_OF_STOCK)
     }
 
     return {

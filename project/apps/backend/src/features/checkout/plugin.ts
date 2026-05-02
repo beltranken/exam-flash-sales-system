@@ -2,6 +2,7 @@ import { cartRequestSchema, cartSchema, errorResponses, paymentMethodSchema } fr
 import { FastifyPluginAsync } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import createHttpError from 'http-errors'
+import z from 'zod/v4'
 import { GetPaymentMethodsRoute, getPaymentMethodsRoute, validateCartRoute, ValidateCartRoute } from './routes/index.js'
 
 export const checkoutPlugin: FastifyPluginAsync = async (fastify) => {
@@ -30,7 +31,7 @@ export const checkoutPlugin: FastifyPluginAsync = async (fastify) => {
     {
       schema: {
         operationId: 'validateCart',
-        body: cartRequestSchema,
+        body: cartRequestSchema.extend({ findActivePromo: z.boolean().optional() }),
         response: {
           200: cartSchema,
           ...errorResponses,

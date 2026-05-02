@@ -26,13 +26,13 @@ export default function ProductCard({
     : undefined
 
   return (
-    <button className="flex flex-col gap-6 rounded" onClick={onClick} type="button" {...ariaAttributes}>
+    <button className="flex w-full flex-col gap-6 rounded" onClick={onClick} type="button" {...ariaAttributes}>
       <div className="relative h-80 w-full overflow-hidden">
         <ProductImage image={product.image} name={product.name} />
       </div>
 
-      <div className="w-full">
-        <div className="flex justify-between">
+      <div className="w-full overflow-hidden">
+        <div className="flex w-full justify-between overflow-hidden">
           <div className="min-w-0 flex-1">
             <h3 className="flex-1 truncate text-start text-lg font-bold">{product.name}</h3>
           </div>

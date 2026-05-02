@@ -7,9 +7,10 @@ import { productsTable } from './products.schema.js'
 // simple promo table for flash sales
 export const promosTable = pgTable('promos', {
   id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  code: varchar('code', { length: 50 }).notNull().unique(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
-  imageUrl: varchar('image_url', { length: 255 }),
+  image: varchar('image', { length: 255 }),
   discountPercentage: integer('discount_percentage').notNull(),
   status: promoStatusEnum('status').notNull().default(PromoStatus.ACTIVE),
   startDate: timestamp('start_date').notNull(),

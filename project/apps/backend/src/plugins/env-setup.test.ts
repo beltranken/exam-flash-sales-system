@@ -1,10 +1,10 @@
 import { createLogger, envSetupPlugin } from './env-setup.js'
 
 describe('createLogger', () => {
-  it('uses debug as default log level', () => {
+  it('uses info as default log level', () => {
     const logger = createLogger({ isDev: false })
 
-    expect(logger.level).toBe('debug')
+    expect(logger.level).toBe('info')
   })
 
   it('uses the provided log level', () => {
@@ -30,6 +30,10 @@ describe('envSetupPlugin', () => {
       expect.arrayContaining(['PORT', 'DATABASE_URL', 'CACHE_URL', 'RABBITMQ_URL', 'JWT_ACCESS_SECRET']),
     )
     expect(options.schema.properties.COOKIE_SECRET.default).toBe('secret')
+    expect(options.schema.properties.PINO_LOG_LEVEL).toMatchObject({
+      enum: ['fatal', 'error', 'warn', 'info', 'debug', 'trace'],
+      default: 'info',
+    })
     expect(options.schema.properties.PAYMENT_METHODS).toMatchObject({
       type: 'string',
       separator: ',',

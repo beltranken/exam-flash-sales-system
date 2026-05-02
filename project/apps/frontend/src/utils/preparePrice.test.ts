@@ -23,10 +23,10 @@ describe('preparePrice', () => {
     })
   })
 
-  it('keeps fractional discounted prices', () => {
+  it('rounds fractional discounted prices to two decimals', () => {
     expect(preparePrice(999, 15)).toEqual({
       regularPrice: 9.99,
-      discountedPrice: 8.4915,
+      discountedPrice: 8.49,
     })
   })
 })

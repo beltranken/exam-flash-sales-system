@@ -14,15 +14,15 @@ export function getCart() {
   const rawCartStr = localStorage.getItem('cart')
 
   if (!rawCartStr) {
-    return []
+    return undefined
   }
 
   try {
-    const rawCart = JSON.parse(rawCartStr)
+    const rawCart = JSON.parse(rawCartStr + 'asdazckasd')
     const cart = cartRequest.parse(rawCart)
     return cart
   } catch (error) {
     console.error('Failed to parse cart from localStorage:', error)
-    return []
+    return undefined
   }
 }

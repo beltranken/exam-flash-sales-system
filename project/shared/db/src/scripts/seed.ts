@@ -2,6 +2,8 @@ import 'dotenv/config'
 
 import { faker } from '@faker-js/faker'
 import {
+  Db,
+  PromoStatus,
   StockTransactionType,
   Warehouse,
   createDbClient,
@@ -9,6 +11,7 @@ import {
   paymentsTable,
   productStocksTable,
   productsTable,
+  promoItemsTable,
   promosTable,
   stockEntriesTable,
   stockTransactionsTable,
@@ -22,83 +25,149 @@ The breathable construction helps keep your feet cool, while the flexible outsol
 const description2 = faker.lorem.paragraphs(2)
 const description3 = faker.lorem.paragraphs(3)
 
-const DEFAULT_SEED_QUANTITY = 10000
+const productNames = [
+  'Urban Drift',
+  'Cloudstride',
+  'Northline',
+  'Everyday Edge',
+  'Solace Knit',
+  'Terrain Flow',
+  'Streetform',
+  'Luna Walk',
+  'Core Motion',
+  'Harbor Fit',
+]
 
-function getSeedQuantity() {
-  const rawQuantity = process.argv[2]
-  const parsedQuantity = Number(rawQuantity)
+function getArgNumber(i: number) {
+  const rawData = process.argv[i]
+  const data = Number(rawData)
 
-  if (!rawQuantity || !Number.isFinite(parsedQuantity) || parsedQuantity <= 0) {
-    return DEFAULT_SEED_QUANTITY
+  if (Number.isFinite(data)) {
+    return data
   }
 
-  return parsedQuantity
+  return 0
+}
+
+async function resetSeedData(db: Db) {
+  await db.transaction(async (tx) => {
+    await tx.delete(stockEntriesTable)
+    await tx.delete(stockTransactionsTable)
+    await tx.delete(paymentsTable)
+    await tx.delete(ordersTable)
+    await tx.delete(promosTable)
+    await tx.delete(productStocksTable)
+    await tx.delete(productsTable)
+  })
+}
+
+async function insertSeedData(db: Db, promoId: number) {
+  await db.transaction(async (tx) => {
+    const quantity = faker.number.int({ min: 10, max: 3000 })
+    const priceInCents = faker.number.int({ min: 1000, max: 30000 })
+    const description = faker.helpers.arrayElement([description1, description2, description3])
+
+    const [product] = await tx
+      .insert(productsTable)
+      .values({
+        name: faker.helpers.arrayElement(productNames),
+        description,
+        priceInCents,
+      })
+      .returning({
+        id: productsTable.id,
+        name: productsTable.name,
+      })
+
+    if (!product) {
+      throw new Error('Failed to insert product seed data')
+    }
+
+    const shouldHavePromo = faker.datatype.boolean(0.75)
+
+    if (shouldHavePromo) {
+      await tx.insert(promoItemsTable).values({
+        promoId,
+        productId: product.id,
+        limitPerUser: 1,
+      })
+    }
+
+    await tx.insert(productStocksTable).values({
+      productId: product.id,
+      warehouse: Warehouse.MAIN,
+      availableQuantity: quantity,
+      reservedQuantity: 0,
+      soldQuantity: 0,
+    })
+
+    const [transaction] = await tx
+      .insert(stockTransactionsTable)
+      .values({
+        type: StockTransactionType.PURCHASE,
+        note: 'Initial stock seed',
+      })
+      .returning({
+        id: stockTransactionsTable.id,
+      })
+
+    if (!transaction) {
+      throw new Error('Failed to insert stock transaction seed data')
+    }
+
+    await tx.insert(stockEntriesTable).values([
+      {
+        transactionId: transaction.id,
+        productId: product.id,
+        warehouse: Warehouse.SUPPLIER,
+        quantity: -quantity,
+      },
+      {
+        transactionId: transaction.id,
+        productId: product.id,
+        warehouse: Warehouse.MAIN,
+        quantity,
+      },
+    ])
+
+    console.log(`Seeded product ${product.name} (id: ${product.id}) with stock ${quantity} in ${Warehouse.MAIN}`)
+  })
 }
 
 async function seed() {
   const { db, pool } = createDbClient()
-  const quantity = getSeedQuantity()
 
   try {
-    await db.transaction(async (tx) => {
-      await tx.delete(stockEntriesTable)
-      await tx.delete(stockTransactionsTable)
-      await tx.delete(paymentsTable)
-      await tx.delete(ordersTable)
-      await tx.delete(promosTable)
-      await tx.delete(productStocksTable)
-      await tx.delete(productsTable)
+    await resetSeedData(db)
 
-      const priceInCents = faker.number.int({ min: 1000, max: 30000 })
-      const description = faker.helpers.arrayElement([description1, description2, description3])
+    const [promo] = await db
+      .insert(promosTable)
+      .values({
+        code: 'SUMMER20',
+        name: 'Summer Sale 20% Off',
+        description: 'Get 20% off your order with code SUMMER20',
+        discountPercentage: 20,
+        status: PromoStatus.ACTIVE,
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // valid for 30 days
+      })
+      .returning({
+        id: promosTable.id,
+      })
 
-      const [product] = await tx
-        .insert(productsTable)
-        .values({
-          name: 'AeroStride Runner',
-          description,
-          priceInCents,
-        })
-        .returning({
-          id: productsTable.id,
-          name: productsTable.name,
-        })
+    if (!promo) {
+      throw new Error('Failed to insert promo seed data')
+    }
 
-      if (!product) {
-        throw new Error('Failed to insert product seed data')
-      }
+    const productCount = getArgNumber(2) || 100
 
-      const [transaction] = await tx
-        .insert(stockTransactionsTable)
-        .values({
-          type: StockTransactionType.PURCHASE,
-          note: 'Initial stock seed',
-        })
-        .returning({
-          id: stockTransactionsTable.id,
-        })
+    const promises = []
+    for (let i = 0; i < productCount; i++) {
+      console.log(`Seeding product ${i + 1} of ${productCount}...`)
+      promises.push(insertSeedData(db, promo.id))
+    }
 
-      if (!transaction) {
-        throw new Error('Failed to insert stock transaction seed data')
-      }
-
-      await tx.insert(stockEntriesTable).values([
-        {
-          transactionId: transaction.id,
-          productId: product.id,
-          warehouse: Warehouse.SUPPLIER,
-          quantity: -quantity,
-        },
-        {
-          transactionId: transaction.id,
-          productId: product.id,
-          warehouse: Warehouse.MAIN,
-          quantity,
-        },
-      ])
-
-      console.log(`Seeded product ${product.name} (id: ${product.id}) with stock ${quantity} in ${Warehouse.MAIN}`)
-    })
+    await Promise.all(promises)
   } finally {
     await pool.end()
   }

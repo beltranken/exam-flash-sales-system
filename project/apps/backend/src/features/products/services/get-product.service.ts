@@ -1,9 +1,13 @@
-import { cacheKeys, Product, productSchema } from '@shared/db'
+import { Product, productSchema } from '@shared/db'
 import { getCacheData } from '@utils'
 import { FastifyInstance } from 'fastify'
 import createHttpError from 'http-errors'
+import { getProductStockService } from './get-product-stock.service.js'
 
-export async function getProductService(fastify: FastifyInstance, productId: number): Promise<Product> {
+export async function getProductService(
+  fastify: FastifyInstance,
+  productId: number,
+): Promise<Product & { availableQuantity: number }> {
   fastify.log.info('Fetching product by id')
 
   const cacheKey = `product:${productId}`
@@ -13,6 +17,7 @@ export async function getProductService(fastify: FastifyInstance, productId: num
   let product
   if (cachedProduct) {
     product = cachedProduct
+    fastify.log.info(`Cache hit for product: ${productId}`)
   } else {
     product = await fastify.db.query.productsTable.findFirst({
       where: {
@@ -29,12 +34,11 @@ export async function getProductService(fastify: FastifyInstance, productId: num
 
   const signedImage = await fastify.s3.signUrl(product.image ?? '')
 
-  const availableQuantity = await fastify.redis.get(cacheKeys.stocksByProduct({ productId }))
-  const availableQuantityNumber = Number(availableQuantity)
+  const availableQuantity = await getProductStockService(fastify, productId)
 
   return {
     ...product,
     image: signedImage,
-    availableQuantity: Number.isFinite(availableQuantityNumber) ? availableQuantityNumber : 0,
+    availableQuantity,
   }
 }
