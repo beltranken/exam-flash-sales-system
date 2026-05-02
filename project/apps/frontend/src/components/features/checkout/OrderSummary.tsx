@@ -1,6 +1,7 @@
 import type { ValidateCartResponse } from '@/api'
 import { centToDollars } from '@/utils/centToDollars'
-import { Button, HR } from 'flowbite-react'
+import { HR } from 'flowbite-react'
+import type { PropsWithChildren } from 'react'
 import OrderItems from './OrderItems'
 
 interface OrderSummaryProps {
@@ -8,7 +9,7 @@ interface OrderSummaryProps {
   onRemoveItem: (productId: number) => void
 }
 
-export default function OrderSummary({ cart, onRemoveItem }: Readonly<OrderSummaryProps>) {
+export default function OrderSummary({ cart, onRemoveItem, children }: Readonly<PropsWithChildren<OrderSummaryProps>>) {
   return (
     <section className="border-border w-full border bg-white p-8 shadow">
       <h2 className="text-sm font-medium tracking-wider uppercase">Order Summary</h2>
@@ -36,7 +37,7 @@ export default function OrderSummary({ cart, onRemoveItem }: Readonly<OrderSumma
           </div>
         </div>
 
-        <Button className="tracking-widest uppercase">continue to payment</Button>
+        {children}
       </div>
     </section>
   )

@@ -59,17 +59,18 @@ export async function validateCartService(
     const subtotalInCents = product.priceInCents * quantity
     let discountInCents = 0
 
-    const issues: LineIssues[] = [LineIssues.PRODUCT_NOT_FOUND, LineIssues.PROMO_CHANGE]
+    const removalReasons: LineIssues[] = []
+    const warnings: LineIssues[] = []
 
     const promoItem = promo?.promoItems?.find((promoItem) => promoItem.productId === productId)
     if (promo && promoItem) {
       discountInCents = Math.floor(product.priceInCents * quantity * (promo.discountPercentage / 100))
 
       if (appliedPromoId && appliedPromoId !== promo.id) {
-        issues.push(LineIssues.PROMO_CHANGE)
+        warnings.push(LineIssues.PROMO_CHANGE)
       }
     } else if (appliedPromoId) {
-      issues.push(LineIssues.PROMO_REMOVED)
+      warnings.push(LineIssues.PROMO_REMOVED)
     }
 
     if (promo && userId) {
@@ -80,7 +81,7 @@ export async function validateCartService(
       })
 
       if (promoItem && promoUsage + quantity > promoItem.limitPerUser) {
-        issues.push(LineIssues.PROMO_USAGE_LIMIT_EXCEEDED)
+        removalReasons.push(LineIssues.PROMO_USAGE_LIMIT_EXCEEDED)
       }
     }
 
@@ -91,23 +92,29 @@ export async function validateCartService(
       })
 
       if (productUsage + quantity > product.limitPerUser) {
-        issues.push(LineIssues.PRODUCT_USAGE_LIMIT_EXCEEDED)
+        removalReasons.push(LineIssues.PRODUCT_USAGE_LIMIT_EXCEEDED)
       }
     }
 
     fastify.log.info(`Available quantity for product ${productId}: ${product.availableQuantity}`)
-    if (quantity > product.availableQuantity) {
-      issues.push(LineIssues.OUT_OF_STOCK)
+
+    let _quantity = quantity
+    if (product.availableQuantity === 0) {
+      removalReasons.push(LineIssues.OUT_OF_STOCK)
+    } else if (quantity > product.availableQuantity) {
+      removalReasons.push(LineIssues.PRODUCT_QUANTITY_CHANGED)
+      _quantity = product.availableQuantity
     }
 
     return {
       product,
-      quantity,
+      quantity: _quantity,
       subtotalInCents,
       discountInCents,
       totalInCents: subtotalInCents - discountInCents,
       appliedPromo: promoItem ? promo : undefined,
-      issues,
+      removalReasons,
+      warnings,
     }
   })
 
@@ -122,6 +129,5 @@ export async function validateCartService(
     subtotalInCents,
     totalDiscountInCents,
     totalInCents,
-    issues,
   }
 }

@@ -3,7 +3,14 @@ import { FastifyPluginAsync } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import createHttpError from 'http-errors'
 import z from 'zod/v4'
-import { GetPaymentMethodsRoute, getPaymentMethodsRoute, validateCartRoute, ValidateCartRoute } from './routes/index.js'
+import {
+  CheckoutRoute,
+  checkoutRoute,
+  GetPaymentMethodsRoute,
+  getPaymentMethodsRoute,
+  validateCartRoute,
+  ValidateCartRoute,
+} from './routes/index.js'
 
 export const checkoutPlugin: FastifyPluginAsync = async (fastify) => {
   const typedFastify = fastify.withTypeProvider<ZodTypeProvider>()
@@ -41,30 +48,19 @@ export const checkoutPlugin: FastifyPluginAsync = async (fastify) => {
     validateCartRoute(fastify),
   )
 
-  typedFastify.post(
-    '/apply-promo',
-    {
-      schema: {
-        operationId: 'applyPromo',
-        response: {
-          ...errorResponses,
-        },
-      },
-    },
-    tempFn,
-  )
-
-  typedFastify.post(
+  typedFastify.post<CheckoutRoute>(
     '/checkout',
     {
       schema: {
         operationId: 'checkout',
+        body: cartRequestSchema,
         response: {
           ...errorResponses,
         },
       },
+      preHandler: fastify.authenticate,
     },
-    tempFn,
+    checkoutRoute(fastify),
   )
 
   typedFastify.post(

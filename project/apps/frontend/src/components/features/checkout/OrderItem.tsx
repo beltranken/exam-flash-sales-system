@@ -9,20 +9,25 @@ interface OrderItemProps {
 }
 
 export default function OrderItem({
-  item: { product, quantity, subtotalInCents, totalInCents, issues },
+  item: { product, quantity, subtotalInCents, totalInCents, removalReasons, warnings },
   onRemove,
 }: Readonly<OrderItemProps>) {
   const regularPrice = subtotalInCents
   const discountedPrice = totalInCents
   const hasDiscount = regularPrice !== discountedPrice
 
-  const hasIssues = issues !== undefined && issues.length > 0
+  const hasCriticalIssues = removalReasons !== undefined && removalReasons.length > 0
+  const hasWarnings = warnings !== undefined && warnings.length > 0
 
   return (
     <div
       className={clsx(
         'relative min-h-24 items-stretch border',
-        hasIssues ? 'border-red-500 bg-red-50' : 'border-transparent',
+        hasCriticalIssues
+          ? 'border-red-500 bg-red-50'
+          : hasWarnings
+            ? 'border-yellow-500 bg-yellow-50'
+            : 'border-transparent',
       )}
     >
       <div className="flex h-full items-stretch gap-4">
@@ -44,20 +49,30 @@ export default function OrderItem({
         </div>
       </div>
 
-      {hasIssues && (
+      {hasCriticalIssues && (
         <>
           <button className="absolute top-0 right-0 p-3" onClick={onRemove}>
             <TrashIcon className="h-4 w-4 text-red-600" />
           </button>
 
           <ul className="my-2 list-['-_'] pl-5">
-            {issues.map((issue) => (
-              <li key={issue} className="text-sm text-red-500">
-                <small className="font-medium">{issue}</small>
+            {removalReasons.map((removalReason) => (
+              <li key={removalReason} className="text-sm text-red-500">
+                <small className="font-medium">{removalReason}</small>
               </li>
             ))}
           </ul>
         </>
+      )}
+
+      {hasWarnings && (
+        <ul className="my-2 list-['-_'] pl-5">
+          {warnings.map((warning) => (
+            <li key={warning} className="text-sm text-yellow-600">
+              <small className="font-medium">{warning}</small>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   )

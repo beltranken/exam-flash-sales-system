@@ -6,7 +6,7 @@ type GetProductsServiceParam = Partial<Paging>
 
 export async function getProductsService(
   fastify: FastifyInstance,
-  { page = 1, pageSize }: GetProductsServiceParam = {},
+  { page = 1, pageSize = 0 }: GetProductsServiceParam = {},
 ): Promise<Product[]> {
   // For simplicity, this service just returns all products without pagination or filtering.
 
@@ -20,6 +20,7 @@ export async function getProductsService(
   const now = new Date()
 
   if (cachedProducts) {
+    fastify.log.info(`Cache hit for products: page ${page}, pageSize ${pageSize}`)
     products = cachedProducts.map((product) => ({
       ...product,
       activePromos:
@@ -41,6 +42,8 @@ export async function getProductsService(
           },
         },
       },
+      offset: (page - 1) * pageSize,
+      limit: pageSize || undefined,
     })
 
     products = _products.map(({ productStock, ...product }) => {
@@ -55,7 +58,7 @@ export async function getProductsService(
       return { ...product, description, availableQuantity }
     })
 
-    await fastify.redis.set(cacheKey, JSON.stringify(products), 'EX', 10) // Cache for 10 seconds
+    if (products.length > 0) await fastify.redis.set(cacheKey, JSON.stringify(products), 'EX', 10) // Cache for 10 seconds
   }
 
   const promises = products.map(async (product) => {

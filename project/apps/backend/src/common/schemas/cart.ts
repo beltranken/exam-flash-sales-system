@@ -10,6 +10,11 @@ export enum LineIssues {
   PROMO_USAGE_LIMIT_EXCEEDED = 'PROMO_USAGE_LIMIT_EXCEEDED',
   PRODUCT_USAGE_LIMIT_EXCEEDED = 'PRODUCT_USAGE_LIMIT_EXCEEDED',
   PRODUCT_NOT_FOUND = 'PRODUCT_NOT_FOUND',
+  PRODUCT_QUANTITY_CHANGED = 'PRODUCT_QUANTITY_CHANGED',
+
+  STOCK_RESERVATION_FAILED = 'STOCK_RESERVATION_FAILED',
+  PROMO_RESERVATION_FAILED = 'PROMO_RESERVATION_FAILED',
+  USER_RESERVATION_FAILED = 'USER_RESERVATION_FAILED',
 }
 
 export const cartItemSchema = z.object({
@@ -19,7 +24,8 @@ export const cartItemSchema = z.object({
   subtotalInCents: z.number().nonnegative(),
   discountInCents: z.number().nonnegative(),
   totalInCents: z.number().nonnegative(),
-  issues: z.array(z.enum(LineIssues)).optional(),
+  removalReasons: z.array(z.enum(LineIssues)).optional(),
+  warnings: z.array(z.enum(LineIssues)).optional(),
 })
 export type CartItem = z.infer<typeof cartItemSchema>
 
@@ -29,8 +35,6 @@ export const cartSchema = z.object({
   subtotalInCents: z.number().nonnegative(),
   totalDiscountInCents: z.number().nonnegative(),
   totalInCents: z.number().nonnegative(),
-  issues: z.array(z.enum(LineIssues)).optional(),
-  test: z.string().optional(), // for testing purposes only, should not be used in production
 })
 
 export type Cart = z.infer<typeof cartSchema>

@@ -1,4 +1,5 @@
 export * from './cart.js'
+export * from './checkout.js'
 export * from './email-sign-in.js'
 export * from './error-response.js'
 export * from './no-content.js'

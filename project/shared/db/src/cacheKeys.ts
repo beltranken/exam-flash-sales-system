@@ -29,7 +29,7 @@ export const userPromoUsage = ({
 export const orderStatus = ({ orderId }: Pick<CounterKeyParams, 'orderId'>) => `orderStatus:${orderId}`
 
 // Resources
-export const products = ({ page, pageSize }: Paging) => `products:${page}:${pageSize ?? 'all'}`
+export const products = ({ page, pageSize }: Paging) => `products:${page}:${pageSize || 'all'}`
 
 export const cacheKeys = {
   stocksByProduct,

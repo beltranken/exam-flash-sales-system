@@ -7,7 +7,9 @@ import { basePromoSchema } from './promos.type.js'
 export const baseProductSchema = createSelectSchema(productsTable, {
   ...timeStampSchema.shape,
 })
-export const baseProductStockSchema = createSelectSchema(productStocksTable)
+export const baseProductStockSchema = createSelectSchema(productStocksTable, {
+  ...timeStampSchema.shape,
+})
 
 export const productStockSchema = baseProductStockSchema.extend({
   product: baseProductSchema.optional().nullable(),

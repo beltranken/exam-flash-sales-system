@@ -10,6 +10,7 @@ import type { CartRequest } from '@/schemas/cartSchema'
 import { getCart } from '@/utils/helpers/cart-helper'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
+import { Button } from 'flowbite-react'
 import { useEffect, useRef } from 'react'
 
 export default function CheckoutPage() {
@@ -76,7 +77,7 @@ export default function CheckoutPage() {
     refetch()
   }, [refetch, isAuthenticated])
 
-  const handleRemoveItem = async (productId: number) => {
+  const handleRemoveItem = (productId: number) => {
     const currentCart = getCart()
 
     if (currentCart) {
@@ -107,6 +108,10 @@ export default function CheckoutPage() {
     navigate({ to: '/' })
   }
 
+  const handleOnContinue = () => {
+    // navigate({ to: '/checkout/payment' })
+  }
+
   if (isPending)
     return (
       <div className="">
@@ -135,7 +140,11 @@ export default function CheckoutPage() {
       </div>
 
       <div className="w-full md:w-100">
-        <OrderSummary cart={cart} onRemoveItem={handleRemoveItem} />
+        <OrderSummary cart={cart} onRemoveItem={handleRemoveItem}>
+          <Button className="tracking-widest uppercase" onClick={handleOnContinue}>
+            continue to payment
+          </Button>
+        </OrderSummary>
       </div>
 
       {isError && <Alert message="Failed validating the cart" onClose={redirectToHome} />}
