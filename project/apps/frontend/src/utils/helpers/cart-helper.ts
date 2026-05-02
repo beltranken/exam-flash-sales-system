@@ -18,7 +18,7 @@ export function getCart() {
   }
 
   try {
-    const rawCart = JSON.parse(rawCartStr + 'asdazckasd')
+    const rawCart = JSON.parse(rawCartStr)
     const cart = cartRequest.parse(rawCart)
     return cart
   } catch (error) {
