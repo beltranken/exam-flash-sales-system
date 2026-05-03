@@ -7,6 +7,7 @@ export const orderItemSchema = z.object({
   discountPercentage: z.number().int().min(0).max(100).default(0),
   appliedPromoId: z.number().int().positive().nullable().optional(),
 })
+export type OrderItem = z.infer<typeof orderItemSchema>
 
 export const orderIdSchema = z.uuid()
 export type OrderId = z.infer<typeof orderIdSchema>
@@ -21,8 +22,10 @@ export const orderReservedMessageSchema = z.object({
 export type OrderReservedMessage = z.infer<typeof orderReservedMessageSchema>
 
 export const orderFailedMessageSchema = z.object({
-  orderId: orderIdSchema,
+  orderId: orderIdSchema.optional(),
   reason: z.string(),
+  userId: z.number().int().positive().optional(),
+  items: z.array(orderItemSchema).optional(),
 })
 export type OrderFailedMessage = z.infer<typeof orderFailedMessageSchema>
 
@@ -35,5 +38,3 @@ export type OrderSubmittedMessage = z.infer<typeof orderSubmittedMessageSchema>
 
 export const orderTimeoutMessageSchema = objOrderIdSchema
 export type OrderTimeoutMessage = z.infer<typeof orderTimeoutMessageSchema>
-
-export type OrderMessage = OrderReservedMessage | OrderSubmittedMessage | OrderFailedMessage | OrderTimeoutMessage

@@ -1,4 +1,4 @@
-import { cacheKeys } from '@shared/db'
+import { cacheKeys } from '@shared/cache-contracts'
 import { getOrSetNumberCache } from '@utils'
 import { FastifyInstance } from 'fastify'
 

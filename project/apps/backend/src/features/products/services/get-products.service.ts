@@ -1,4 +1,5 @@
-import { cacheKeys, Paging, Product, productSchema, PromoStatus } from '@shared/db'
+import { cacheKeys } from '@shared/cache-contracts'
+import { Paging, Product, productSchema, PromoStatus } from '@shared/db'
 import { getCacheData } from '@utils'
 import { FastifyInstance } from 'fastify'
 

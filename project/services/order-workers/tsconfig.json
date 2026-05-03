@@ -9,6 +9,7 @@
     "paths": {
       "@db": ["./src/db.ts"],
       "@logger": ["./src/logger.ts"],
+      "@cache": ["./src/cache.ts"],
       "@handlers/*": ["./src/handlers/*"],
       "@shared/*": ["../../shared/*"]
     }

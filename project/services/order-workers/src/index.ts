@@ -1,5 +1,6 @@
 import 'dotenv/config'
 
+import { redis } from './cache.js'
 import { pool } from './db.js'
 import { logger } from './logger.js'
 import { OrderEventConsumer } from './queues/order-event.consumer.js'
@@ -21,6 +22,7 @@ async function shutdown(signal: NodeJS.Signals): Promise<void> {
 
   try {
     await consumer.stop()
+    redis.disconnect()
     await pool.end()
     process.exit(0)
   } catch (error) {

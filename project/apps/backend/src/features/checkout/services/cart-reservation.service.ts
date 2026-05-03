@@ -1,8 +1,13 @@
-import { cacheKeys } from '@shared/db'
+import {
+  buildRollbackReservationArgs,
+  buildReservationArgs,
+  cacheKeys,
+  reserveCartScript,
+  rollbackCartReservationsScript,
+} from '@shared/cache-contracts'
 import { Cart, CartItem, LineIssues } from '@types'
 import { FastifyInstance } from 'fastify'
 import createHttpError from 'http-errors'
-import { reserveCartScript, rollbackCartReservationsScript } from '../redis-scripts/cart-reservation.scripts.js'
 
 interface ReservationStatus {
   stocksByProduct: false | string
@@ -66,28 +71,22 @@ export const markRollbackReservationFailures = (cartItems: TrackedCartItem[]) =>
   }
 }
 
-const buildReservationArgs = (cartItems: TrackedCartItem[], userId: number): string[] =>
-  cartItems.flatMap((cartItem) => {
-    const stocksByProduct = cacheKeys.stocksByProduct({ productId: cartItem.product.id })
-    const userProductUsage = cacheKeys.userProductUsage({ userId, productId: cartItem.product.id })
-    const userPromoUsage = cartItem.appliedPromo
-      ? cacheKeys.userPromoUsage({
-          productId: cartItem.product.id,
-          userId,
-          promoId: cartItem.appliedPromo.id,
-        })
-      : ''
+const toReservationItems = (cartItems: TrackedCartItem[]) =>
+  cartItems.map((cartItem) => ({
+    productId: cartItem.product.id,
+    quantity: cartItem.quantity,
+    limitPerUser: cartItem.product.limitPerUser,
+    limitResetIntervalDays: cartItem.product.limitResetIntervalDays,
+    appliedPromoId: cartItem.appliedPromo?.id,
+    promoLimitPerUser: cartItem.appliedPromo?.limitPerUser,
+  }))
 
-    return [
-      stocksByProduct,
-      userProductUsage,
-      userPromoUsage,
-      String(cartItem.quantity),
-      String(cartItem.product.limitPerUser),
-      String(cartItem.product.limitResetIntervalDays ? cartItem.product.limitResetIntervalDays * 24 * 60 * 60 : 0),
-      String(cartItem.appliedPromo?.limitPerUser ?? 0),
-    ]
-  })
+const toRollbackReservationItems = (cartItems: TrackedCartItem[]) =>
+  cartItems.map((cartItem) => ({
+    productId: cartItem.product.id,
+    quantity: cartItem.quantity,
+    appliedPromoId: cartItem.appliedPromo?.id,
+  }))
 
 const markReserved = (cartItems: TrackedCartItem[], userId: number) => {
   cartItems.forEach((cartItem) => {
@@ -109,7 +108,7 @@ export const reserveCartService = async (fastify: FastifyInstance, cartItems: Tr
     reserveCartScript,
     0,
     String(cartItems.length),
-    ...buildReservationArgs(cartItems, userId),
+    ...buildReservationArgs(toReservationItems(cartItems), userId),
   )) as [number, number, string]
 
   if (result[0] === 1) {
@@ -136,6 +135,6 @@ export const rollbackCartReservationsService = async (
     rollbackCartReservationsScript,
     0,
     String(cartItems.length),
-    ...buildReservationArgs(cartItems, userId),
+    ...buildRollbackReservationArgs(toRollbackReservationItems(cartItems), userId),
   )
 }

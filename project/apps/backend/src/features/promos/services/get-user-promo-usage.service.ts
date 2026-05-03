@@ -1,4 +1,5 @@
-import { and, cacheKeys, eq, not, orderItemsTable, ordersTable, OrderStatus, sum } from '@shared/db'
+import { cacheKeys } from '@shared/cache-contracts'
+import { and, eq, not, orderItemsTable, ordersTable, OrderStatus, sum } from '@shared/db'
 import { PromoUsage } from '@types'
 import { getOrSetNumberCache } from '@utils'
 import { FastifyInstance } from 'fastify/types/instance.js'

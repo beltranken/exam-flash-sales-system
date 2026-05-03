@@ -6,8 +6,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const sourceRoot = resolve(root, 'src')
 const targetRoot = resolve(root, 'dist')
 const luaFiles = [
-  'features/checkout/redis-scripts/reserve-cart.lua',
-  'features/checkout/redis-scripts/rollback-cart-reservations.lua',
+  'redis-scripts/reserve-cart.lua',
+  'redis-scripts/rollback-cart-reservations.lua',
 ]
 
 for (const luaFile of luaFiles) {

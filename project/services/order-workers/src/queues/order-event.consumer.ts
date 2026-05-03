@@ -3,34 +3,73 @@ import 'dotenv/config'
 import amqp, { type Channel, type ChannelModel, type ConsumeMessage } from 'amqplib'
 
 import { logger } from '@logger'
-import { type OrderMessage } from '@shared/order-contracts'
+import {
+  OrderFailedMessage,
+  orderFailedMessageSchema,
+  orderFailureReasons,
+  orderReservedMessageSchema,
+  orderSubmittedMessageSchema,
+} from '@shared/order-contracts'
+import { ZodError } from 'zod'
 import { env } from '../config/env.js'
 import { handleOrderFailed, handleOrderReserved, handleOrderSubmitted } from '../handlers/index.js'
+import { OrderQueueConfig, RunnableOrderQueueConfig } from '../types/order-config.js'
+import { OrderError } from '../types/order-error.js'
 import { assertOrderQueues } from './assert-order-queues.js'
 import { orderQueueNames } from './order-queue-names.js'
 
-type OrderQueueConfig = {
-  name: string
-  handler: (message: OrderMessage) => Promise<void>
+const defineOrderQueue = <T>(config: OrderQueueConfig<T>): RunnableOrderQueueConfig => ({
+  name: config.name,
+  process: async (rawMessage) => {
+    let message: T
+    try {
+      message = config.validate(rawMessage)
+      await config.handler(message)
+    } catch (e) {
+      if (e instanceof ZodError && config.prepareValidationError) {
+        throw config.prepareValidationError(e, rawMessage)
+      }
+
+      throw e
+    }
+  },
+})
+
+const prepareOrderValidationError = (error: ZodError, message: unknown) => {
+  return new OrderError({
+    message: 'Invalid order.reserved message format',
+    code: orderFailureReasons.unknownMessageFormat,
+    cause: error,
+    orderId:
+      typeof message === 'object' && message && 'orderId' in message && typeof message.orderId === 'string'
+        ? message.orderId
+        : undefined,
+  })
 }
 
 export class OrderEventConsumer {
   private connection?: ChannelModel
   private channel?: Channel
 
-  private readonly queues: OrderQueueConfig[] = [
-    {
+  private readonly queues = [
+    defineOrderQueue({
       name: orderQueueNames.reserved,
-      handler: (message) => handleOrderReserved(message as Parameters<typeof handleOrderReserved>[0]),
-    },
-    {
+      prepareValidationError: prepareOrderValidationError,
+      validate: (message) => orderReservedMessageSchema.parse(message),
+      handler: (message) => handleOrderReserved(message),
+    }),
+    defineOrderQueue({
       name: orderQueueNames.submitted,
-      handler: (message) => handleOrderSubmitted(message as Parameters<typeof handleOrderSubmitted>[0]),
-    },
-    {
+      prepareValidationError: prepareOrderValidationError,
+      validate: (message) => orderSubmittedMessageSchema.parse(message),
+      handler: (message) => handleOrderSubmitted(message),
+    }),
+    defineOrderQueue({
       name: orderQueueNames.failed,
-      handler: (message) => handleOrderFailed(message as Parameters<typeof handleOrderFailed>[0]),
-    },
+      prepareValidationError: prepareOrderValidationError,
+      validate: (message) => orderFailedMessageSchema.parse(message),
+      handler: (message) => handleOrderFailed(message),
+    }),
   ]
 
   async start(): Promise<void> {
@@ -61,14 +100,14 @@ export class OrderEventConsumer {
     logger.info('Order event consumer stopped')
   }
 
-  private async handleMessage(queue: OrderQueueConfig, message: ConsumeMessage | null): Promise<void> {
+  private async handleMessage(queue: RunnableOrderQueueConfig, message: ConsumeMessage | null): Promise<void> {
     if (!message || !this.channel) {
       return
     }
 
     try {
-      const payload = JSON.parse(message.content.toString()) as OrderMessage
-      await queue.handler(payload)
+      const payload = JSON.parse(message.content.toString())
+      await queue.process(payload)
       this.channel.ack(message)
     } catch (error) {
       logger.error(
@@ -78,7 +117,32 @@ export class OrderEventConsumer {
         },
         'Failed to process order event message',
       )
-      this.channel.nack(message, false, false)
+      let didPublishFailed = false
+
+      if (error instanceof OrderError) {
+        didPublishFailed = this.publishFailed({
+          orderId: error.orderId,
+          reason: error.code,
+        })
+      }
+
+      if (didPublishFailed) {
+        this.channel.ack(message)
+      } else {
+        logger.info('Unknown error handling message, sending to dead letter queue')
+        this.channel.nack(message, false, false)
+      }
     }
+  }
+
+  private publishFailed(message: OrderFailedMessage): boolean {
+    if (!this.channel) {
+      throw new Error('RabbitMQ channel is not available.')
+    }
+
+    return this.channel.sendToQueue(orderQueueNames.failed, Buffer.from(JSON.stringify(message)), {
+      persistent: true,
+      contentType: 'application/json',
+    })
   }
 }

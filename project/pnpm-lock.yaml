@@ -65,6 +65,9 @@ importers:
       '@fastify/swagger-ui':
         specifier: ^5.2.6
         version: 5.2.6
+      '@shared/cache-contracts':
+        specifier: workspace:*
+        version: link:../../shared/cache-contracts
       '@shared/db':
         specifier: workspace:*
         version: link:../../shared/db
@@ -253,6 +256,9 @@ importers:
 
   services/order-workers:
     dependencies:
+      '@shared/cache-contracts':
+        specifier: workspace:*
+        version: link:../../shared/cache-contracts
       '@shared/db':
         specifier: workspace:*
         version: link:../../shared/db
@@ -268,6 +274,12 @@ importers:
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
+      ioredis:
+        specifier: ^5.10.1
+        version: 5.10.1
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@types/amqplib':
         specifier: ^0.10.8
@@ -278,6 +290,15 @@ importers:
       tsx:
         specifier: ^4.19.2
         version: 4.21.0
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
+  shared/cache-contracts:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.1
+        version: 22.19.17
       typescript:
         specifier: ^5.6.3
         version: 5.9.3
