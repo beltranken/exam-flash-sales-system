@@ -1,4 +1,5 @@
 import { getUser } from '@features/auth/services/get-user.service.js'
+import { OrderReservedMessage } from '@shared/order-events'
 import { CartRequest, CheckoutResponse } from '@types'
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import createHttpError from 'http-errors'
@@ -45,13 +46,29 @@ export function checkoutRoute(fastify: FastifyInstance) {
 
     const trackerCartItems = createTrackedCartItems(cart)
 
-    const hasOrderQueuePublished = false
+    let hasOrderQueuePublished = false
     let hasReservations = false
     try {
       await reserveCartService(fastify, trackerCartItems, req.user.userId)
       hasReservations = true
 
-      // TODO: publish messages
+      const orderMessage: OrderReservedMessage = {
+        orderId,
+        userId: user.id,
+        items: cart.items.map((item) => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+          priceInCents: item.product.priceInCents,
+          appliedPromoId: item.appliedPromo?.id,
+          discountPercentage: item.appliedPromo?.discountPercentage ?? 0,
+        })),
+      }
+      hasReservations = true
+
+      await fastify.mq.publishOrderReserved(orderMessage)
+      hasOrderQueuePublished = true
+
+      await fastify.mq.publishOrderTimeout(orderId)
 
       reply.status(200).send({
         isSuccess: true,
@@ -62,16 +79,34 @@ export function checkoutRoute(fastify: FastifyInstance) {
     } catch (e) {
       // If order message was published, rollback will be handle by order-worker
       if (hasOrderQueuePublished) {
-        // TODO: publish order cancellation message to rollback any downstream processing if needed
+        try {
+          await fastify.mq.publishOrderFailed({
+            orderId,
+            reason: 'Checkout failed after order was reserved. Manual review may be required.',
+          })
+        } catch (recoveryError) {
+          fastify.log.error(
+            {
+              error: recoveryError,
+              orderId,
+            },
+            'Critical Error: Failed to publish order failed message after checkout error',
+          )
+        }
       }
       // Else if reservations were made but an error occurred before publishing order message, rollback here
       else if (hasReservations) {
-        // Rollback any successful reservations in case of error
         try {
           await rollbackCartReservationsService(fastify, trackerCartItems, req.user.userId)
           markRollbackReservationFailures(trackerCartItems)
-        } catch (rollbackError) {
-          fastify.log.error(rollbackError, 'Failed to rollback reservations after checkout failure')
+        } catch (recoveryError) {
+          fastify.log.error(
+            {
+              error: recoveryError,
+              orderId,
+            },
+            'Critical Error: Failed to rollback cart reservations after checkout error',
+          )
         }
       }
 

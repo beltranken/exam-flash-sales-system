@@ -1,8 +1,9 @@
 import 'fastify'
 
 import { FastifyJwtNamespace } from '@fastify/jwt'
-import { Db } from '@shared/db'
-import { PublishToQueueArgs } from './plugins/msg-broker.ts'
+import { type Db } from '@shared/db'
+import { type OrderFailedMessage, type OrderReservedMessage, type OrderSubmittedMessage } from '@shared/order-events'
+import { type PublishToQueueArgs } from './plugins/mq-setup.ts'
 
 declare module 'fastify' {
   interface FastifyInstance extends FastifyJwtNamespace<{
@@ -13,6 +14,11 @@ declare module 'fastify' {
       DATABASE_URL: string
       CACHE_URL: string
       RABBITMQ_URL: string
+      ORDER_RESERVED_QUEUE_NAME: string
+      ORDER_SUBMITTED_QUEUE_NAME: string
+      ORDER_FAILED_QUEUE_NAME: string
+      ORDER_TIMEOUT_DELAY_QUEUE_NAME: string
+      ORDER_TIMEOUT_TTL_MS: string
       PINO_LOG_LEVEL?: string
       NODE_ENV?: string
       JWT_ACCESS_SECRET: string
@@ -29,6 +35,10 @@ declare module 'fastify' {
     db: Db
     mq: {
       publishToQueue: (args: PublishToQueueArgs) => Promise<void>
+      publishOrderReserved: (message: OrderReservedMessage) => Promise<void>
+      publishOrderSubmitted: (message: OrderSubmittedMessage) => Promise<void>
+      publishOrderFailed: (message: OrderFailedMessage) => Promise<void>
+      publishOrderTimeout: (orderId: string) => Promise<void>
     }
     s3: {
       signUrl: (key: string) => Promise<string | null>

@@ -71,6 +71,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
+      '@shared/order-events':
+        specifier: workspace:*
+        version: link:../../shared/order-events
       amqp-connection-manager:
         specifier: ^5.0.0
         version: 5.0.0(amqplib@1.0.3)
@@ -253,6 +256,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
+      '@shared/order-events':
+        specifier: workspace:*
+        version: link:../../shared/order-events
       amqplib:
         specifier: ^1.0.3
         version: 1.0.3
@@ -316,6 +322,16 @@ importers:
       '@types/node':
         specifier: ^22.10.1
         version: 22.19.17
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
+  shared/order-events:
+    dependencies:
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
+    devDependencies:
       typescript:
         specifier: ^5.6.3
         version: 5.9.3

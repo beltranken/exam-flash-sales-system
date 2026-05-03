@@ -29,6 +29,7 @@
     "@fastify/swagger-ui": "^5.2.6",
     "@shared/db": "workspace:*",
     "@shared/logger": "workspace:*",
+    "@shared/order-events": "workspace:*",
     "amqp-connection-manager": "^5.0.0",
     "amqplib": "^1.0.3",
     "dotenv": "^17.4.2",

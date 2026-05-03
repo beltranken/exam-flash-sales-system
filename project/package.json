@@ -5,10 +5,12 @@
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "pnpm -r --parallel dev",
+    "dev:shared": "pnpm --parallel -r --filter \"@shared/*\" dev",
     "code-gen": "pnpm -r --parallel --if-present run \"/^generate:[A-Za-z]+$/\"",
     "code-gen:watch": "pnpm -r --parallel --if-present run \"/^generate:[A-Za-z]+:watch$/\"",
     "prepare": "lefthook install",
     "build": "pnpm -r build",
+    "build:shared": "pnpm -r --filter \"@shared/*\" build",
     "lint": "pnpm -r lint",
     "test:unit": "pnpm -r --sequential test:unit",
     "test:integration": "pnpm -r --sequential test:integration",

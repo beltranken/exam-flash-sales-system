@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@shared/logger": "workspace:*",
+    "@shared/order-events": "workspace:*",
     "amqplib": "^1.0.3",
     "dotenv": "^17.4.2"
   },

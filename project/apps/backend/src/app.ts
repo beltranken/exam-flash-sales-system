@@ -7,7 +7,7 @@ import {
   cacheSetupPlugin,
   dbSetupPlugin,
   envSetupPlugin,
-  msgBrokerPlugin,
+  mqPlugin,
   s3Plugin,
   swaggerSetupPlugin,
 } from '@plugins'
@@ -41,7 +41,7 @@ export const createApp = async () => {
 
   await fastify.register(dbSetupPlugin)
   await fastify.register(cacheSetupPlugin)
-  await fastify.register(msgBrokerPlugin)
+  await fastify.register(mqPlugin)
   await fastify.register(s3Plugin)
 
   await fastify.register(corsSetupPlugin)

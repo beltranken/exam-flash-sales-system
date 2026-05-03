@@ -1,3 +1,10 @@
+import {
+  OrderId,
+  OrderQueueNames,
+  type OrderFailedMessage,
+  type OrderReservedMessage,
+  type OrderSubmittedMessage,
+} from '@shared/order-events'
 import type { AmqpConnectionManager, ChannelWrapper, Options } from 'amqp-connection-manager'
 import amqp from 'amqp-connection-manager'
 import { FastifyPluginAsync } from 'fastify'
@@ -8,6 +15,11 @@ type BrokerMessage = Buffer | Record<string, unknown> | string
 export type PublishToQueueArgs = {
   queue: string
   message: BrokerMessage
+  options?: Options.Publish
+  durable?: boolean
+}
+
+type PublishOrderEventOptions = {
   options?: Options.Publish
   durable?: boolean
 }
@@ -24,7 +36,9 @@ const toBuffer = (message: BrokerMessage) => {
   return Buffer.from(JSON.stringify(message))
 }
 
-const msgBrokerPluginImpl: FastifyPluginAsync = async (fastify) => {
+export const mqPluginName = 'mq-plugin'
+
+const mqPluginImpl: FastifyPluginAsync = async (fastify) => {
   let connection: AmqpConnectionManager | undefined
   let channel: ChannelWrapper | undefined
 
@@ -58,8 +72,42 @@ const msgBrokerPluginImpl: FastifyPluginAsync = async (fastify) => {
     }
   }
 
+  const publishOrderReserved = (message: OrderReservedMessage, options?: PublishOrderEventOptions) =>
+    publishToQueue({
+      queue: OrderQueueNames.reserved,
+      message,
+      ...options,
+    })
+
+  const publishOrderSubmitted = (message: OrderSubmittedMessage, options?: PublishOrderEventOptions) =>
+    publishToQueue({
+      queue: OrderQueueNames.submitted,
+      message,
+      ...options,
+    })
+
+  const publishOrderFailed = (message: OrderFailedMessage, options?: PublishOrderEventOptions) =>
+    publishToQueue({
+      queue: OrderQueueNames.failed,
+      message,
+      ...options,
+    })
+
+  const publishOrderTimeout = (orderId: OrderId, options?: PublishOrderEventOptions) =>
+    publishToQueue({
+      queue: OrderQueueNames.timeoutDelay,
+      message: {
+        orderId,
+      },
+      ...options,
+    })
+
   fastify.decorate('mq', {
     publishToQueue,
+    publishOrderReserved,
+    publishOrderSubmitted,
+    publishOrderFailed,
+    publishOrderTimeout,
   })
 
   fastify.addHook('onClose', async () => {
@@ -75,6 +123,6 @@ const msgBrokerPluginImpl: FastifyPluginAsync = async (fastify) => {
   })
 }
 
-export const msgBrokerPlugin = fp(msgBrokerPluginImpl, {
-  name: 'msg-broker',
+export const mqPlugin = fp(mqPluginImpl, {
+  name: mqPluginName,
 })

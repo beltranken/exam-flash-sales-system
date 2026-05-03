@@ -4,6 +4,7 @@ import { env } from '../config/env.js'
 import { handleOrderFailed, handleOrderReserved, handleOrderSubmitted } from '../handlers/index.js'
 import { logger } from '../logger.js'
 import { type OrderMessage } from '../types/order-message.js'
+import { assertOrderQueues } from './assert-order-queues.js'
 import { orderQueueNames } from './order-queue-names.js'
 
 type OrderQueueConfig = {
@@ -35,9 +36,9 @@ export class OrderEventConsumer {
     this.channel = await this.connection.createChannel()
 
     await this.channel.prefetch(env.orderQueuePrefetch)
+    await assertOrderQueues(this.channel)
 
     for (const queue of this.queues) {
-      await this.channel.assertQueue(queue.name, { durable: true })
       await this.channel.consume(queue.name, (message) => this.handleMessage(queue, message), {
         noAck: false,
       })

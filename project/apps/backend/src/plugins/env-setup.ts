@@ -31,6 +31,26 @@ const schema: FastifyEnvOptions['schema'] = {
     RABBITMQ_URL: {
       type: 'string',
     },
+    ORDER_RESERVED_QUEUE_NAME: {
+      type: 'string',
+      default: 'order.reserved',
+    },
+    ORDER_SUBMITTED_QUEUE_NAME: {
+      type: 'string',
+      default: 'order.submitted',
+    },
+    ORDER_FAILED_QUEUE_NAME: {
+      type: 'string',
+      default: 'order.failed',
+    },
+    ORDER_TIMEOUT_DELAY_QUEUE_NAME: {
+      type: 'string',
+      default: 'order.timeout.delay',
+    },
+    ORDER_TIMEOUT_TTL_MS: {
+      type: 'string',
+      default: String(15 * 60 * 1000),
+    },
     JWT_ACCESS_SECRET: {
       type: 'string',
     },
