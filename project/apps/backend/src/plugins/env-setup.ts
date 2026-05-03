@@ -1,36 +1,9 @@
 import env, { type FastifyEnvOptions } from '@fastify/env'
+import { type Level } from '@shared/logger'
 import { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
-import pino, { Level } from 'pino'
-
-export type { Level }
-
-type CreateLoggerArgs = {
-  level?: Level
-  isDev: boolean
-}
 
 const logLevels: Level[] = ['fatal', 'error', 'warn', 'info', 'debug', 'trace']
-
-export const createLogger = ({ level = 'info', isDev }: CreateLoggerArgs) =>
-  pino({
-    level,
-    redact: [
-      'req.headers.authorization',
-      'req.headers.cookie',
-      'res.headers.set-cookie',
-      '*.accessToken',
-      '*.refreshToken',
-      '*.token',
-      '*.password',
-    ],
-    formatters: {
-      level: (label) => {
-        return { level: label }
-      },
-    },
-    ...(isDev && { transport: { target: 'pino-pretty' } }),
-  })
 
 const schema: FastifyEnvOptions['schema'] = {
   type: 'object',

@@ -1,18 +1,4 @@
-import { createLogger, envSetupPlugin } from './env-setup.js'
-
-describe('createLogger', () => {
-  it('uses info as default log level', () => {
-    const logger = createLogger({ isDev: false })
-
-    expect(logger.level).toBe('info')
-  })
-
-  it('uses the provided log level', () => {
-    const logger = createLogger({ level: 'error', isDev: false })
-
-    expect(logger.level).toBe('error')
-  })
-})
+import { envSetupPlugin } from './env-setup.js'
 
 describe('envSetupPlugin', () => {
   it('registers @fastify/env with schema and dotenv support', async () => {

@@ -1,4 +1,4 @@
-import { cartRequestSchema, cartSchema, errorResponses, paymentMethodSchema } from '@types'
+import { cartRequestSchema, cartSchema, checkoutResponseSchema, errorResponses, paymentMethodSchema } from '@types'
 import { FastifyPluginAsync } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import createHttpError from 'http-errors'
@@ -55,7 +55,9 @@ export const checkoutPlugin: FastifyPluginAsync = async (fastify) => {
         operationId: 'checkout',
         body: cartRequestSchema,
         response: {
+          200: checkoutResponseSchema,
           ...errorResponses,
+          409: checkoutResponseSchema,
         },
       },
       preHandler: fastify.authenticate,

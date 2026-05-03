@@ -9,6 +9,7 @@ export async function validateCartService(
   cartRequest: CartRequest,
   userId?: number,
   findActivePromo?: boolean,
+  options: { skipReservationChecks?: boolean } = {},
 ): Promise<Cart> {
   const issues: LineIssues[] = []
 
@@ -33,7 +34,9 @@ export async function validateCartService(
   const cartItemPromises = cartRequest.items.map(async ({ quantity, appliedPromoId, productId }) => {
     let product
     try {
-      product = await getProductService(fastify, productId)
+      product = await getProductService(fastify, productId, {
+        includeStock: !options.skipReservationChecks,
+      })
     } catch (e) {
       fastify.log.warn(e)
       return {
@@ -73,22 +76,23 @@ export async function validateCartService(
       warnings.push(LineIssues.PROMO_REMOVED)
     }
 
-    if (promo && userId) {
+    if (promo && userId && !options.skipReservationChecks) {
       const promoUsage = await getUserPromoUsageService(fastify, {
         promoId: promo.id,
         userId,
         productId,
       })
 
-      if (promoItem && promoUsage + quantity > promoItem.limitPerUser) {
+      if (promoItem && promoUsage + quantity > promo.limitPerUser) {
         removalReasons.push(LineIssues.PROMO_USAGE_LIMIT_EXCEEDED)
       }
     }
 
-    if (userId) {
+    if (userId && !options.skipReservationChecks) {
       const productUsage = await getUserProductUsageService(fastify, {
         userId,
         productId,
+        limitResetIntervalDays: product.limitResetIntervalDays,
       })
 
       if (productUsage + quantity > product.limitPerUser) {
@@ -96,12 +100,14 @@ export async function validateCartService(
       }
     }
 
-    fastify.log.info(`Available quantity for product ${productId}: ${product.availableQuantity}`)
-
     let _quantity = quantity
-    if (product.availableQuantity === 0) {
+    if (!options.skipReservationChecks) {
+      fastify.log.info(`Available quantity for product ${productId}: ${product.availableQuantity}`)
+    }
+
+    if (!options.skipReservationChecks && product.availableQuantity === 0) {
       removalReasons.push(LineIssues.OUT_OF_STOCK)
-    } else if (quantity > product.availableQuantity) {
+    } else if (!options.skipReservationChecks && quantity > product.availableQuantity) {
       removalReasons.push(LineIssues.PRODUCT_QUANTITY_CHANGED)
       _quantity = product.availableQuantity
     }

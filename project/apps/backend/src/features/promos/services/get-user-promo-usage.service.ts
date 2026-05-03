@@ -3,10 +3,10 @@ import { PromoUsage } from '@types'
 import { getOrSetNumberCache } from '@utils'
 import { FastifyInstance } from 'fastify/types/instance.js'
 
-export function getUserPromoUsageService(fastify: FastifyInstance, param: PromoUsage): Promise<number> {
+export async function getUserPromoUsageService(fastify: FastifyInstance, param: PromoUsage): Promise<number> {
   const cacheKey = cacheKeys.userPromoUsage(param)
 
-  const usage = getOrSetNumberCache(fastify, cacheKey, async () => {
+  const usage = await getOrSetNumberCache(fastify, cacheKey, async () => {
     const result = await fastify.db
       .select({ usage: sum(orderItemsTable.quantity) })
       .from(ordersTable)

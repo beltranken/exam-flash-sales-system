@@ -5,21 +5,20 @@ import { authPlugin, checkoutPlugin, ordersPlugin, productsPlugin, promosPlugin 
 import {
   authSetupPlugin,
   cacheSetupPlugin,
-  createLogger,
   dbSetupPlugin,
   envSetupPlugin,
-  Level,
   msgBrokerPlugin,
   s3Plugin,
   swaggerSetupPlugin,
 } from '@plugins'
+import { createLogger, type Level } from '@shared/logger'
 import Fastify from 'fastify'
 import { corsSetupPlugin } from './plugins/cors-setup.js'
 import { errorHandlerPlugin } from './plugins/error-handler.js'
 
-const level = process.env.PINO_LOG_LEVEL as Level
+const level = process.env.PINO_LOG_LEVEL as Level | undefined
 const isDev = process.env.NODE_ENV !== 'production'
-const logger = createLogger({ level, isDev })
+const logger = createLogger({ level, isDev }).child({ service: 'backend' })
 
 export const createApp = async () => {
   const fastify = Fastify({

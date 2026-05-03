@@ -20,5 +20,6 @@
   "files.watcherExclude": {
     "**/routeTree.gen.ts": true,
     "**/frontend/src/api": true
-  }
+  },
+  "Lua.diagnostics.globals": ["redis", "KEYS", "ARGV"]
 }

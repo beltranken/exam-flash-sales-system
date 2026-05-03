@@ -15,6 +15,7 @@ export const promosTable = pgTable('promos', {
   status: promoStatusEnum('status').notNull().default(PromoStatus.ACTIVE),
   startDate: timestamp('start_date').notNull(),
   endDate: timestamp('end_date').notNull(),
+  limitPerUser: integer('limit_per_user').notNull().default(1),
   ...timestamps,
 })
 
@@ -26,5 +27,4 @@ export const promoItemsTable = pgTable('promo_items', {
   productId: integer('product_id')
     .notNull()
     .references(() => productsTable.id, { onDelete: 'restrict' }),
-  limitPerUser: integer('limit_per_user').notNull().default(1),
 })

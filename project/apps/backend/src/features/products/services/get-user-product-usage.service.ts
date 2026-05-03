@@ -15,34 +15,39 @@ import { PromoUsage } from '@types'
 import { getOrSetNumberCache } from '@utils'
 import { FastifyInstance } from 'fastify/types/instance.js'
 
-export function getUserProductUsageService(
+export async function getUserProductUsageService(
   fastify: FastifyInstance,
-  param: Omit<PromoUsage, 'promoId'>,
+  param: Omit<PromoUsage, 'promoId'> & { limitResetIntervalDays?: number | null },
 ): Promise<number> {
   const cacheKey = cacheKeys.userProductUsage(param)
 
-  const usage = getOrSetNumberCache(fastify, cacheKey, async () => {
-    const result = await fastify.db
-      .select({ usage: sum(orderItemsTable.quantity) })
-      .from(ordersTable)
-      .innerJoin(orderItemsTable, eq(ordersTable.id, orderItemsTable.orderId))
-      .innerJoin(productsTable, eq(orderItemsTable.productId, productsTable.id))
-      .where(
-        and(
-          not(eq(ordersTable.status, OrderStatus.CANCELLED)),
-          eq(ordersTable.userId, param.userId),
-          eq(orderItemsTable.productId, param.productId),
-          gte(
-            orderItemsTable.createdAt,
-            sql<Date>`now() - (${productsTable.limitResetIntervalDays} * interval '1 day')`,
+  const usage = await getOrSetNumberCache(
+    fastify,
+    cacheKey,
+    async () => {
+      const result = await fastify.db
+        .select({ usage: sum(orderItemsTable.quantity) })
+        .from(ordersTable)
+        .innerJoin(orderItemsTable, eq(ordersTable.id, orderItemsTable.orderId))
+        .innerJoin(productsTable, eq(orderItemsTable.productId, productsTable.id))
+        .where(
+          and(
+            not(eq(ordersTable.status, OrderStatus.CANCELLED)),
+            eq(ordersTable.userId, param.userId),
+            eq(orderItemsTable.productId, param.productId),
+            gte(
+              orderItemsTable.createdAt,
+              sql<Date>`now() - (${productsTable.limitResetIntervalDays} * interval '1 day')`,
+            ),
           ),
-        ),
-      )
+        )
 
-    const usage = Number(result.at(0)?.usage)
+      const usage = Number(result.at(0)?.usage)
 
-    return Number.isFinite(usage) ? usage : 0
-  })
+      return Number.isFinite(usage) ? usage : 0
+    },
+    param.limitResetIntervalDays ? param.limitResetIntervalDays * 24 * 60 * 60 : undefined,
+  )
 
   return usage
 }
