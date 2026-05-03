@@ -16,7 +16,8 @@
     "lint": "pnpm -r lint",
     "test:unit": "pnpm -r --sequential test:unit",
     "test:integration": "pnpm -r --sequential test:integration",
-    "test:coverage": "pnpm -r --sequential test:coverage"
+    "test:coverage": "pnpm -r --sequential test:coverage",
+    "test:stress": "pnpm --filter @tools/stress-test dev"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

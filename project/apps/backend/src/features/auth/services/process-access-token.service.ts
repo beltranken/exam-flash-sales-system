@@ -7,7 +7,7 @@ type ProcessAuthInput = {
 }
 
 export async function processAccessToken(reply: FastifyReply, { userId, email }: ProcessAuthInput) {
-  const jwtAccessExpiryMs = ms('1m')
+  const jwtAccessExpiryMs = ms('1d')
   const token = await reply.jwtSign(
     { userId, email },
     {

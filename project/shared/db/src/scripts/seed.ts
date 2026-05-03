@@ -148,7 +148,7 @@ async function seed() {
         discountPercentage: 20,
         status: PromoStatus.ACTIVE,
         startDate: new Date(),
-        endDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // valid for 30 days
+        endDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // valid for 7 days
         limitPerUser: 1,
       })
       .returning({
