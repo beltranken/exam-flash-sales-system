@@ -1,17 +1,18 @@
-import { validateCart, type ValidateCartResponse } from '@/api'
+import { checkout, validateCart, type ValidateCartResponse } from '@/api'
 import Alert from '@/components/base/Alert'
 import Loading from '@/components/base/Loading'
 import CheckoutSection from '@/features/checkout/CheckoutSection'
+import CheckoutWait from '@/features/checkout/CheckoutWait'
 import OrderSummary from '@/features/checkout/OrderSummary'
 import PaymentMethodList from '@/features/checkout/PaymentMethodList'
 import SignIn from '@/features/users/SignIn'
 import { useAuth } from '@/libs/auth'
 import type { CartRequest } from '@/schemas/cartSchema'
 import { getCart } from '@/utils/helpers/cart-helper'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { Button } from 'flowbite-react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function CheckoutPage() {
   const navigate = useNavigate()
@@ -19,6 +20,9 @@ export default function CheckoutPage() {
 
   const isFirst = useRef(true)
 
+  const [orderId, setOrderId] = useState<string>()
+  const [submissionError, setSubmissionError] = useState<string>()
+  const [paymentMethod, setPaymentMethod] = useState<string>()
   const { isAuthenticated } = useAuth()
 
   // `isFirst` is a one-shot request flag, not query identity.
@@ -27,7 +31,7 @@ export default function CheckoutPage() {
     data: cart,
     isPending,
     isError,
-    refetch,
+    refetch: validateCartRefetch,
   } = useQuery({
     queryKey: ['cart'],
     queryFn: async () => {
@@ -73,9 +77,25 @@ export default function CheckoutPage() {
   })
   /* eslint-enable @tanstack/query/exhaustive-deps */
 
+  const { mutate: checkoutMutate } = useMutation({
+    mutationFn: async (data: CartRequest) => {
+      const response = await checkout({
+        body: data,
+      })
+
+      if (!response.data) {
+        throw new Error(response.error?.message || 'Failed to checkout')
+      } else if (response.status === 409) {
+        return response.data
+      }
+
+      return response.data
+    },
+  })
+
   useEffect(() => {
-    refetch()
-  }, [refetch, isAuthenticated])
+    validateCartRefetch()
+  }, [validateCartRefetch, isAuthenticated])
 
   const handleRemoveItem = (productId: number) => {
     const currentCart = getCart()
@@ -109,7 +129,55 @@ export default function CheckoutPage() {
   }
 
   const handleOnContinue = () => {
-    // navigate({ to: '/checkout/payment' })
+    if (!isAuthenticated) {
+      setSubmissionError('You must verify your email before continuing.')
+      return
+    }
+
+    if (!paymentMethod) {
+      setSubmissionError('Please select a payment method before continuing.')
+      return
+    }
+
+    if (!cart || cart.items.length === 0) {
+      setSubmissionError('Your cart is empty.')
+      return
+    }
+
+    if (cart.items.some((item) => item.removalReasons && item.removalReasons.length > 0)) {
+      setSubmissionError('Please review your cart before continuing.')
+      return
+    }
+
+    checkoutMutate(
+      {
+        appliedPromoId: cart.appliedPromo?.id,
+        items: cart.items.map((item) => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+          appliedPromoId: item.appliedPromo?.id,
+        })),
+      },
+      {
+        onSuccess: (data) => {
+          if (data.isSuccess) {
+            setOrderId(data.orderId)
+          }
+
+          localStorage.setItem('cart', JSON.stringify(data.cart))
+          queryClient.setQueryData<ValidateCartResponse>(['cart'], () => data.cart)
+        },
+        onError: (error) => {
+          setSubmissionError(error instanceof Error ? error.message : 'Failed to checkout')
+        },
+      },
+    )
+  }
+
+  const gotoOrder = (orderId: string) => {
+    navigate({
+      to: `/order/${orderId}`,
+    })
   }
 
   if (isPending)
@@ -121,6 +189,28 @@ export default function CheckoutPage() {
 
   if ((isError && !cart) || cart?.items.length === 0) {
     return <Alert message="Failed to load cart" onClose={redirectToHome} />
+  }
+
+  if (orderId && paymentMethod) {
+    return (
+      <CheckoutWait
+        paymentMethod={paymentMethod}
+        orderId={orderId}
+        onFailed={() => {
+          setOrderId(undefined)
+          validateCartRefetch()
+        }}
+        onCancel={() => {
+          gotoOrder(orderId)
+        }}
+        onCancelPayment={() => {
+          gotoOrder(orderId)
+        }}
+        onPaymentSuccess={() => {
+          gotoOrder(orderId)
+        }}
+      />
+    )
   }
 
   return (
@@ -135,7 +225,7 @@ export default function CheckoutPage() {
         </div>
 
         <CheckoutSection stepNumber={2} title="Select Payment Method">
-          <PaymentMethodList />
+          <PaymentMethodList selectedMethod={paymentMethod} onSelectMethod={setPaymentMethod} />
         </CheckoutSection>
       </div>
 
@@ -148,6 +238,7 @@ export default function CheckoutPage() {
       </div>
 
       {isError && <Alert message="Failed validating the cart" onClose={redirectToHome} />}
+      {submissionError && <Alert message={submissionError} onClose={() => setSubmissionError(undefined)} />}
     </div>
   )
 }

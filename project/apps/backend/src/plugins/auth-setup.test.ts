@@ -2,7 +2,7 @@ import { authenticate, handleJwtVerifyError } from './auth-setup.js'
 
 describe('handleJwtVerifyError', () => {
   it('rethrows non-Error values', () => {
-    expect(() => handleJwtVerifyError('bad-token')).toThrow('bad-token')
+    expect(() => handleJwtVerifyError('bad-token')).toThrow('An unknown error occurred during authentication')
   })
 
   it('throws Unauthorized for JsonWebTokenError', () => {
@@ -14,7 +14,8 @@ describe('handleJwtVerifyError', () => {
 
   it('throws Unauthorized for TokenExpiredError', () => {
     const err = new Error('expired token')
-    err.name = 'TokenExpiredError'
+    ;(err as any).name = 'FastifyError'
+    ;(err as any).code = 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED'
 
     expect(() => handleJwtVerifyError(err)).toThrow('Access token is expired')
   })
@@ -25,6 +26,8 @@ describe('handleJwtVerifyError', () => {
     expect(() => handleJwtVerifyError(err)).toThrow(err)
   })
 })
+
+//} else if (err.name === 'FastifyError' && 'code' in err && err.code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
 
 describe('authenticate', () => {
   it('calls jwtVerify on request', async () => {
@@ -37,7 +40,8 @@ describe('authenticate', () => {
 
   it('maps jwt verify errors through handler', async () => {
     const err = new Error('expired token')
-    err.name = 'TokenExpiredError'
+    ;(err as any).name = 'FastifyError'
+    ;(err as any).code = 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED'
     const jwtVerify = jest.fn().mockRejectedValue(err)
 
     await expect(authenticate({ jwtVerify } as any)).rejects.toThrow('Access token is expired')

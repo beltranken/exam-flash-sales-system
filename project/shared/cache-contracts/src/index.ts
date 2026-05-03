@@ -44,8 +44,8 @@ export const userProductUsage = ({ userId, productId }: UserProductUsageKeyParam
 export const userPromoUsage = ({ promoId, userId, productId }: UserPromoUsageKeyParams) =>
   `userPromoUsage:${promoId}:${userId}:${productId}`
 
+export const order = ({ orderId }: OrderStatusKeyParams) => `order:${orderId}`
 export const orderStatus = ({ orderId }: OrderStatusKeyParams) => `orderStatus:${orderId}`
-
 export const products = ({ page, pageSize }: ProductsKeyParams) => `products:${page}:${pageSize || 'all'}`
 
 export const buildReservationArgs = (items: ReservationItem[], userId: number): string[] =>
@@ -86,6 +86,7 @@ export const cacheKeys = {
   stocksByProduct,
   userProductUsage,
   userPromoUsage,
+  order,
   orderStatus,
   products,
 }

@@ -42,9 +42,9 @@ export enum PaymentStatus {
   FAILED = 'failed',
 }
 
-export enum PaymentProvider {
-  STRIPE = 'stripe',
-  MOCK = 'mock',
+export enum PaymentMethod {
+  STRIPE = 'Stripe',
+  SKIP_PAYMENT = 'Skip Payment',
 }
 
 export enum PromoStatus {

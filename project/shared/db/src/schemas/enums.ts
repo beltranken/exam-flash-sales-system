@@ -1,7 +1,7 @@
 import { pgEnum } from 'drizzle-orm/pg-core'
 import {
   OrderStatus,
-  PaymentProvider,
+  PaymentMethod,
   PaymentStatus,
   PromoStatus,
   StockTransactionType,
@@ -20,6 +20,6 @@ export const orderStatusEnum = pgEnum('order_status', enumToPgEnum(OrderStatus))
 
 export const paymentStatusEnum = pgEnum('payment_status', enumToPgEnum(PaymentStatus))
 
-export const paymentProviderEnum = pgEnum('payment_provider', enumToPgEnum(PaymentProvider))
+export const paymentMethodEnum = pgEnum('payment_method', enumToPgEnum(PaymentMethod))
 
 export const promoStatusEnum = pgEnum('promo_status', enumToPgEnum(PromoStatus))

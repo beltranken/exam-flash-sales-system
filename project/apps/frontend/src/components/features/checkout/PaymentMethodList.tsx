@@ -1,12 +1,14 @@
 import { getPaymentMethods } from '@/api'
 import { useQuery } from '@tanstack/react-query'
 import { Spinner } from 'flowbite-react'
-import { useState } from 'react'
 import PaymentMethod from './PaymentMethod'
 
-export default function PaymentMethodList() {
-  const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
+interface PaymentMethodListProps {
+  selectedMethod?: string
+  onSelectMethod: (method: string) => void
+}
 
+export default function PaymentMethodList({ selectedMethod, onSelectMethod }: Readonly<PaymentMethodListProps>) {
   const {
     data: paymentMethods,
     isError,
@@ -44,11 +46,11 @@ export default function PaymentMethodList() {
   return (
     <ul className="flex flex-col gap-6">
       {paymentMethods.map((method) => (
-        <li key={method.name}>
+        <li key={method.id}>
           <PaymentMethod
             paymentMethod={method}
-            isSelected={selectedMethod === method.name}
-            onClick={() => setSelectedMethod(method.name)}
+            isSelected={selectedMethod === method.id}
+            onClick={() => onSelectMethod(method.id)}
           />
         </li>
       ))}

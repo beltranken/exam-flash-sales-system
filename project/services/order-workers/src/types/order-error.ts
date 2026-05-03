@@ -1,6 +1,6 @@
-import { orderFailureReasons, OrderItem } from '@shared/order-contracts'
+import { OrderFailureReasons, OrderItem } from '@shared/order-contracts'
 
-export type OrderErrorCode = (typeof orderFailureReasons)[keyof typeof orderFailureReasons]
+export type OrderErrorCode = (typeof OrderFailureReasons)[keyof typeof OrderFailureReasons]
 
 interface OrderErrorArgs {
   message: string

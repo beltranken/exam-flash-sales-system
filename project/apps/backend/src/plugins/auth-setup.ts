@@ -9,12 +9,12 @@ export function handleJwtVerifyError(err: unknown) {
   const isError = err instanceof Error
   if (!isError) {
     // Unknown error
-    throw err
+    throw new createHttpError.InternalServerError('An unknown error occurred during authentication')
   }
 
   if (err.name === 'JsonWebTokenError') {
     throw new createHttpError.Unauthorized('Unable to decode jwt')
-  } else if (err.name === 'TokenExpiredError') {
+  } else if (err.name === 'FastifyError' && 'code' in err && err.code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
     throw new createHttpError.Unauthorized('Access token is expired')
   } else {
     // Unknown error

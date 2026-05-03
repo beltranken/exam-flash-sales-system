@@ -13,6 +13,7 @@ export const orderIdSchema = z.uuid()
 export type OrderId = z.infer<typeof orderIdSchema>
 
 export const orderReservedMessageSchema = z.object({
+  status: z.literal('pending'),
   orderId: orderIdSchema,
   userId: z.number().int().positive(),
   note: z.string().optional(),

@@ -9,7 +9,6 @@ import {
   OrderStatus,
   productStocksTable,
   sql,
-  stockEntriesTable,
   stockTransactionsTable,
   StockTransactionType,
   Warehouse,
@@ -40,6 +39,17 @@ export async function handleOrderFailed(message: OrderFailedMessage): Promise<vo
   const items = message.items ?? order?.orderItems ?? []
   const userId = message.userId ?? order?.userId
 
+  if (order && order.status !== OrderStatus.PENDING) {
+    logger.info(
+      {
+        orderId: message.orderId,
+        status: order.status,
+      },
+      'Order is not pending; skipping order failure compensation',
+    )
+    return
+  }
+
   if (items.length === 0) {
     logger.warn({ orderId: message.orderId }, 'No order items found for order.failed message')
     return
@@ -54,17 +64,6 @@ export async function handleOrderFailed(message: OrderFailedMessage): Promise<vo
 
   if (!order) {
     logger.warn({ orderId: message.orderId }, 'Order not found; restored Redis reservation only')
-    return
-  }
-
-  if (order.status !== OrderStatus.PENDING) {
-    logger.info(
-      {
-        orderId: message.orderId,
-        status: order.status,
-      },
-      'Order is not pending; skipping database reservation rollback',
-    )
     return
   }
 
@@ -107,23 +106,6 @@ export async function handleOrderFailed(message: OrderFailedMessage): Promise<vo
         })
         .where(and(eq(productStocksTable.productId, item.productId), eq(productStocksTable.warehouse, Warehouse.MAIN)))
     }
-
-    await tx.insert(stockEntriesTable).values(
-      items.flatMap((item) => [
-        {
-          transactionId: stockTransaction.id,
-          productId: item.productId,
-          warehouse: Warehouse.RESERVE,
-          quantity: -item.quantity,
-        },
-        {
-          transactionId: stockTransaction.id,
-          productId: item.productId,
-          warehouse: Warehouse.MAIN,
-          quantity: item.quantity,
-        },
-      ]),
-    )
   })
 
   logger.info({ orderId: message.orderId }, 'Order failure compensation completed')

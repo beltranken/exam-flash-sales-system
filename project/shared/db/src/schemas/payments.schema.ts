@@ -1,7 +1,7 @@
 import { integer, pgTable, uuid, varchar } from 'drizzle-orm/pg-core'
 import { PaymentStatus } from '../types/enums.js'
 import { timestamps } from './common.js'
-import { paymentProviderEnum, paymentStatusEnum } from './enums.js'
+import { paymentMethodEnum, paymentStatusEnum } from './enums.js'
 import { ordersTable } from './orders.schema.js'
 
 export const paymentsTable = pgTable('payments', {
@@ -9,7 +9,7 @@ export const paymentsTable = pgTable('payments', {
   orderId: uuid('order_id')
     .notNull()
     .references(() => ordersTable.id, { onDelete: 'cascade' }),
-  provider: paymentProviderEnum('provider').notNull(),
+  method: paymentMethodEnum('method').notNull(),
   externalRefId: varchar('external_ref_id', { length: 255 }),
   status: paymentStatusEnum('status').notNull().default(PaymentStatus.PENDING),
   amountInCents: integer('amount_in_cents').notNull(),

@@ -20,3 +20,9 @@ export const orderSchema = createSelectSchema(ordersTable, {
 })
 
 export type Order = z.infer<typeof orderSchema>
+
+export const orderIdParam = z.object({
+  orderId: orderSchema.shape.id,
+})
+
+export type OrderIdParam = z.infer<typeof orderIdParam>

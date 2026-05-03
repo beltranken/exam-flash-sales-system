@@ -1,4 +1,5 @@
-import { cartRequestSchema, cartSchema, checkoutResponseSchema, errorResponses, paymentMethodSchema } from '@types'
+import { paymentMethodResponseSchema } from '@shared/db'
+import { cartRequestSchema, cartSchema, checkoutResponseSchema, errorResponses } from '@types'
 import { FastifyPluginAsync } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import createHttpError from 'http-errors'
@@ -21,12 +22,12 @@ export const checkoutPlugin: FastifyPluginAsync = async (fastify) => {
       schema: {
         operationId: 'getPaymentMethods',
         response: {
-          200: paymentMethodSchema.array(),
+          200: paymentMethodResponseSchema.array(),
           ...errorResponses,
         },
       },
     },
-    getPaymentMethodsRoute(fastify),
+    getPaymentMethodsRoute,
   )
 
   const tempFn = () => {
@@ -60,7 +61,7 @@ export const checkoutPlugin: FastifyPluginAsync = async (fastify) => {
           409: checkoutResponseSchema,
         },
       },
-      preHandler: fastify.authenticate,
+      onRequest: fastify.authenticate,
     },
     checkoutRoute(fastify),
   )
@@ -76,5 +77,18 @@ export const checkoutPlugin: FastifyPluginAsync = async (fastify) => {
       },
     },
     tempFn,
+  )
+
+  typedFastify.post(
+    '/confirm-payment/skip-payment',
+    {
+      schema: {
+        operationId: 'confirmSkipPayment',
+        response: {
+          ...errorResponses,
+        },
+      },
+    },
+    () => {},
   )
 }

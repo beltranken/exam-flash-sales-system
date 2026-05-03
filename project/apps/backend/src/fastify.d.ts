@@ -14,11 +14,6 @@ declare module 'fastify' {
       DATABASE_URL: string
       CACHE_URL: string
       RABBITMQ_URL: string
-      ORDER_RESERVED_QUEUE_NAME: string
-      ORDER_SUBMITTED_QUEUE_NAME: string
-      ORDER_FAILED_QUEUE_NAME: string
-      ORDER_TIMEOUT_DELAY_QUEUE_NAME: string
-      ORDER_TIMEOUT_TTL_MS: string
       PINO_LOG_LEVEL?: string
       NODE_ENV?: string
       JWT_ACCESS_SECRET: string

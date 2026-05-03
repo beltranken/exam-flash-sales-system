@@ -4,21 +4,22 @@ import amqp, { type Channel, type ChannelModel, type ConsumeMessage } from 'amqp
 
 import { logger } from '@logger'
 import {
-  OrderFailedMessage,
+  type OrderFailedMessage,
   orderFailedMessageSchema,
-  orderFailureReasons,
+  OrderFailureReasons,
+  OrderQueueNames,
   orderReservedMessageSchema,
+  type OrderSubmittedMessage,
   orderSubmittedMessageSchema,
 } from '@shared/order-contracts'
 import { ZodError } from 'zod'
 import { env } from '../config/env.js'
 import { handleOrderFailed, handleOrderReserved, handleOrderSubmitted } from '../handlers/index.js'
-import { OrderQueueConfig, RunnableOrderQueueConfig } from '../types/order-config.js'
 import { OrderError } from '../types/order-error.js'
+import { QueueConfig, RunnableQueueConfig } from '../types/queue-config.js'
 import { assertOrderQueues } from './assert-order-queues.js'
-import { orderQueueNames } from './order-queue-names.js'
 
-const defineOrderQueue = <T>(config: OrderQueueConfig<T>): RunnableOrderQueueConfig => ({
+const defineOrderQueue = <T>(config: QueueConfig<T>): RunnableQueueConfig => ({
   name: config.name,
   process: async (rawMessage) => {
     let message: T
@@ -38,7 +39,7 @@ const defineOrderQueue = <T>(config: OrderQueueConfig<T>): RunnableOrderQueueCon
 const prepareOrderValidationError = (error: ZodError, message: unknown) => {
   return new OrderError({
     message: 'Invalid order.reserved message format',
-    code: orderFailureReasons.unknownMessageFormat,
+    code: OrderFailureReasons.unknownMessageFormat,
     cause: error,
     orderId:
       typeof message === 'object' && message && 'orderId' in message && typeof message.orderId === 'string'
@@ -53,19 +54,22 @@ export class OrderEventConsumer {
 
   private readonly queues = [
     defineOrderQueue({
-      name: orderQueueNames.reserved,
+      name: OrderQueueNames.reserved,
       prepareValidationError: prepareOrderValidationError,
       validate: (message) => orderReservedMessageSchema.parse(message),
-      handler: (message) => handleOrderReserved(message),
+      handler: (message) =>
+        handleOrderReserved(message, {
+          publishOrderSubmitted: (submittedMessage) => this.publishSubmitted(submittedMessage),
+        }),
     }),
     defineOrderQueue({
-      name: orderQueueNames.submitted,
+      name: OrderQueueNames.submitted,
       prepareValidationError: prepareOrderValidationError,
       validate: (message) => orderSubmittedMessageSchema.parse(message),
       handler: (message) => handleOrderSubmitted(message),
     }),
     defineOrderQueue({
-      name: orderQueueNames.failed,
+      name: OrderQueueNames.failed,
       prepareValidationError: prepareOrderValidationError,
       validate: (message) => orderFailedMessageSchema.parse(message),
       handler: (message) => handleOrderFailed(message),
@@ -100,13 +104,15 @@ export class OrderEventConsumer {
     logger.info('Order event consumer stopped')
   }
 
-  private async handleMessage(queue: RunnableOrderQueueConfig, message: ConsumeMessage | null): Promise<void> {
+  private async handleMessage(queue: RunnableQueueConfig, message: ConsumeMessage | null): Promise<void> {
     if (!message || !this.channel) {
       return
     }
 
+    let payload: unknown
+
     try {
-      const payload = JSON.parse(message.content.toString())
+      payload = JSON.parse(message.content.toString())
       await queue.process(payload)
       this.channel.ack(message)
     } catch (error) {
@@ -124,6 +130,17 @@ export class OrderEventConsumer {
           orderId: error.orderId,
           reason: error.code,
         })
+      } else if (queue.name === OrderQueueNames.reserved) {
+        const reservedMessage = orderReservedMessageSchema.safeParse(payload)
+
+        if (reservedMessage.success) {
+          didPublishFailed = this.publishFailed({
+            orderId: reservedMessage.data.orderId,
+            userId: reservedMessage.data.userId,
+            items: reservedMessage.data.items,
+            reason: OrderFailureReasons.reservationFailed,
+          })
+        }
       }
 
       if (didPublishFailed) {
@@ -140,9 +157,24 @@ export class OrderEventConsumer {
       throw new Error('RabbitMQ channel is not available.')
     }
 
-    return this.channel.sendToQueue(orderQueueNames.failed, Buffer.from(JSON.stringify(message)), {
+    return this.channel.sendToQueue(OrderQueueNames.failed, Buffer.from(JSON.stringify(message)), {
       persistent: true,
       contentType: 'application/json',
     })
+  }
+
+  private publishSubmitted(message: OrderSubmittedMessage): void {
+    if (!this.channel) {
+      throw new Error('RabbitMQ channel is not available.')
+    }
+
+    const didPublish = this.channel.sendToQueue(OrderQueueNames.submitted, Buffer.from(JSON.stringify(message)), {
+      persistent: true,
+      contentType: 'application/json',
+    })
+
+    if (!didPublish) {
+      logger.warn({ orderId: message.orderId }, 'RabbitMQ write buffer is full after publishing order.submitted')
+    }
   }
 }

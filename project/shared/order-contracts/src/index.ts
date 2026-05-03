@@ -1,12 +1,12 @@
 export * from './schemas.js'
 
-export const orderFailureReasons = {
+export const OrderFailureReasons = {
   unknownMessageFormat: 'UNKNOWN_MESSAGE_FORMAT',
   reservationFailed: 'RESERVATION_FAILED',
   reservationTimeOut: 'RESERVATION_TIMEOUT',
 } as const
 
-export const paymentFailureReasons = {
+export const PaymentFailureReasons = {
   paymentFailed: 'PAYMENT_FAILED',
   paymentTimeout: 'PAYMENT_TIMEOUT',
 } as const
@@ -18,4 +18,13 @@ export const OrderQueueNames = {
   timeoutDelay: 'order.timeout.delay',
 } as const
 
-export const orderTimeoutTtlMs = 15 * 60 * 1000
+export const PaymentQueueNames = {
+  made: 'payment.made',
+  failed: 'payment.failed',
+  confirmed: 'payment.confirmed',
+  timeoutDelay: 'payment.timeout.delay',
+} as const
+
+export const orderTimeoutTtlMs = 15 * 60 * 1000 // 15 minutes
+
+export const paymentTimeoutTtlMs = 5 * 60 * 1000 // 5 minutes

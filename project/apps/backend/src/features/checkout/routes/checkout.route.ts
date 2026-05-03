@@ -1,5 +1,6 @@
 import { getUser } from '@features/auth/services/get-user.service.js'
-import { OrderReservedMessage } from '@shared/order-contracts'
+import { cacheKeys } from '@shared/cache-contracts'
+import { OrderReservedMessage, orderTimeoutTtlMs } from '@shared/order-contracts'
 import { CartRequest, CheckoutResponse } from '@types'
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import createHttpError from 'http-errors'
@@ -20,10 +21,12 @@ export interface CheckoutRoute {
 
 export function checkoutRoute(fastify: FastifyInstance) {
   return async function (req: FastifyRequest<CheckoutRoute>, reply: FastifyReply<CheckoutRoute>) {
+    fastify.log.info('Processing checkout request for user %s', req.user?.userId)
+
     const user = await getUser(fastify, req.user.userId)
 
     if (!user) {
-      throw createHttpError(401, 'Unauthorized')
+      throw createHttpError.BadRequest('Unable to load user')
     }
 
     const cart = await validateCartService(fastify, req.body, req.user.userId, false, {
@@ -53,6 +56,7 @@ export function checkoutRoute(fastify: FastifyInstance) {
       hasReservations = true
 
       const orderMessage: OrderReservedMessage = {
+        status: 'pending',
         orderId,
         userId: user.id,
         items: cart.items.map((item) => ({
@@ -63,10 +67,16 @@ export function checkoutRoute(fastify: FastifyInstance) {
           discountPercentage: item.appliedPromo?.discountPercentage ?? 0,
         })),
       }
-      hasReservations = true
 
       await fastify.mq.publishOrderReserved(orderMessage)
       hasOrderQueuePublished = true
+
+      const orderKey = cacheKeys.order({ orderId })
+      await fastify.redis.set(orderKey, JSON.stringify(orderMessage))
+
+      let ttl = orderTimeoutTtlMs / 1000
+      ttl += 60 // add buffer to ensure key frontend don't
+      await fastify.redis.expire(orderKey, ttl)
 
       await fastify.mq.publishOrderTimeout(orderId)
 
@@ -82,7 +92,15 @@ export function checkoutRoute(fastify: FastifyInstance) {
         try {
           await fastify.mq.publishOrderFailed({
             orderId,
+            userId: user.id,
             reason: 'Checkout failed after order was reserved. Manual review may be required.',
+            items: trackerCartItems.map((item) => ({
+              productId: item.product.id,
+              quantity: item.quantity,
+              priceInCents: item.product.priceInCents,
+              appliedPromoId: item.appliedPromo?.id,
+              discountPercentage: item.appliedPromo?.discountPercentage ?? 0,
+            })),
           })
         } catch (recoveryError) {
           fastify.log.error(
@@ -115,6 +133,15 @@ export function checkoutRoute(fastify: FastifyInstance) {
         reply.status(409).send({
           isSuccess: false,
           message: 'Cart requires review before checkout',
+          cart: toCheckoutResponseCart(cart, trackerCartItems),
+        })
+        return
+      }
+
+      if (createHttpError.isHttpError(e)) {
+        reply.status(e.statusCode).send({
+          isSuccess: false,
+          message: e.message,
           cart: toCheckoutResponseCart(cart, trackerCartItems),
         })
         return
