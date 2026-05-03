@@ -1,5 +1,5 @@
-import { refreshToken } from '@/api'
-import { client } from '@/api/client.gen'
+import { refreshToken } from '@shared/api-client'
+import { client } from '@shared/api-client/client.gen'
 import { clearAuthSession, getAccessToken, setAuthSession } from '@/libs/auth'
 import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 

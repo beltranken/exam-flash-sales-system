@@ -13,13 +13,17 @@
     "./client": {
       "types": "./dist/api/client/index.d.ts",
       "default": "./dist/api/client/index.js"
+    },
+    "./client.gen": {
+      "types": "./dist/api/client.gen.d.ts",
+      "default": "./dist/api/client.gen.js"
     }
   },
   "scripts": {
-    "generate": "openapi-ts",
-    "generate:watch": "nodemon --watch ../../apps/backend/openapi.json --watch openapi-ts.config.ts --exec openapi-ts",
-    "build": "tsc -p tsconfig.build.json",
-    "dev": "tsc -w -p tsconfig.build.json",
+    "generate:api": "openapi-ts",
+    "generate:api:watch": "nodemon --watch ../../apps/backend/openapi.json --watch openapi-ts.config.ts --exec pnpm run build",
+    "compile": "tsc -p tsconfig.build.json",
+    "build": "pnpm run generate:api && pnpm run compile",
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {

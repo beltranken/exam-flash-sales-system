@@ -2,15 +2,16 @@ import path from 'node:path'
 import type { AliasOptions } from 'vite'
 
 const srcPath = path.resolve(__dirname, 'src')
+const sharedApiClientPath = path.resolve(__dirname, '../../shared/api-client/src/api')
 
 export const alias: AliasOptions = [
   {
-    find: /^@\/api$/,
-    replacement: path.resolve(srcPath, 'api/index.ts'),
+    find: /^@shared\/api-client$/,
+    replacement: path.resolve(sharedApiClientPath, 'index.ts'),
   },
   {
-    find: /^@\/api\/(.*)$/,
-    replacement: path.resolve(srcPath, 'api/$1'),
+    find: /^@shared\/api-client\/client\.gen$/,
+    replacement: path.resolve(sharedApiClientPath, 'client.gen.ts'),
   },
   {
     find: /^@\/components\/(.*)$/,

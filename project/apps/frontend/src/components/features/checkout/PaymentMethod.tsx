@@ -1,4 +1,4 @@
-import type { GetPaymentMethodsResponse } from '@/api'
+import type { GetPaymentMethodsResponse } from '@shared/api-client'
 import clsx from 'clsx'
 import { Radio } from 'flowbite-react'
 

@@ -21,20 +21,22 @@ export async function makeSkipPaymentSkipService(
     throw new createHttpError.Conflict('Order not found for user')
   }
 
-  const totalOrderAmount = order.orderItems.reduce(
-    (sum, item) => sum + item.priceInCents * item.quantity * (1 - item.discountPercentage / 100),
-    0,
+  const totalOrderAmount = Math.floor(
+    order.orderItems.reduce(
+      (sum, item) => sum + item.priceInCents * item.quantity * (1 - item.discountPercentage / 100),
+      0,
+    ),
   )
 
-  const totalPayments = order.payments.reduce((sum, payment) => sum + payment.amountInCents, 0)
-  if (totalPayments >= totalOrderAmount) {
+  const totalPaymentsInCents = order.payments.reduce((sum, payment) => sum + payment.amountInCents, 0)
+  if (totalPaymentsInCents >= totalOrderAmount) {
     throw new createHttpError.Conflict('Order is already fully paid')
   }
 
   await fastify.db.insert(paymentsTable).values({
     orderId: data.orderId,
     method: data.paymentMethod,
-    amountInCents: totalOrderAmount - totalPayments,
+    amountInCents: totalOrderAmount - totalPaymentsInCents,
     status: PaymentStatus.PAID,
   })
 }

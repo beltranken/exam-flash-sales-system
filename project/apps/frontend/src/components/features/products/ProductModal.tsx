@@ -1,4 +1,4 @@
-import { getProductById, type GetProductStockByIdData } from '@/api'
+import { getProductById, type GetProductStockByIdData } from '@shared/api-client'
 import CloseIcon from '@/icons/CloseIcon'
 import { addToCart } from '@/utils/helpers/cart-helper'
 import { preparePrice } from '@/utils/preparePrice'

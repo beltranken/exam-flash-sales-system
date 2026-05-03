@@ -1,4 +1,4 @@
-import type { ValidateCartResponse } from '@/api'
+import type { ValidateCartResponse } from '@shared/api-client'
 import TrashIcon from '@/icons/TrashIcon'
 import clsx from 'clsx'
 import ProductImage from '../products/ProductImage'

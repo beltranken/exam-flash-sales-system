@@ -1,4 +1,4 @@
-import { checkout, validateCart, type ValidateCartResponse } from '@/api'
+import { checkout, validateCart, type ValidateCartResponse } from '@shared/api-client'
 import Alert from '@/components/base/Alert'
 import Loading from '@/components/base/Loading'
 import CheckoutSection from '@/features/checkout/CheckoutSection'

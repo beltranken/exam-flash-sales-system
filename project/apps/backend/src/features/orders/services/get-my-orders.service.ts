@@ -11,5 +11,13 @@ export async function getMyOrdersService(fastify: FastifyInstance, userId: numbe
     },
   })
 
-  return orders
+  return orders.map((order) => ({
+    ...order,
+    totalAmountInCents: Math.floor(
+      order.orderItems.reduce(
+        (sum, item) => sum + item.priceInCents * item.quantity * (1 - item.discountPercentage / 100),
+        0,
+      ),
+    ),
+  }))
 }

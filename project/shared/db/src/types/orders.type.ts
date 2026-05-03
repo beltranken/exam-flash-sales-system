@@ -17,6 +17,7 @@ export type OrderItem = z.infer<typeof orderItemSchema>
 export const orderSchema = createSelectSchema(ordersTable, {
   ...timeStampSchema.shape,
 }).extend({
+  totalAmountInCents: z.number(),
   orderItems: orderItemSchema.array().optional().nullable(),
   payments: paymentSchema.array().optional().nullable(),
 })

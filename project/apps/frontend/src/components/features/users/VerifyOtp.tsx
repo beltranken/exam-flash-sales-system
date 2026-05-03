@@ -1,4 +1,4 @@
-import { signInConfirm, type SignInConfirmResponse } from '@/api'
+import { signInConfirm, type SignInConfirmResponse } from '@shared/api-client'
 import { useAuth } from '@/libs/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'

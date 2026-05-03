@@ -1,4 +1,4 @@
-import type { ValidateCartResponse } from '@/api'
+import type { ValidateCartResponse } from '@shared/api-client'
 import OrderItem from './OrderItem'
 
 interface OrderItemsProps {

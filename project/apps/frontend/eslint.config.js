@@ -22,15 +22,9 @@ export default defineConfig([
     },
   },
   {
-    files: ['**/*.test.ts', '**/*.spec.ts', 'src/api/**'],
+    files: ['**/*.test.ts', '**/*.spec.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
-  {
-    files: ['src/api/**'],
-    rules: {
-      '@typescript-eslint/ban-ts-comment': 'off',
     },
   },
 ])

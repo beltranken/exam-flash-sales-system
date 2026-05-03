@@ -1,4 +1,4 @@
-import { getPromos } from '@/api/sdk.gen'
+import { getPromos } from '@shared/api-client'
 import { useQuery } from '@tanstack/react-query'
 import { Button, Spinner } from 'flowbite-react'
 import PromoCounter from './PromoCounter'

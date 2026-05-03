@@ -1,4 +1,4 @@
-import { client } from '@/api/client.gen'
+import { client } from '@shared/api-client/client.gen'
 import setupInterceptors from './setup-interceptor'
 
 export function setupApiClient() {

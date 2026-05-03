@@ -1,4 +1,4 @@
-import { getProducts } from '@/api'
+import { getProducts } from '@shared/api-client'
 import SideBarCategories from '@/components/features/products/SidebarCategories'
 import { mainCategories, subCategories } from '@/constants/categories'
 import ProductList from '@/features/products/ProductList'

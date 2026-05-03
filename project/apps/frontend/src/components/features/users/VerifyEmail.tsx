@@ -1,4 +1,4 @@
-import { signIn } from '@/api'
+import { signIn } from '@shared/api-client'
 import CheckIcon from '@/icons/CheckIcon'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'

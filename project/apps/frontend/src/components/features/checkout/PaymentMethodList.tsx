@@ -1,4 +1,4 @@
-import { getPaymentMethods } from '@/api'
+import { getPaymentMethods } from '@shared/api-client'
 import { useQuery } from '@tanstack/react-query'
 import { Spinner } from 'flowbite-react'
 import PaymentMethod from './PaymentMethod'

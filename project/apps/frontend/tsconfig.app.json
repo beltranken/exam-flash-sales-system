@@ -22,8 +22,8 @@
     "noFallthroughCasesInSwitch": true,
 
     "paths": {
-      "@/api": ["./src/api/index"],
-      "@/api/*": ["./src/api/*"],
+      "@shared/api-client": ["../../shared/api-client/src/api/index"],
+      "@shared/api-client/client.gen": ["../../shared/api-client/src/api/client.gen"],
       "@/schemas/*": ["./src/libs/schemas/*"],
       "@/schemas": ["./src/libs/schemas/index"],
       "@/constants/*": ["./src/libs/constants/*"],

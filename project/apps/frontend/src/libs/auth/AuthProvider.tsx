@@ -1,4 +1,4 @@
-import { refreshToken } from '@/api'
+import { refreshToken } from '@shared/api-client'
 import { useMutation } from '@tanstack/react-query'
 import { useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react'
 import { AuthContext, type AuthContextValue } from './auth-context'

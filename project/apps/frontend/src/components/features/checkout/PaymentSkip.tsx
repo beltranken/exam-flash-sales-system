@@ -1,4 +1,4 @@
-import { makeSkipPayment, type MakeSkipPaymentData } from '@/api'
+import { makeSkipPayment, type MakeSkipPaymentData } from '@shared/api-client'
 import { useMutation } from '@tanstack/react-query'
 import { Button } from 'flowbite-react'
 

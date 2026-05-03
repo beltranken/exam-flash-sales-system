@@ -1,4 +1,4 @@
-import { getMyOrderStatus } from '@/api'
+import { getMyOrderStatus } from '@shared/api-client'
 import Alert from '@/components/base/Alert'
 import { useQuery } from '@tanstack/react-query'
 import { Spinner } from 'flowbite-react'

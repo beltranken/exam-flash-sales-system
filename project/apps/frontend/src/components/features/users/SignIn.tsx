@@ -1,4 +1,4 @@
-import type { SignInConfirmResponse } from '@/api/types.gen'
+import type { SignInConfirmResponse } from '@shared/api-client'
 import { useAuth } from '@/libs/auth'
 import { useState } from 'react'
 import VerifyEmail from './VerifyEmail'

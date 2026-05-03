@@ -1,4 +1,4 @@
-import { type GetProductByIdResponse, type GetProductsResponse } from '@/api'
+import { type GetProductByIdResponse, type GetProductsResponse } from '@shared/api-client'
 import { Spinner } from 'flowbite-react'
 import { useState } from 'react'
 import ProductCard from './ProductCard'

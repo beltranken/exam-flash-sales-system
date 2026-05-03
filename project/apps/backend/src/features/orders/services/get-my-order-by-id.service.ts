@@ -33,5 +33,13 @@ export async function getMyOrderByIdService(
     throw new createHttpError.NotFound('Order not found')
   }
 
-  return order
+  return {
+    ...order,
+    totalAmountInCents: Math.floor(
+      order.orderItems.reduce(
+        (sum, item) => sum + item.priceInCents * item.quantity * (1 - item.discountPercentage / 100),
+        0,
+      ),
+    ),
+  }
 }

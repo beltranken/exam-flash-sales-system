@@ -1,4 +1,4 @@
-import type { GetProductByIdResponse } from '@/api'
+import type { GetProductByIdResponse } from '@shared/api-client'
 import { preparePrice } from '@/utils/preparePrice'
 import ProductImage from './ProductImage'
 

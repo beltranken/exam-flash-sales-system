@@ -1,4 +1,4 @@
-import type { GetPromosResponse, ValidateCartResponse } from '@/api'
+import type { GetPromosResponse, ValidateCartResponse } from '@shared/api-client'
 import CheckIcon from '@/icons/CheckIcon'
 import { centToDollars } from '@/utils/centToDollars'
 import { HR } from 'flowbite-react'
