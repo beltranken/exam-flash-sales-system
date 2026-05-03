@@ -294,6 +294,25 @@ importers:
         specifier: ^5.6.3
         version: 5.9.3
 
+  shared/api-client:
+    dependencies:
+      axios:
+        specifier: ^1.15.2
+        version: 1.15.2
+    devDependencies:
+      '@hey-api/openapi-ts':
+        specifier: 0.97.0
+        version: 0.97.0(magicast@0.5.2)(typescript@5.9.3)
+      '@types/node':
+        specifier: ^22.19.17
+        version: 22.19.17
+      nodemon:
+        specifier: ^3.1.14
+        version: 3.1.14
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
   shared/cache-contracts:
     devDependencies:
       '@types/node':
@@ -356,6 +375,21 @@ importers:
         specifier: ^4.3.6
         version: 4.3.6
     devDependencies:
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
+  tools/stress-test:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.1
+        version: 22.19.17
+      node:
+        specifier: ^24.15.0
+        version: 24.15.0
+      tsx:
+        specifier: ^4.19.2
+        version: 4.21.0
       typescript:
         specifier: ^5.6.3
         version: 5.9.3
@@ -3674,11 +3708,19 @@ packages:
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
+  node-bin-setup@1.1.4:
+    resolution: {integrity: sha512-vWNHOne0ZUavArqPP5LJta50+S8R261Fr5SvGul37HbEDcowvLjwdvd0ZeSr0r2lTSrPxl6okq9QUw8BFGiAxA==}
+
   node-int64@0.4.0:
     resolution: {integrity: sha512-O5lz91xSOeoXP6DulyHfllpq+Eg00MWitZIbtPfoSEvqIHdl5gfcY6hYzDWnj0qD5tz52PI08u9qUvSVeUBeHw==}
 
   node-releases@2.0.38:
     resolution: {integrity: sha512-3qT/88Y3FbH/Kx4szpQQ4HzUbVrHPKTLVpVocKiLfoYvw9XSGOX2FmD2d6DrXbVYyAQTF2HeF6My8jmzx7/CRw==}
+
+  node@24.15.0:
+    resolution: {integrity: sha512-hQ1r8QpNk4lovkBOFSBWqnUcZS4CT5kOx1L35AWcERMK8oDHWYUszsGtFKML+vIIz01pNq7XMoJjeZmRIJc6og==}
+    engines: {npm: '>=5.0.0'}
+    hasBin: true
 
   nodemon@3.1.14:
     resolution: {integrity: sha512-jakjZi93UtB3jHMWsXL68FXSAosbLfY0In5gtKq3niLSkrWznrVBzXFNOEMJUfc9+Ke7SHWoAZsiMkNP3vq6Jw==}
@@ -5549,6 +5591,22 @@ snapshots:
       '@types/json-schema': 7.0.15
       yaml: 2.8.3
 
+  '@hey-api/openapi-ts@0.97.0(magicast@0.5.2)(typescript@5.9.3)':
+    dependencies:
+      '@hey-api/codegen-core': 0.8.1(magicast@0.5.2)
+      '@hey-api/json-schema-ref-parser': 1.4.1
+      '@hey-api/shared': 0.4.2(magicast@0.5.2)
+      '@hey-api/spec-types': 0.2.0
+      '@hey-api/types': 0.1.4
+      '@lukeed/ms': 2.0.2
+      ansi-colors: 4.1.3
+      color-support: 1.1.3
+      commander: 14.0.3
+      get-tsconfig: 4.14.0
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - magicast
+
   '@hey-api/openapi-ts@0.97.0(magicast@0.5.2)(typescript@6.0.3)':
     dependencies:
       '@hey-api/codegen-core': 0.8.1(magicast@0.5.2)
@@ -6507,7 +6565,7 @@ snapshots:
 
   '@types/amqplib@0.10.8':
     dependencies:
-      '@types/node': 22.19.17
+      '@types/node': 24.12.2
 
   '@types/babel__core@7.20.5':
     dependencies:
@@ -8467,9 +8525,15 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
+  node-bin-setup@1.1.4: {}
+
   node-int64@0.4.0: {}
 
   node-releases@2.0.38: {}
+
+  node@24.15.0:
+    dependencies:
+      node-bin-setup: 1.1.4
 
   nodemon@3.1.14:
     dependencies:

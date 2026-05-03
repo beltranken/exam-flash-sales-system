@@ -1,7 +1,7 @@
 import { processAccessToken } from './process-access-token.service.js'
 
 describe('processAccessToken', () => {
-  it('signs access token with one minute expiry', async () => {
+  it('signs access token with one day expiry', async () => {
     const jwtSign = jest.fn().mockResolvedValue('access-token')
     const reply = { jwtSign } as any
 
@@ -11,7 +11,7 @@ describe('processAccessToken', () => {
     })
 
     expect(jwtSign).toHaveBeenCalledTimes(1)
-    expect(jwtSign).toHaveBeenCalledWith({ userId: 7, email: 'user@example.com' }, { expiresIn: 60 })
+    expect(jwtSign).toHaveBeenCalledWith({ userId: 7, email: 'user@example.com' }, { expiresIn: 60 * 60 * 24 })
     expect(result).toEqual({ token: 'access-token' })
   })
 })
