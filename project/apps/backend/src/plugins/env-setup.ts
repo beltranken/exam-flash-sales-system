@@ -13,6 +13,10 @@ const schema: FastifyEnvOptions['schema'] = {
       type: 'string',
       default: '8000',
     },
+    HOST: {
+      type: 'string',
+      default: '0.0.0.0',
+    },
     NODE_ENV: {
       type: 'string',
       default: 'development',

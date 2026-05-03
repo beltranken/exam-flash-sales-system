@@ -9,6 +9,7 @@ import {
   checkoutRoute,
   GetPaymentMethodsRoute,
   getPaymentMethodsRoute,
+  MakeSkipPaymentRoute,
   makeSkipPaymentRoute,
   validateCartRoute,
   ValidateCartRoute,
@@ -80,7 +81,7 @@ export const checkoutPlugin: FastifyPluginAsync = async (fastify) => {
     tempFn,
   )
 
-  typedFastify.post(
+  typedFastify.post<MakeSkipPaymentRoute>(
     '/payment/skip-payment',
     {
       schema: {

@@ -3,6 +3,7 @@ import { createApp } from './app.js'
 const main = async () => {
   const fastify = await createApp()
   const port = Number(fastify.config.PORT)
+  const host = fastify.config.HOST
 
   ;['SIGINT', 'SIGTERM', 'SIGQUIT'].forEach((signal) => {
     process.on(signal, async () => {
@@ -18,7 +19,7 @@ const main = async () => {
   })
 
   try {
-    fastify.listen({ port }, () => {
+    fastify.listen({ port, host }, () => {
       fastify.log.info(`Listening on ${port}...`)
     })
   } catch (error) {

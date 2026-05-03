@@ -11,6 +11,7 @@ declare module 'fastify' {
   }> {
     config: {
       PORT: string
+      HOST?: string
       DATABASE_URL: string
       CACHE_URL: string
       RABBITMQ_URL: string
