@@ -89,7 +89,6 @@ async function insertSeedData(db: Db, promoId: number) {
       await tx.insert(promoItemsTable).values({
         promoId,
         productId: product.id,
-        limitPerUser: 1,
       })
     }
 
@@ -150,6 +149,7 @@ async function seed() {
         status: PromoStatus.ACTIVE,
         startDate: new Date(),
         endDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // valid for 30 days
+        limitPerUser: 1,
       })
       .returning({
         id: promosTable.id,

@@ -1,7 +1,7 @@
-import { OrderConsumer } from './queues/order.consumer.js'
+import { OrderEventConsumer } from './queues/order-event.consumer.js'
 import { logger } from './logger.js'
 
-const consumer = new OrderConsumer()
+const consumer = new OrderEventConsumer()
 
 async function main(): Promise<void> {
   await consumer.start()

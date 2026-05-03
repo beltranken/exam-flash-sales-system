@@ -60,18 +60,19 @@ export function checkoutRoute(fastify: FastifyInstance) {
         orderId,
       })
     } catch (e) {
-      // Rollback any successful reservations in case of error
-      if (hasReservations) {
+      // If order message was published, rollback will be handle by order-worker
+      if (hasOrderQueuePublished) {
+        // TODO: publish order cancellation message to rollback any downstream processing if needed
+      }
+      // Else if reservations were made but an error occurred before publishing order message, rollback here
+      else if (hasReservations) {
+        // Rollback any successful reservations in case of error
         try {
           await rollbackCartReservationsService(fastify, trackerCartItems, req.user.userId)
           markRollbackReservationFailures(trackerCartItems)
         } catch (rollbackError) {
           fastify.log.error(rollbackError, 'Failed to rollback reservations after checkout failure')
         }
-      }
-
-      if (hasOrderQueuePublished) {
-        // TODO: publish order cancellation message to rollback any downstream processing if needed
       }
 
       if (createHttpError.isHttpError(e) && e.statusCode === 409) {
