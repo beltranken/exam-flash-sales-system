@@ -1,3 +1,4 @@
+import { MakePaymentRequest } from '@shared/db'
 import {
   OrderId,
   OrderQueueNames,
@@ -114,21 +115,21 @@ const mqPluginImpl: FastifyPluginAsync = async (fastify) => {
       ...options,
     })
 
-  const publishPaymentMade = (message: OrderReservedMessage, options?: PublishOrderEventOptions) =>
+  const publishPaymentMade = (message: MakePaymentRequest, options?: PublishOrderEventOptions) =>
     publishToQueue({
       queue: PaymentQueueNames.made,
       message,
       ...options,
     })
 
-  const publishPaymentFailed = (message: OrderReservedMessage, options?: PublishOrderEventOptions) =>
+  const publishPaymentFailed = (message: MakePaymentRequest, options?: PublishOrderEventOptions) =>
     publishToQueue({
       queue: PaymentQueueNames.failed,
       message,
       ...options,
     })
 
-  const publishPaymentConfirmed = (message: OrderReservedMessage, options?: PublishOrderEventOptions) =>
+  const publishPaymentConfirmed = (message: MakePaymentRequest, options?: PublishOrderEventOptions) =>
     publishToQueue({
       queue: PaymentQueueNames.confirmed,
       message,

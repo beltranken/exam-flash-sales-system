@@ -1,5 +1,5 @@
-import { paymentMethodResponseSchema } from '@shared/db'
-import { cartRequestSchema, cartSchema, checkoutResponseSchema, errorResponses } from '@types'
+import { makePaymentRequestSchema, paymentMethodResponseSchema } from '@shared/db'
+import { cartRequestSchema, cartSchema, checkoutResponseSchema, errorResponses, noContentResponse } from '@types'
 import { FastifyPluginAsync } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import createHttpError from 'http-errors'
@@ -9,6 +9,7 @@ import {
   checkoutRoute,
   GetPaymentMethodsRoute,
   getPaymentMethodsRoute,
+  makeSkipPaymentRoute,
   validateCartRoute,
   ValidateCartRoute,
 } from './routes/index.js'
@@ -80,15 +81,18 @@ export const checkoutPlugin: FastifyPluginAsync = async (fastify) => {
   )
 
   typedFastify.post(
-    '/confirm-payment/skip-payment',
+    '/payment/skip-payment',
     {
       schema: {
-        operationId: 'confirmSkipPayment',
+        operationId: 'makeSkipPayment',
+        body: makePaymentRequestSchema,
         response: {
+          ...noContentResponse,
           ...errorResponses,
         },
       },
+      onRequest: fastify.authenticate,
     },
-    () => {},
+    makeSkipPaymentRoute(fastify),
   )
 }

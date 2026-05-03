@@ -9,12 +9,12 @@ export const orderItemSchema = z.object({
 })
 export type OrderItem = z.infer<typeof orderItemSchema>
 
-export const orderIdSchema = z.uuid()
-export type OrderId = z.infer<typeof orderIdSchema>
+export const uuidSchema = z.uuid()
+export type OrderId = z.infer<typeof uuidSchema>
 
 export const orderReservedMessageSchema = z.object({
   status: z.literal('pending'),
-  orderId: orderIdSchema,
+  orderId: uuidSchema,
   userId: z.number().int().positive(),
   note: z.string().optional(),
   items: z.array(orderItemSchema),
@@ -23,7 +23,7 @@ export const orderReservedMessageSchema = z.object({
 export type OrderReservedMessage = z.infer<typeof orderReservedMessageSchema>
 
 export const orderFailedMessageSchema = z.object({
-  orderId: orderIdSchema.optional(),
+  orderId: uuidSchema.optional(),
   reason: z.string(),
   userId: z.number().int().positive().optional(),
   items: z.array(orderItemSchema).optional(),
@@ -31,7 +31,7 @@ export const orderFailedMessageSchema = z.object({
 export type OrderFailedMessage = z.infer<typeof orderFailedMessageSchema>
 
 const objOrderIdSchema = z.object({
-  orderId: orderIdSchema,
+  orderId: uuidSchema,
 })
 
 export const orderSubmittedMessageSchema = objOrderIdSchema
@@ -39,3 +39,10 @@ export type OrderSubmittedMessage = z.infer<typeof orderSubmittedMessageSchema>
 
 export const orderTimeoutMessageSchema = objOrderIdSchema
 export type OrderTimeoutMessage = z.infer<typeof orderTimeoutMessageSchema>
+
+export const makePaymentMessageSchema = z.object({
+  orderId: uuidSchema,
+  paymentMethod: z.string(),
+  paymentId: uuidSchema,
+})
+export type MakePaymentMessage = z.infer<typeof makePaymentMessageSchema>

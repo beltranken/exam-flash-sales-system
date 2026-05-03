@@ -10,7 +10,7 @@ interface PaymentProps {
   onSuccess: () => void
 }
 
-export default function Payment({ paymentMethod, onClose, onSuccess }: Readonly<PaymentProps>) {
+export default function Payment({ orderId, paymentMethod, onClose, onSuccess }: Readonly<PaymentProps>) {
   const [isConfirming, setIsConfirming] = useState(false)
 
   const handleOnClose = () => {
@@ -51,7 +51,11 @@ export default function Payment({ paymentMethod, onClose, onSuccess }: Readonly<
           </div>
         )}
 
-        {paymentMethod === 'Stripe' ? <PaymentStripe onSuccess={onSuccess} /> : <PaymentSkip onSuccess={onSuccess} />}
+        {paymentMethod === 'Stripe' ? (
+          <PaymentStripe onSuccess={onSuccess} orderId={orderId} />
+        ) : (
+          <PaymentSkip onSuccess={onSuccess} orderId={orderId} />
+        )}
       </ModalBody>
     </Modal>
   )

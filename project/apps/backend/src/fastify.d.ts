@@ -34,6 +34,10 @@ declare module 'fastify' {
       publishOrderSubmitted: (message: OrderSubmittedMessage) => Promise<void>
       publishOrderFailed: (message: OrderFailedMessage) => Promise<void>
       publishOrderTimeout: (orderId: string) => Promise<void>
+      publishPaymentMade: (message: MakePaymentMessage) => Promise<void>
+      publishPaymentFailed: (message: MakePaymentMessage) => Promise<void>
+      publishPaymentConfirmed: (message: MakePaymentMessage) => Promise<void>
+      publishPaymentTimeout: (orderId: string) => Promise<void>
     }
     s3: {
       signUrl: (key: string) => Promise<string | null>

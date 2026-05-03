@@ -13,7 +13,15 @@ export default function PromoCard() {
         throw new Error(response.error.message)
       }
 
-      return response.data
+      return response.data.toSorted((a, b) => {
+        const temporalStatusOrder = {
+          active: 0,
+          upcoming: 1,
+          expired: 2,
+        } as const
+
+        return temporalStatusOrder[a.temporalStatus ?? 'expired'] - temporalStatusOrder[b.temporalStatus ?? 'expired']
+      })
     },
   })
 
@@ -33,10 +41,10 @@ export default function PromoCard() {
 
     if (promo.temporalStatus === 'upcoming') {
       endTime = promo.startDate
-      labelComp = <p className="font-semibold text-white uppercase">starts</p>
+      labelComp = <p className="font-semibold text-white uppercase">promo starts in</p>
     } else if (promo.temporalStatus === 'active') {
       endTime = promo.endDate
-      labelComp = <p className="font-semibold text-white uppercase">ends</p>
+      labelComp = <p className="font-semibold text-white uppercase">promo ends in</p>
     } else {
       labelComp = (
         <div>

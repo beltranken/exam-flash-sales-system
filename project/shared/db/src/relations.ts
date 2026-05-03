@@ -91,7 +91,7 @@ export const relations = defineRelations(relationSchema, (r) => ({
       from: r.ordersTable.userId,
       to: r.usersTable.id,
     }),
-    payment: r.one.paymentsTable({
+    payments: r.many.paymentsTable({
       from: r.ordersTable.id,
       to: r.paymentsTable.orderId,
     }),

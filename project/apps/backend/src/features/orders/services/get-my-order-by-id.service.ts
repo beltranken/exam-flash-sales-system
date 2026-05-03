@@ -1,4 +1,4 @@
-import { Order, User } from '@shared/db'
+import { Order, PaymentStatus, User } from '@shared/db'
 import { FastifyInstance } from 'fastify'
 import createHttpError from 'http-errors'
 
@@ -13,7 +13,19 @@ export async function getMyOrderByIdService(
       id: orderId,
     },
     with: {
-      orderItems: true,
+      orderItems: {
+        with: {
+          product: true,
+          appliedPromo: true,
+        },
+      },
+      payments: {
+        where: {
+          status: {
+            OR: [PaymentStatus.PAID, PaymentStatus.PENDING],
+          },
+        },
+      },
     },
   })
 

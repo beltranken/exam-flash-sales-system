@@ -13,8 +13,8 @@ export const paymentMethodResponseSchema = z.object({
 })
 export type PaymentMethodResponse = z.infer<typeof paymentMethodResponseSchema>
 
-export const confirmPaymentRequestSchema = z.object({
+export const makePaymentRequestSchema = z.object({
   orderId: paymentSchema.shape.orderId,
   paymentMethod: paymentMethodResponseSchema.shape.id,
 })
-export type ConfirmPaymentRequest = z.infer<typeof confirmPaymentRequestSchema>
+export type MakePaymentRequest = z.infer<typeof makePaymentRequestSchema>

@@ -16,6 +16,10 @@ type OrderStatusKeyParams = {
   orderId: string
 }
 
+type PaymentStatusKeyParams = {
+  paymentId: string
+}
+
 type ProductsKeyParams = {
   page: number
   pageSize?: number
@@ -47,6 +51,7 @@ export const userPromoUsage = ({ promoId, userId, productId }: UserPromoUsageKey
 export const order = ({ orderId }: OrderStatusKeyParams) => `order:${orderId}`
 export const orderStatus = ({ orderId }: OrderStatusKeyParams) => `orderStatus:${orderId}`
 export const products = ({ page, pageSize }: ProductsKeyParams) => `products:${page}:${pageSize || 'all'}`
+export const paymentStatus = ({ paymentId }: PaymentStatusKeyParams) => `paymentStatus:${paymentId}`
 
 export const buildReservationArgs = (items: ReservationItem[], userId: number): string[] =>
   items.flatMap((item) => [
@@ -89,4 +94,5 @@ export const cacheKeys = {
   order,
   orderStatus,
   products,
+  paymentStatus,
 }

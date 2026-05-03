@@ -78,7 +78,7 @@ export default function VerifyOtp({ challengeId, onVerified }: Readonly<VerifyOt
           id="otp"
           type="text"
           sizing="lg"
-          placeholder="Enter OTP"
+          placeholder="Enter OTP (This is mocked, so any 6-digit code will work)"
           color={errorMessage ? 'failure' : undefined}
           disabled={disabled}
           className="w-full flex-1"
