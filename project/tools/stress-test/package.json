@@ -1,0 +1,16 @@
+{
+  "name": "@tools/stress-test",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "k6 run stress-test.js",
+    "flash-sale": "k6 run -e STRESS_SCENARIO=flash-sale stress-test.js",
+    "ping": "k6 run -e STRESS_SCENARIO=ping stress-test.js",
+    "docker": "docker compose run --rm k6",
+    "docker:flash-sale": "docker compose run --rm -e STRESS_SCENARIO=flash-sale k6",
+    "docker:ping": "docker compose run --rm -e STRESS_SCENARIO=ping k6",
+    "docker:up": "docker compose up -d prometheus grafana",
+    "docker:down": "docker compose down"
+  }
+}

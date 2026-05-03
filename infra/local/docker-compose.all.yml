@@ -1,0 +1,44 @@
+include:
+  - docker-compose.yml
+
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ../../project
+      dockerfile: apps/backend/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "8000"
+      DATABASE_URL: postgresql://postgres@postgres:5432/exam-flash-sales-system
+      CACHE_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-secret}
+      COOKIE_SECRET: ${COOKIE_SECRET:-secret}
+      PINO_LOG_LEVEL: ${PINO_LOG_LEVEL:-info}
+    ports:
+      - "8000:8000"
+
+  order-workers:
+    container_name: order-workers
+    build:
+      context: ../../project
+      dockerfile: services/order-workers/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres@postgres:5432/exam-flash-sales-system
+      CACHE_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      PINO_LOG_LEVEL: ${PINO_LOG_LEVEL:-info}
+      ORDER_QUEUE_PREFETCH: ${ORDER_QUEUE_PREFETCH:-10}

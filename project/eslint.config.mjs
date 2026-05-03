@@ -43,5 +43,17 @@ export default tseslint.config(
       globals: globals.browser,
     },
   },
+  {
+    // k6 scripts run in a custom JS runtime, not Node or browser.
+    // Declare k6-specific globals so ESLint does not report them as undefined.
+    files: ['tools/stress-test/**/*.js'],
+    languageOptions: {
+      globals: {
+        __ENV: 'readonly',
+        __VU: 'readonly',
+        __ITER: 'readonly',
+      },
+    },
+  },
   eslintConfigPrettier,
 )

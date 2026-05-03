@@ -21,6 +21,7 @@ cp apps/backend/.env.example apps/backend/.env
 cp apps/frontend/.env.example apps/frontend/.env
 cp services/order-workers/.env.example services/order-workers/.env
 cp shared/db/.env.example shared/db/.env
+cp tools/stress-test/.env.example tools/stress-test/.env
 ```
 
 ## Setup
@@ -79,8 +80,56 @@ pnpm build
 pnpm lint
 pnpm test:unit
 pnpm test:integration
-pnpm test:stress
 ```
+
+## Stress Testing
+
+The repository includes k6 scenarios for exercising flash-sale behavior against the backend.
+
+Run commands from the monorepo root (`project/`). Start local infra services, backend, and worker first.
+
+Run with local k6 install:
+
+Run with Docker (no local k6 install required):
+
+```sh
+pnpm --filter @tools/stress-test docker:up
+pnpm --filter @tools/stress-test docker:flash-sale
+```
+
+Open observability dashboards:
+
+```sh
+# Grafana
+http://localhost:3000
+
+# Prometheus
+http://localhost:9090
+```
+
+Stop observability stack:
+
+```sh
+pnpm --filter @tools/stress-test docker:down
+```
+
+Stress-test environment variables:
+
+```sh
+API_BASE_URL=http://localhost:8000
+STRESS_SCENARIO=flash-sale
+STRESS_VUS=100
+STRESS_REQUESTS=100
+STRESS_MAX_DURATION=2m
+STRESS_THINK_TIME_SECONDS=0
+```
+
+Notes:
+
+- `flash-sale` performs authenticated checkout flow.
+- `ping` can be used for unauthenticated smoke/load checks.
+- Docker runner default API base URL is `http://host.docker.internal:8000`.
+- Default Grafana login is `admin` / `admin` (override with `GRAFANA_ADMIN_USER` and `GRAFANA_ADMIN_PASSWORD`).
 
 ## Projects
 
@@ -92,3 +141,4 @@ pnpm test:stress
 - `project/shared/logger` - Shared Pino logger factory used by services and applications.
 - `project/shared/order-contracts` - Shared order event names, message schemas, and queue-related constants.
 - `project/shared/cache-contracts` - Shared Redis cache keys, reservation argument builders, and Lua scripts used for atomic stock and usage updates.
+- `project/tools/stress-test` - k6 scenarios for exercising flash-sale behavior against the backend, along with Docker Compose setup for running tests with observability stack (Prometheus + Grafana).

@@ -63,7 +63,7 @@ async function resetSeedData(db: Db) {
 
 async function insertSeedData(db: Db, promoId: number) {
   await db.transaction(async (tx) => {
-    const quantity = faker.number.int({ min: 10, max: 3000 })
+    const quantity = faker.number.int({ min: 5000, max: 30000 })
     const priceInCents = faker.number.int({ min: 1000, max: 30000 })
     const description = faker.helpers.arrayElement([description1, description2, description3])
 

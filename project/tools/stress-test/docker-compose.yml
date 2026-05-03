@@ -1,0 +1,50 @@
+services:
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-remote-write-receiver
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - '9090:9090'
+
+  grafana:
+    image: grafana/grafana:11.2.2
+    depends_on:
+      - prometheus
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - '3000:3000'
+
+  k6:
+    image: grafana/k6:1.0.0
+    depends_on:
+      - prometheus
+    env_file:
+      - .env
+    working_dir: /scripts
+    volumes:
+      - ./scripts/stress-test.js:/scripts/stress-test.js
+    environment:
+      # From Docker container, reach host services via host.docker.internal.
+      API_BASE_URL: ${API_BASE_URL:-http://host.docker.internal:8000}
+      STRESS_SCENARIO: ${STRESS_SCENARIO:-flash-sale}
+      STRESS_VUS: ${STRESS_VUS:-100}
+      STRESS_REQUESTS: ${STRESS_REQUESTS:-100}
+      STRESS_MAX_DURATION: ${STRESS_MAX_DURATION:-2m}
+      STRESS_THINK_TIME_SECONDS: ${STRESS_THINK_TIME_SECONDS:-0}
+      K6_PROMETHEUS_RW_SERVER_URL: ${K6_PROMETHEUS_RW_SERVER_URL:-http://prometheus:9090/api/v1/write}
+    command: ['run', '-o', 'experimental-prometheus-rw', 'stress-test.js']
+
+volumes:
+  prometheus_data:
+  grafana_data:

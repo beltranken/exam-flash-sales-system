@@ -12,7 +12,7 @@ import {
   type OrderSubmittedMessage,
   orderSubmittedMessageSchema,
 } from '@shared/order-contracts'
-import { ZodError } from 'zod'
+import { treeifyError, ZodError } from 'zod'
 import { env } from '../config/env.js'
 import { handleOrderFailed, handleOrderReserved, handleOrderSubmitted } from '../handlers/index.js'
 import { OrderError } from '../types/order-error.js'
@@ -28,6 +28,7 @@ const defineOrderQueue = <T>(config: QueueConfig<T>): RunnableQueueConfig => ({
       await config.handler(message)
     } catch (e) {
       if (e instanceof ZodError && config.prepareValidationError) {
+        logger.error(treeifyError(e))
         throw config.prepareValidationError(e, rawMessage)
       }
 
