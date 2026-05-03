@@ -2,7 +2,7 @@ import 'fastify'
 
 import { FastifyJwtNamespace } from '@fastify/jwt'
 import { type Db } from '@shared/db'
-import { type OrderFailedMessage, type OrderReservedMessage, type OrderSubmittedMessage } from '@shared/order-events'
+import { type OrderFailedMessage, type OrderReservedMessage, type OrderSubmittedMessage } from '@shared/order-contracts'
 import { type PublishToQueueArgs } from './plugins/mq-setup.ts'
 
 declare module 'fastify' {

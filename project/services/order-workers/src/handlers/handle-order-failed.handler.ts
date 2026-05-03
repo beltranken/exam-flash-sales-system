@@ -1,5 +1,5 @@
-import { logger } from '../logger.js'
-import { type OrderMessage } from '../types/order-message.js'
+import { logger } from '@logger'
+import type { OrderMessage } from '@shared/order-contracts'
 
 export async function handleOrderFailed(message: OrderMessage): Promise<void> {
   logger.info({ message }, 'Received order.failed message')

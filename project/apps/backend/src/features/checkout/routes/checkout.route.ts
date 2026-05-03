@@ -1,5 +1,5 @@
 import { getUser } from '@features/auth/services/get-user.service.js'
-import { OrderReservedMessage } from '@shared/order-events'
+import { OrderReservedMessage } from '@shared/order-contracts'
 import { CartRequest, CheckoutResponse } from '@types'
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import createHttpError from 'http-errors'

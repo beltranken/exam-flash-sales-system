@@ -71,9 +71,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/order-events':
+      '@shared/order-contracts':
         specifier: workspace:*
-        version: link:../../shared/order-events
+        version: link:../../shared/order-contracts
       amqp-connection-manager:
         specifier: ^5.0.0
         version: 5.0.0(amqplib@1.0.3)
@@ -251,14 +251,17 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5(@types/node@24.12.2)(@vitest/coverage-v8@4.1.5)(vite@8.0.10(@types/node@24.12.2)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))
 
-  services/order-worker:
+  services/order-workers:
     dependencies:
+      '@shared/db':
+        specifier: workspace:*
+        version: link:../../shared/db
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/order-events':
+      '@shared/order-contracts':
         specifier: workspace:*
-        version: link:../../shared/order-events
+        version: link:../../shared/order-contracts
       amqplib:
         specifier: ^1.0.3
         version: 1.0.3
@@ -326,7 +329,7 @@ importers:
         specifier: ^5.6.3
         version: 5.9.3
 
-  shared/order-events:
+  shared/order-contracts:
     dependencies:
       zod:
         specifier: ^4.3.6

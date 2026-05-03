@@ -1,6 +1,6 @@
 import { type Channel } from 'amqplib'
 
-import { OrderQueueNames, orderTimeoutTtlMs } from '@shared/order-events'
+import { OrderQueueNames, orderTimeoutTtlMs } from '@shared/order-contracts'
 
 export async function assertOrderQueues(channel: Channel): Promise<void> {
   await channel.assertQueue(OrderQueueNames.reserved, { durable: true })

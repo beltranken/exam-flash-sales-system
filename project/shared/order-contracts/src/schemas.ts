@@ -35,3 +35,5 @@ export type OrderSubmittedMessage = z.infer<typeof orderSubmittedMessageSchema>
 
 export const orderTimeoutMessageSchema = objOrderIdSchema
 export type OrderTimeoutMessage = z.infer<typeof orderTimeoutMessageSchema>
+
+export type OrderMessage = OrderReservedMessage | OrderSubmittedMessage | OrderFailedMessage | OrderTimeoutMessage

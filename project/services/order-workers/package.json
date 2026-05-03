@@ -1,5 +1,5 @@
 {
-  "name": "@services/order-worker",
+  "name": "@services/order-workers",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@shared/logger": "workspace:*",
-    "@shared/order-events": "workspace:*",
+    "@shared/order-contracts": "workspace:*",
+    "@shared/db": "workspace:*",
     "amqplib": "^1.0.3",
     "dotenv": "^17.4.2"
   },

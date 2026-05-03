@@ -1,9 +1,11 @@
+import 'dotenv/config'
+
 import amqp, { type Channel, type ChannelModel, type ConsumeMessage } from 'amqplib'
 
+import { logger } from '@logger'
+import { type OrderMessage } from '@shared/order-contracts'
 import { env } from '../config/env.js'
 import { handleOrderFailed, handleOrderReserved, handleOrderSubmitted } from '../handlers/index.js'
-import { logger } from '../logger.js'
-import { type OrderMessage } from '../types/order-message.js'
 import { assertOrderQueues } from './assert-order-queues.js'
 import { orderQueueNames } from './order-queue-names.js'
 
@@ -19,15 +21,15 @@ export class OrderEventConsumer {
   private readonly queues: OrderQueueConfig[] = [
     {
       name: orderQueueNames.reserved,
-      handler: handleOrderReserved,
+      handler: (message) => handleOrderReserved(message as Parameters<typeof handleOrderReserved>[0]),
     },
     {
       name: orderQueueNames.submitted,
-      handler: handleOrderSubmitted,
+      handler: (message) => handleOrderSubmitted(message as Parameters<typeof handleOrderSubmitted>[0]),
     },
     {
       name: orderQueueNames.failed,
-      handler: handleOrderFailed,
+      handler: (message) => handleOrderFailed(message as Parameters<typeof handleOrderFailed>[0]),
     },
   ]
 

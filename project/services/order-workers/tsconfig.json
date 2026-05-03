@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "declaration": true,
+    "sourceMap": true,
+    "types": ["node"],
+    "paths": {
+      "@db": ["./src/db.ts"],
+      "@logger": ["./src/logger.ts"],
+      "@handlers/*": ["./src/handlers/*"],
+      "@shared/*": ["../../shared/*"]
+    }
+  },
+  "include": ["src"]
+}

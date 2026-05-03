@@ -4,7 +4,7 @@ import {
   type OrderFailedMessage,
   type OrderReservedMessage,
   type OrderSubmittedMessage,
-} from '@shared/order-events'
+} from '@shared/order-contracts'
 import type { AmqpConnectionManager, ChannelWrapper, Options } from 'amqp-connection-manager'
 import amqp from 'amqp-connection-manager'
 import { FastifyPluginAsync } from 'fastify'

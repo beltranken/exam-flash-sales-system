@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "pnpm -r --parallel dev",
     "dev:shared": "pnpm --parallel -r --filter \"@shared/*\" dev",
+    "dev:services": "pnpm --parallel -r --filter \"@services/*\" dev",
     "code-gen": "pnpm -r --parallel --if-present run \"/^generate:[A-Za-z]+$/\"",
     "code-gen:watch": "pnpm -r --parallel --if-present run \"/^generate:[A-Za-z]+:watch$/\"",
     "prepare": "lefthook install",
