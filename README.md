@@ -84,10 +84,7 @@ pnpm dev
 Alternatively, you can run each piece in a separate terminal for better visibility:
 
 ```sh
-pnpm build:main
-pnpm --filter @apps/backend run generate:spec
 pnpm code-gen
-pnpm build:frontend
 pnpm --filter @apps/backend dev
 pnpm --filter @apps/frontend dev
 pnpm dev:shared
