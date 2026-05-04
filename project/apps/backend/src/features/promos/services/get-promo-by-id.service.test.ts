@@ -4,7 +4,11 @@ describe('getPromoByIdService', () => {
   it('returns active promo by id with promo items', async () => {
     const promo = { id: 20, promoItems: [{ productId: 10 }] }
     const findFirst = jest.fn().mockResolvedValue(promo)
-    const fastify = { db: { query: { promosTable: { findFirst } } } } as any
+    const fastify = {
+      redis: { get: jest.fn().mockResolvedValue(null), del: jest.fn() },
+      log: { error: jest.fn() },
+      db: { query: { promosTable: { findFirst } } },
+    } as any
 
     await expect(getPromoByIdService(fastify, 20)).resolves.toBe(promo)
     expect(findFirst).toHaveBeenCalledWith(
@@ -17,6 +21,8 @@ describe('getPromoByIdService', () => {
 
   it('throws not found when active promo is missing', async () => {
     const fastify = {
+      redis: { get: jest.fn().mockResolvedValue(null), del: jest.fn() },
+      log: { error: jest.fn() },
       db: { query: { promosTable: { findFirst: jest.fn().mockResolvedValue(undefined) } } },
     } as any
 

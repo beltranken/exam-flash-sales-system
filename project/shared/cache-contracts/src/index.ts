@@ -25,6 +25,14 @@ type ProductsKeyParams = {
   pageSize?: number
 }
 
+type PromosKeyParams = {
+  page: number
+  pageSize?: number
+  status?: string[]
+  temporalStatus?: string
+  productsIds?: number[]
+}
+
 type ReservationItem = {
   productId: number
   quantity: number
@@ -40,6 +48,9 @@ type RollbackReservationItem = {
   appliedPromoId?: number | null
 }
 
+const sortArrayNumber = (keys: number[]) => [...new Set(keys)].sort()
+const sortArrayString = (keys: string[]) => [...new Set(keys)].sort()
+
 export const stocksByProduct = ({ productId }: ProductKeyParams) => `stocksByProduct:${productId}`
 
 export const userProductUsage = ({ userId, productId }: UserProductUsageKeyParams) =>
@@ -48,6 +59,15 @@ export const userProductUsage = ({ userId, productId }: UserProductUsageKeyParam
 export const userPromoUsage = ({ promoId, userId, productId }: UserPromoUsageKeyParams) =>
   `userPromoUsage:${promoId}:${userId}:${productId}`
 
+export const promos = ({ page, pageSize, status, temporalStatus, productsIds }: PromosKeyParams) => {
+  const _status = status ? sortArrayString(status).join(',') : 'allStatus'
+  const _temporalStatus = temporalStatus ? temporalStatus : 'allTemporalStatus'
+  const _productIds = productsIds ? `${sortArrayNumber(productsIds).join(',')}` : 'allProductIds'
+
+  return `promos:${page}:${pageSize || 'all'}:${_status}:${_temporalStatus}:${_productIds}`
+}
+export const promo = ({ promoId }: { promoId: number }) => `promo:${promoId}`
+export const user = ({ userId }: { userId: number }) => `user:${userId}`
 export const order = ({ orderId }: OrderStatusKeyParams) => `order:${orderId}`
 export const orderStatus = ({ orderId }: OrderStatusKeyParams) => `orderStatus:${orderId}`
 export const products = ({ page, pageSize }: ProductsKeyParams) => `products:${page}:${pageSize || 'all'}`
@@ -89,10 +109,13 @@ export const buildRollbackReservationArgs = (items: RollbackReservationItem[], u
 
 export const cacheKeys = {
   stocksByProduct,
+  user,
   userProductUsage,
   userPromoUsage,
   order,
   orderStatus,
   products,
   paymentStatus,
+  promo,
+  promos,
 }

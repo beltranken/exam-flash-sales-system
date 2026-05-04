@@ -11,7 +11,11 @@ describe('getPromosService', () => {
       { id: 3, startDate: new Date('2026-05-01T00:00:00.000Z'), endDate: new Date('2026-05-05T00:00:00.000Z') },
     ]
     const findMany = jest.fn().mockResolvedValue(promos)
-    const fastify = { db: { query: { promosTable: { findMany } } } } as any
+    const fastify = {
+      redis: { get: jest.fn().mockResolvedValue(null), set: jest.fn(), del: jest.fn() },
+      log: { info: jest.fn(), error: jest.fn() },
+      db: { query: { promosTable: { findMany } } },
+    } as any
 
     const result = await getPromosService(fastify, {
       page: 2,

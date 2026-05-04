@@ -31,7 +31,7 @@ export async function getProductService(
     throw new createHttpError.NotFound('Product not found')
   }
 
-  await fastify.redis.set(cacheKey, JSON.stringify(product), 'EX', 10) // Cache for 10 seconds
+  if (!cachedProduct) await fastify.redis.set(cacheKey, JSON.stringify(product), 'EX', 10) // Cache for 10 seconds
 
   const signedImage = await fastify.s3.signUrl(product.image ?? '')
 

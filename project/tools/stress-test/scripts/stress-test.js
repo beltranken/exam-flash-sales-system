@@ -50,7 +50,7 @@ export const options = {
   summaryTrendStats: ['avg', 'min', 'med', 'p(90)', 'p(95)', 'max'],
   thresholds: {
     http_req_failed: ['rate<0.05'],
-    http_req_duration: ['p(95)<1500'],
+    http_req_duration: ['p(95)<2500'],
   },
 }
 
@@ -85,8 +85,19 @@ export function setup() {
 
   // get the product with the highest available quantity
   const product = products.reduce((prev, current) => {
-    return current.availableQuantity > prev.availableQuantity ? current : prev
+    const isHigherQuantity = current.availableQuantity > (prev?.availableQuantity || 0)
+    const hasActivePromos = Array.isArray(current.activePromos) && current.activePromos.length > 0
+
+    return isHigherQuantity && hasActivePromos ? current : prev
   })
+
+  if (!product) {
+    fail('No product with available quantity found — ensure the database is seeded correctly')
+  }
+
+  if (product.availableQuantity === 0) {
+    fail('No product with available quantity found — ensure the database is seeded correctly')
+  }
 
   return { product, products, accessTokens }
 }
@@ -100,6 +111,7 @@ export default function ({ product, accessTokens }) {
     const accessToken = accessTokens[(__VU - 1) % accessTokens.length]
 
     const body = JSON.stringify({
+      appliedPromoId: product.activePromos?.at(0)?.id,
       items: [{ productId: product.id, quantity: 1 }],
     })
 

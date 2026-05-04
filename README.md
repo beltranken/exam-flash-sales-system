@@ -76,7 +76,7 @@ RabbitMQ management UI will be available at `http://localhost:15672`.
 
 ```sh
 pnpm --filter @shared/db run db:push
-pnpm --filter @shared/db run seed
+pnpm seed
 ```
 
 6. Run the frontend from `project/`:

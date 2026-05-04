@@ -6,6 +6,8 @@ describe('getUser', () => {
     const findFirst = jest.fn().mockResolvedValue(user)
 
     const fastify = {
+      redis: { get: jest.fn().mockResolvedValue(null), set: jest.fn(), del: jest.fn() },
+      log: { error: jest.fn() },
       db: {
         query: {
           usersTable: {
@@ -23,6 +25,8 @@ describe('getUser', () => {
     const findFirst = jest.fn().mockResolvedValue(undefined)
 
     const fastify = {
+      redis: { get: jest.fn().mockResolvedValue(null), set: jest.fn(), del: jest.fn() },
+      log: { error: jest.fn() },
       db: {
         query: {
           usersTable: {

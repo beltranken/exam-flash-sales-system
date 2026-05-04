@@ -25,7 +25,8 @@
     "docker:down": "docker compose -f ../infra/local/docker-compose.all.yml down",
     "test:unit": "pnpm -r --sequential test:unit",
     "test:integration": "pnpm -r --sequential test:integration",
-    "test:coverage": "pnpm -r --sequential test:coverage"
+    "test:coverage": "pnpm -r --sequential test:coverage",
+    "seed": "pnpm --filter @shared/db run seed"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
