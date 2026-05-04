@@ -12,9 +12,11 @@ export function signInRoute(fastify: FastifyInstance) {
   return async function (req: FastifyRequest<SignInRoute>, reply: FastifyReply<SignInRoute>) {
     const { email } = req.body
     const user = await resolveUserService(fastify, email)
-    const { challengeId } = await generateAndSaveOTPService(fastify, user.id)
+    const { challengeId, otp } = await generateAndSaveOTPService(fastify, user.id)
 
-    fastify.redis.set(`user:${user.id}:email`, email, 'EX', 5 * 60)
+    // TODO: send OTP via email
+    fastify.log.info(`Generated OTP for user ${email}: ${otp}`)
+    await fastify.redis.set(`user:${user.id}:email`, email, 'EX', 5 * 60)
 
     reply.status(200).send({ challengeId })
   }

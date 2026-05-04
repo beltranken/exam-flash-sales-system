@@ -1,5 +1,6 @@
 import { MakePaymentRequest } from '@shared/db'
 import {
+  OrderFailureReasons,
   OrderId,
   OrderQueueNames,
   orderTimeoutTtlMs,
@@ -103,6 +104,7 @@ const mqPluginImpl: FastifyPluginAsync = async (fastify) => {
       queue: OrderQueueNames.timeoutDelay,
       message: {
         orderId,
+        reason: OrderFailureReasons.reservationTimeOut,
       },
       queueOptions: {
         durable: true,

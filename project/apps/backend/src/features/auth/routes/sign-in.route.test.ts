@@ -23,9 +23,10 @@ describe('signInRoute', () => {
     const status = jest.fn().mockReturnThis()
     const send = jest.fn()
     const redisSet = jest.fn()
+    const mockLog = jest.fn()
     const reply = { status, send } as any
     const req = { body: { email: 'user@example.com' } } as any
-    const fastify = { redis: { set: redisSet } } as any
+    const fastify = { redis: { set: redisSet }, log: { info: mockLog } } as any
 
     const handler = signInRoute(fastify)
     await handler(req, reply)
@@ -33,6 +34,7 @@ describe('signInRoute', () => {
     expect(resolveUserServiceMock).toHaveBeenCalledWith(fastify, 'user@example.com')
     expect(generateAndSaveOTPServiceMock).toHaveBeenCalledWith(fastify, 42)
     expect(redisSet).toHaveBeenCalledWith('user:42:email', 'user@example.com', 'EX', 300)
+    expect(mockLog).toHaveBeenCalledWith('Generated OTP for user user@example.com: 123456')
     expect(status).toHaveBeenCalledWith(200)
     expect(send).toHaveBeenCalledWith({ challengeId: 'challenge-1' })
   })

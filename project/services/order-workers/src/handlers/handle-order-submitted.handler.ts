@@ -32,16 +32,8 @@ export async function handleOrderSubmitted(message: OrderSubmittedMessage): Prom
     return
   }
 
-  if (order.status !== OrderStatus.PENDING) {
-    logger.info(
-      {
-        orderId: message.orderId,
-        status: order.status,
-      },
-      'Order is not pending; skipping order.submitted message',
-    )
-    return
-  }
-
-  logger.info({ orderId: message.orderId }, 'Order submitted successfully')
+  logger.warn(
+    { orderId: message.orderId },
+    'This should not happen: order.submitted message received but order is not in SUBMITTED status',
+  )
 }

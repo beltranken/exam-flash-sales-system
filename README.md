@@ -8,11 +8,29 @@ See [Order Flow](docs/order-flow.md) for the checkout, queue, timeout, and compe
 
 ## Infrastructure
 
+- Frontend SPA - Browser-based storefront for product browsing, cart management, and checkout submission. It can be served from static hosting or a CDN and calls the main REST API backend.
+- Main REST API backend - Fastify HTTP API for authentication, product browsing, cart validation, checkout requests, Redis reservation checks, and RabbitMQ event publishing. Multiple backend instances can run behind a load balancer to handle traffic spikes and scale the request path horizontally.
+- Order workers - Background workers that consume order events from RabbitMQ and process reservation, submission, timeout, and failure compensation flows. Multiple worker replicas can run in parallel so RabbitMQ distributes work across consumers, allowing order processing capacity to scale horizontally.
 - PostgreSQL - Primary relational database for users, products, orders, payments, and stock records. It is used for durable transactional state because order creation and inventory updates need consistency and auditability.
 - Redis - Low-latency cache and reservation store for flash-sale stock counters, per-user usage limits, promo usage limits, and temporary order tracking. It is used because atomic Lua scripts and in-memory counters let checkout handle high-concurrency reservation checks without putting every request directly on PostgreSQL.
 - RabbitMQ - Message broker for asynchronous order processing, delayed timeout handling, and failure compensation. It is used to keep checkout responsive, absorb traffic spikes, and let the order worker process database updates and rollbacks reliably outside the request path.
 
 ![System overview](docs/system%20overview.jpg)
+
+## Setup
+
+Expected local dependencies:
+
+- Node.js 20.19 or newer
+- pnpm 9.15.0, as pinned by `project/package.json`
+- Docker with Docker Compose for local PostgreSQL, Redis, RabbitMQ, and stress-test observability stack
+
+Run commands from the monorepo root:
+
+```sh
+cd project
+pnpm install
+```
 
 Create local environment files from the examples:
 
@@ -22,15 +40,6 @@ cp apps/frontend/.env.example apps/frontend/.env
 cp services/order-workers/.env.example services/order-workers/.env
 cp shared/db/.env.example shared/db/.env
 cp tools/stress-test/.env.example tools/stress-test/.env
-```
-
-## Setup
-
-Run commands from the monorepo root:
-
-```sh
-cd project
-pnpm install
 ```
 
 The local environment expects these services to be available:
