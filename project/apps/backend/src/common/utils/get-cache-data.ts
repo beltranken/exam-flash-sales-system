@@ -15,7 +15,12 @@ export async function getCacheData<TSchema extends z.ZodType>(
   try {
     return schema.parse(JSON.parse(cachedValue))
   } catch (error) {
-    fastify.log.error({ error, cacheKey }, 'Failed to parse cached data')
+    if (error instanceof z.ZodError) {
+      fastify.log.error({ error: z.treeifyError(error), cacheKey }, 'Cache data validation failed')
+    } else {
+      fastify.log.error({ error, cacheKey }, 'Failed to parse cached data')
+    }
+
     await fastify.redis.del(cacheKey)
     return null
   }

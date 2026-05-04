@@ -33,42 +33,27 @@ Expected local dependencies:
 
 - Node.js 20.19 or newer
 - pnpm 9.15.0, as pinned by `project/package.json`
-- Docker with Docker Compose for local PostgreSQL, Redis, RabbitMQ, and stress-test observability stack
+- Docker with Docker Compose for local PostgreSQL, Redis, RabbitMQ, backend, order workers, and stress-test observability stack
 
-Run commands from the monorepo root:
+Run pnpm commands from `project/`:
+
+```sh
+cd project
+```
 
 1. Install dependencies
 
 ```sh
-cd project
 pnpm install
 ```
 
 2. Create local environment files from the examples:
 
 ```sh
-cp apps/backend/.env.example apps/backend/.env
-cp apps/frontend/.env.example apps/frontend/.env
-cp services/order-workers/.env.example services/order-workers/.env
-cp shared/db/.env.example shared/db/.env
-cp tools/stress-test/.env.example tools/stress-test/.env
+pnpm prepare-env
 ```
 
-The local environment expects these services to be available:
-
-- PostgreSQL for the application database
-- Redis for product stock, usage counters, reservation state, and temporary order tracking
-- RabbitMQ for asynchronous order processing
-
-3. You can start the required local services with Docker Compose:
-
-```sh
-docker compose -f ../infra/local/docker-compose.yml up -d
-```
-
-RabbitMQ management UI will be available at `http://localhost:15672`.
-
-4. Initial build and code generation steps (only required on initial setup):
+3. Initial build and code generation steps:
 
 ```sh
 pnpm build:main
@@ -77,28 +62,28 @@ pnpm code-gen
 pnpm build:frontend
 ```
 
-5. Prepare the database:
+4. Start the Docker services from `project/` in a separate terminal. This starts PostgreSQL, Redis, RabbitMQ, the backend, order workers, and the Prometheus/Grafana/Loki observability stack:
+
+```sh
+pnpm docker:up
+```
+
+The Docker stack runs in detached mode.
+
+RabbitMQ management UI will be available at `http://localhost:15672`.
+
+5. Prepare the database from `project/` after PostgreSQL is running:
 
 ```sh
 pnpm --filter @shared/db run db:push
 pnpm --filter @shared/db run seed
 ```
 
-6. Run the main application pieces:
-
-```sh
-pnpm code-gen # or pnpm code-gen:watch for auto-regeneration on changes
-pnpm dev
-```
-
-Alternatively, you can run each piece in a separate terminal for better visibility:
+6. Run the frontend from `project/`:
 
 ```sh
 pnpm code-gen
-pnpm --filter @apps/backend dev
-pnpm --filter @apps/frontend dev
-pnpm dev:shared
-pnpm dev:services
+pnpm dev:frontend
 ```
 
 7. All services should now be running. You can access the frontend at `http://localhost:5174`
@@ -110,23 +95,16 @@ pnpm build
 pnpm lint
 pnpm test:unit
 pnpm test:integration
+pnpm docker:down
 ```
 
 ## Stress Testing
 
 The repository includes k6 scenarios for exercising flash-sale behavior against the backend.
 
-Run commands from the monorepo root (`project/`). Start local infra services, backend, and worker first.
+1. Make sure the backend and worker are running, and the database schema and seed data have been prepared. Follow the [Setup](#setup) steps above before running a stress test.
 
-1. First make sure the backend and worker are running, and local infra services are up (PostgreSQL, Redis, RabbitMQ). Ideally run backend and worker with PINO_LOG_LEVEL=error to reduce noise in the logs during stress tests.
-
-2. Run with Docker (no local k6 install required):
-
-```sh
-pnpm --filter @tools/stress-test docker:up
-```
-
-3. Open observability dashboards:
+2. Open observability dashboards:
 
 ```sh
 # Grafana dashboard
@@ -134,35 +112,33 @@ http://localhost:3000
 
 # Prometheus
 http://localhost:9090
+
+# Loki
+http://localhost:3100
 ```
 
-4. Run the flash-sale scenario:
+3. Run the flash-sale scenario from `project/`:
 
 ```sh
-pnpm --filter @tools/stress-test docker:flash-sale
-```
-
-5. Stop observability stack:
-
-```sh
-pnpm --filter @tools/stress-test docker:down
+pnpm docker:test:stress
 ```
 
 Stress-test environment variables:
 
 ```sh
-API_BASE_URL=http://localhost:8000
+API_BASE_URL=http://backend:8000
 STRESS_SCENARIO=flash-sale
 STRESS_VUS=100
-STRESS_REQUESTS=100
+STRESS_REQUESTS=1000
 STRESS_MAX_DURATION=2m
 STRESS_THINK_TIME_SECONDS=0
 ```
 
 Notes:
 
-- Docker runner default API base URL is `http://host.docker.internal:8000`.
+- Docker runner default API base URL is `http://backend:8000` when using `infra/local/docker-compose.all.yml`.
 - Default Grafana login is `admin` / `admin` (override with `GRAFANA_ADMIN_USER` and `GRAFANA_ADMIN_PASSWORD`).
+- Grafana provisions Prometheus for metrics and Loki for container logs. In Grafana Explore, select the Loki datasource and query by labels such as `{service="backend"}` or `{service="order-workers"}`.
 
 ## Projects
 
@@ -174,4 +150,4 @@ Notes:
 - `project/shared/logger` - Shared Pino logger factory used by services and applications.
 - `project/shared/order-contracts` - Shared order event names, message schemas, and queue-related constants.
 - `project/shared/cache-contracts` - Shared Redis cache keys, reservation argument builders, and Lua scripts used for atomic stock and usage updates.
-- `project/tools/stress-test` - k6 scenarios for exercising flash-sale behavior against the backend, along with Docker Compose setup for running tests with observability stack (Prometheus + Grafana).
+- `project/tools/stress-test` - k6 scenarios for exercising flash-sale behavior against the backend, along with observability configuration for Prometheus, Grafana, and Loki.

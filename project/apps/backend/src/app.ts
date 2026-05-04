@@ -18,7 +18,7 @@ import { errorHandlerPlugin } from './plugins/error-handler.js'
 
 const level = process.env.PINO_LOG_LEVEL as Level | undefined
 const isDev = process.env.NODE_ENV !== 'production'
-const logger = createLogger({ level, isDev }).child({ service: 'backend' })
+const logger = createLogger({ level, isDev, appName: 'backend' }).child({ service: 'backend' })
 
 export const createApp = async () => {
   const fastify = Fastify({

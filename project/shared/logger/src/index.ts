@@ -5,9 +5,10 @@ export type { Level, Logger }
 type CreateLoggerArgs = {
   level?: Level
   isDev: boolean
+  appName?: string
 }
 
-export const createLogger = ({ level = 'info', isDev }: CreateLoggerArgs) =>
+export const createLogger = ({ level = 'info', isDev, appName }: CreateLoggerArgs) =>
   pino({
     level,
     redact: [
@@ -24,5 +25,17 @@ export const createLogger = ({ level = 'info', isDev }: CreateLoggerArgs) =>
         return { level: label }
       },
     },
-    ...(isDev && { transport: { target: 'pino-pretty' } }),
+    ...(isDev
+      ? { transport: { target: 'pino-pretty' } }
+      : {
+          transport: {
+            target: 'pino-loki',
+            options: {
+              batching: true,
+              interval: 5,
+              host: process.env.LOKI_HOST,
+              labels: appName ? { app: appName, group: 'flash-sales' } : {},
+            },
+          },
+        }),
   })

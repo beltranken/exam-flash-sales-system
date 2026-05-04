@@ -1,8 +1,10 @@
 import { createSelectSchema } from 'drizzle-orm/zod'
 import z from 'zod/v4'
 import { promoItemsTable, promosTable } from '../schemas/promo.schema.js'
+import { timeStampSchema } from './common.js'
 
 export const basePromoSchema = createSelectSchema(promosTable, {
+  ...timeStampSchema.shape,
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
 }).refine((data) => data.startDate < data.endDate, {
