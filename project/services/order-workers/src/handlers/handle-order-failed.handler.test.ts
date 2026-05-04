@@ -37,13 +37,10 @@ const item = {
   discountPercentage: 0,
 }
 
-function createFailedTx({ cancelledOrder = true, stockTransaction = true } = {}) {
+function createFailedTx({ cancelledOrder = true } = {}) {
   const updateOrderReturning = jest.fn().mockResolvedValue(cancelledOrder ? [{ id: orderId }] : [])
   const updateOrderWhere = jest.fn().mockReturnValue({ returning: updateOrderReturning })
   const updateOrderSet = jest.fn().mockReturnValue({ where: updateOrderWhere })
-
-  const insertTransactionReturning = jest.fn().mockResolvedValue(stockTransaction ? [{ id: 99 }] : [])
-  const insertTransactionValues = jest.fn().mockReturnValue({ returning: insertTransactionReturning })
 
   const updateStockWhere = jest.fn().mockResolvedValue(undefined)
   const updateStockSet = jest.fn().mockReturnValue({ where: updateStockWhere })
@@ -55,20 +52,18 @@ function createFailedTx({ cancelledOrder = true, stockTransaction = true } = {})
       .mockImplementationOnce(() => ({
         set: updateStockSet,
       })),
-    insert: jest.fn().mockReturnValue({ values: insertTransactionValues }),
   }
 
   return {
     tx,
     updateOrderSet,
-    insertTransactionValues,
     updateStockSet,
   }
 }
 
 describe('handleOrderFailed', () => {
   it('restores Redis reservation, cancels pending order, and restores stock', async () => {
-    const { tx, updateOrderSet, insertTransactionValues, updateStockSet } = createFailedTx()
+    const { tx, updateOrderSet, updateStockSet } = createFailedTx()
     ;(db.query.ordersTable.findFirst as jest.Mock).mockResolvedValue({
       id: orderId,
       userId: 42,
@@ -92,11 +87,6 @@ describe('handleOrderFailed', () => {
       '0',
     )
     expect(updateOrderSet).toHaveBeenCalledWith({ status: OrderStatus.CANCELLED })
-    expect(insertTransactionValues).toHaveBeenCalledWith({
-      referenceId: orderId,
-      type: 'reserve_cancel',
-      note: 'payment failed',
-    })
     expect(updateStockSet).toHaveBeenCalled()
     expect(logger.info).toHaveBeenCalledWith({ orderId }, 'Order failure compensation completed')
   })
@@ -141,20 +131,5 @@ describe('handleOrderFailed', () => {
 
     expect(redis.eval).not.toHaveBeenCalled()
     expect(logger.warn).toHaveBeenCalledWith({ orderId }, 'No order items found for order.failed message')
-  })
-
-  it('throws when stock transaction creation fails', async () => {
-    const { tx } = createFailedTx({ stockTransaction: false })
-    ;(db.query.ordersTable.findFirst as jest.Mock).mockResolvedValue({
-      id: orderId,
-      userId: 42,
-      status: OrderStatus.PENDING,
-      orderItems: [item],
-    })
-    ;(db.transaction as jest.Mock).mockImplementation(async (callback) => callback(tx))
-
-    await expect(handleOrderFailed({ orderId, reason: 'failed transaction' })).rejects.toThrow(
-      'Failed to create stock reservation cancellation transaction',
-    )
   })
 })

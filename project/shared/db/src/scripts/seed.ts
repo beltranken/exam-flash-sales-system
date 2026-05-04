@@ -1,6 +1,8 @@
 import 'dotenv/config'
 
 import { faker } from '@faker-js/faker'
+import { cacheKeys } from '@shared/cache-contracts'
+import { Redis } from 'ioredis'
 import {
   Db,
   PromoStatus,
@@ -38,6 +40,16 @@ const productNames = [
   'Harbor Fit',
 ]
 
+const redisCacheKeyPatterns = [
+  'stocksByProduct:*',
+  'userProductUsage:*',
+  'userPromoUsage:*',
+  'order:*',
+  'orderStatus:*',
+  'paymentStatus:*',
+  'products:*',
+]
+
 function getArgNumber(i: number) {
   const rawData = process.argv[i]
   const data = Number(rawData)
@@ -61,8 +73,29 @@ async function resetSeedData(db: Db) {
   })
 }
 
-async function insertSeedData(db: Db, promoId: number) {
-  await db.transaction(async (tx) => {
+async function deleteKeysByPattern(redis: Redis, pattern: string) {
+  const stream = redis.scanStream({
+    match: pattern,
+    count: 100,
+  })
+
+  for await (const keys of stream) {
+    if (Array.isArray(keys) && keys.length > 0) {
+      await redis.del(...keys)
+    }
+  }
+}
+
+async function clearRedisCaches(redis: Redis) {
+  await Promise.all(redisCacheKeyPatterns.map((pattern) => deleteKeysByPattern(redis, pattern)))
+}
+
+async function cacheProductStock(redis: Redis, productId: number, quantity: number) {
+  await redis.set(cacheKeys.stocksByProduct({ productId }), quantity)
+}
+
+async function insertSeedData(db: Db, redis: Redis, promoId: number) {
+  const productStock = await db.transaction(async (tx) => {
     const quantity = faker.number.int({ min: 5000, max: 30000 })
     const priceInCents = faker.number.int({ min: 1000, max: 30000 })
     const description = faker.helpers.arrayElement([description1, description2, description3])
@@ -130,13 +163,22 @@ async function insertSeedData(db: Db, promoId: number) {
     ])
 
     console.log(`Seeded product ${product.name} (id: ${product.id}) with stock ${quantity} in ${Warehouse.MAIN}`)
+
+    return {
+      productId: product.id,
+      quantity,
+    }
   })
+
+  await cacheProductStock(redis, productStock.productId, productStock.quantity)
 }
 
 async function seed() {
   const { db, pool } = createDbClient()
+  const redis = new Redis(process.env.CACHE_URL ?? 'redis://localhost:6379')
 
   try {
+    await clearRedisCaches(redis)
     await resetSeedData(db)
 
     const [promo] = await db
@@ -164,11 +206,12 @@ async function seed() {
     const promises = []
     for (let i = 0; i < productCount; i++) {
       console.log(`Seeding product ${i + 1} of ${productCount}...`)
-      promises.push(insertSeedData(db, promo.id))
+      promises.push(insertSeedData(db, redis, promo.id))
     }
 
     await Promise.all(promises)
   } finally {
+    redis.disconnect()
     await pool.end()
   }
 }

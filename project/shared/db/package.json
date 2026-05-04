@@ -25,14 +25,17 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^10.4.0",
+    "@types/ioredis": "^5.0.0",
     "@types/node": "^22.10.1",
     "@types/pg": "^8.18.0",
     "drizzle-kit": "1.0.0-beta.22",
     "tsx": "^4.19.2"
   },
   "dependencies": {
+    "@shared/cache-contracts": "workspace:*",
     "dotenv": "^17.4.2",
     "drizzle-orm": "1.0.0-beta.22",
+    "ioredis": "^5.10.1",
     "pg": "^8.20.0",
     "zod": "^4.3.6"
   }

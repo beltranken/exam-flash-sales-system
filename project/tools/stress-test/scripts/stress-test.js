@@ -5,7 +5,7 @@ const scenario = (__ENV.STRESS_SCENARIO || 'flash-sale').toLowerCase()
 const apiBaseUrl = __ENV.API_BASE_URL || 'http://localhost:8000'
 const thinkTimeSeconds = Number(__ENV.STRESS_THINK_TIME_SECONDS || 0)
 const vus = Number(__ENV.STRESS_VUS || 100)
-const iterations = Number(5000)
+const iterations = Number(__ENV.STRESS_REQUESTS || 5000)
 const maxDuration = __ENV.STRESS_MAX_DURATION || '2m'
 const acceptedStatuses = [200, 409]
 

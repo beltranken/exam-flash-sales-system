@@ -21,6 +21,7 @@
     "build:frontend": "pnpm --filter=@shared/api-client build && pnpm --filter=@apps/frontend build",
     "docker:test:stress": "docker compose -f ../infra/local/docker-compose.all.yml --profile stress run --rm -e STRESS_SCENARIO=flash-sale k6",
     "docker:up": "docker compose -f ../infra/local/docker-compose.all.yml up --build -d",
+    "docker:up:backend": "docker compose -f ../infra/local/docker-compose.all.yml up -d --build backend",
     "docker:down": "docker compose -f ../infra/local/docker-compose.all.yml down",
     "test:unit": "pnpm -r --sequential test:unit",
     "test:integration": "pnpm -r --sequential test:integration",

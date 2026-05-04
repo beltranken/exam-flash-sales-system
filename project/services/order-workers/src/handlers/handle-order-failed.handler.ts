@@ -2,17 +2,7 @@ import { redis } from '@cache'
 import { db } from '@db'
 import { logger } from '@logger'
 import { buildRollbackReservationArgs, rollbackCartReservationsScript } from '@shared/cache-contracts'
-import {
-  and,
-  eq,
-  ordersTable,
-  OrderStatus,
-  productStocksTable,
-  sql,
-  stockTransactionsTable,
-  StockTransactionType,
-  Warehouse,
-} from '@shared/db'
+import { and, eq, ordersTable, OrderStatus, productStocksTable, sql, Warehouse } from '@shared/db'
 import type { OrderFailedMessage, OrderItem } from '@shared/order-contracts'
 
 async function restoreRedisReservation(items: OrderItem[], userId: number) {
@@ -80,21 +70,6 @@ export async function handleOrderFailed(message: OrderFailedMessage): Promise<vo
 
     if (!cancelledOrder) {
       return
-    }
-
-    const [stockTransaction] = await tx
-      .insert(stockTransactionsTable)
-      .values({
-        referenceId: message.orderId,
-        type: StockTransactionType.RESERVE_CANCEL,
-        note: message.reason,
-      })
-      .returning({
-        id: stockTransactionsTable.id,
-      })
-
-    if (!stockTransaction) {
-      throw new Error('Failed to create stock reservation cancellation transaction')
     }
 
     for (const item of items) {

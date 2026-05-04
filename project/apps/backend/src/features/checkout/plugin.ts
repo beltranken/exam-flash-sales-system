@@ -47,6 +47,7 @@ export const checkoutPlugin: FastifyPluginAsync = async (fastify) => {
           ...errorResponses,
         },
       },
+      onRequest: fastify.authenticate,
     },
     validateCartRoute(fastify),
   )

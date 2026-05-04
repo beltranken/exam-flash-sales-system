@@ -30,9 +30,15 @@ export const createApp = async () => {
   // Error handler
   await fastify.register(errorHandlerPlugin)
 
-  fastify.get('/ping', (_request, reply) => {
-    reply.send({ message: 'pong' })
-  })
+  fastify.get(
+    '/ping',
+    {
+      logLevel: 'silent',
+    },
+    (_request, reply) => {
+      reply.send({ message: 'pong' })
+    },
+  )
 
   await fastify.register(cookie, {
     secret: fastify.config.COOKIE_SECRET,
