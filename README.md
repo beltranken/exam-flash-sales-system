@@ -4,8 +4,6 @@ A simplified ecommerce system for a highly anticipated flash sale, where a limit
 
 The system is designed to handle sudden traffic spikes gracefully, manage inventory accurately, enforce per-user purchase limits, and provide a reliable user experience under high-concurrency conditions. It demonstrates high throughput and scalability, robustness and fault tolerance, and concurrency control in a flash-sale workload.
 
-See [Order Flow](docs/order-flow.md) for the checkout, queue, timeout, and compensation workflow.
-
 ## Infrastructure
 
 - Frontend SPA - Browser-based storefront for product browsing, cart management, and checkout submission. It can be served from static hosting or a CDN and calls the main REST API backend.
@@ -16,6 +14,18 @@ See [Order Flow](docs/order-flow.md) for the checkout, queue, timeout, and compe
 - RabbitMQ (Amazon MQ) - Message broker for asynchronous order processing, delayed timeout handling, and failure compensation. It is used to keep checkout responsive, absorb traffic spikes, and let the order worker process database updates and rollbacks reliably outside the request path.
 
 ![System overview](docs/system%20overview.jpg)
+
+## Checkout flow
+
+See [Order Flow](docs/order-flow.md) for the checkout, queue, timeout, and compensation workflow.
+
+## Frontend Checkout Flow
+
+Users browse the product list, select a product card, and click Buy Now to start checkout. The frontend then asks the user to verify their email, select a payment method, and confirm checkout. After checkout is submitted, the backend validates the request, reserves stock, and creates an order for asynchronous processing.
+
+The frontend waits for the asynchronous order process by polling `/api/orders/{orderId}/status`. It keeps waiting while the order status is `pending`, then either shows any processing error returned by the backend or continues once the status changes to a non-pending state.
+
+When checkout processing succeeds, the user sees the payment form popup. After payment submission, the user is routed to the order page to track the order status.
 
 ## Setup
 
