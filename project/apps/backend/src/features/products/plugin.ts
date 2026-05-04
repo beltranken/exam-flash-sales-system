@@ -1,4 +1,4 @@
-import { productSchema } from '@shared/db'
+import { pagingRequestSchema, productSchema } from '@shared/db'
 import { errorResponses } from '@types'
 import { numberParamSchema } from '@utils'
 import { FastifyPluginAsync } from 'fastify'
@@ -21,6 +21,7 @@ export const productsPlugin: FastifyPluginAsync = async (fastify) => {
     {
       schema: {
         operationId: 'getProducts',
+        querystring: pagingRequestSchema.partial(),
         response: {
           200: productSchema.array(),
           ...errorResponses,

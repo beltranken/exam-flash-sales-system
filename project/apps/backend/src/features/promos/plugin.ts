@@ -1,7 +1,6 @@
 import { promoSchema } from '@shared/db'
 import { errorResponses } from '@types'
 import { FastifyPluginAsync } from 'fastify'
-import fp from 'fastify-plugin'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { getPromosRoute } from './routes/get-promos.route.js'
 
@@ -25,4 +24,4 @@ export const promosPluginImpl: FastifyPluginAsync = async (fastify) => {
   )
 }
 
-export const promosPlugin = fp(promosPluginImpl, { name: promosPluginKey })
+export const promosPlugin = promosPluginImpl

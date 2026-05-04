@@ -23,8 +23,7 @@
     "generate:api": "openapi-ts",
     "generate:api:watch": "nodemon --watch ../../apps/backend/openapi.json --watch openapi-ts.config.ts --exec pnpm run build",
     "compile": "tsc -p tsconfig.build.json",
-    "build": "pnpm run generate:api && pnpm run compile",
-    "lint": "eslint src --ext .ts"
+    "build": "pnpm run generate:api && pnpm run compile"
   },
   "dependencies": {
     "axios": "^1.15.2"

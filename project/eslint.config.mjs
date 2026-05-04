@@ -10,7 +10,7 @@ export default tseslint.config(
       '**/node_modules/**',
       '**/*.d.ts',
       'shared/db/src/migrations/**',
-      'apps/frontend/src/api/**',
+      'shared/api-client/src/api/**',
     ],
   },
   js.configs.recommended,
@@ -25,7 +25,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.test.ts', '**/*.spec.ts', 'apps/frontend/src/api/**'],
+    files: ['**/*.test.ts', '**/*.spec.ts', '**/tests/**'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
     },

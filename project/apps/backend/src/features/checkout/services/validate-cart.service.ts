@@ -4,12 +4,16 @@ import { FastifyInstance } from 'fastify'
 import { getProductService, getUserProductUsageService } from '../../products/services/index.js'
 import { getPromoByIdService, getPromosService, getUserPromoUsageService } from '../../promos/services/index.js'
 
+interface ValidateCartServiceOptions {
+  skipReservationChecks?: boolean
+  findActivePromo?: boolean
+}
+
 export async function validateCartService(
   fastify: FastifyInstance,
   cartRequest: CartRequest,
   userId?: number,
-  findActivePromo?: boolean,
-  options: { skipReservationChecks?: boolean } = {},
+  { skipReservationChecks, findActivePromo }: ValidateCartServiceOptions = {},
 ): Promise<Cart> {
   const issues: LineIssues[] = []
 
@@ -35,7 +39,7 @@ export async function validateCartService(
     let product
     try {
       product = await getProductService(fastify, productId, {
-        includeStock: !options.skipReservationChecks,
+        includeStock: !skipReservationChecks,
       })
     } catch (e) {
       fastify.log.warn(e)
@@ -76,7 +80,7 @@ export async function validateCartService(
       warnings.push(LineIssues.PROMO_REMOVED)
     }
 
-    if (promo && userId && !options.skipReservationChecks) {
+    if (promo && userId && !skipReservationChecks) {
       const promoUsage = await getUserPromoUsageService(fastify, {
         promoId: promo.id,
         userId,
@@ -88,7 +92,7 @@ export async function validateCartService(
       }
     }
 
-    if (userId && !options.skipReservationChecks) {
+    if (userId && !skipReservationChecks) {
       const productUsage = await getUserProductUsageService(fastify, {
         userId,
         productId,
@@ -101,13 +105,13 @@ export async function validateCartService(
     }
 
     let _quantity = quantity
-    if (!options.skipReservationChecks) {
+    if (!skipReservationChecks) {
       fastify.log.info(`Available quantity for product ${productId}: ${product.availableQuantity}`)
     }
 
-    if (!options.skipReservationChecks && product.availableQuantity === 0) {
+    if (!skipReservationChecks && product.availableQuantity === 0) {
       removalReasons.push(LineIssues.OUT_OF_STOCK)
-    } else if (!options.skipReservationChecks && quantity > product.availableQuantity) {
+    } else if (!skipReservationChecks && quantity > product.availableQuantity) {
       removalReasons.push(LineIssues.PRODUCT_QUANTITY_CHANGED)
       _quantity = product.availableQuantity
     }

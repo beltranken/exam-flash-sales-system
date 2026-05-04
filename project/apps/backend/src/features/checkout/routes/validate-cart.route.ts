@@ -9,7 +9,9 @@ export interface ValidateCartRoute {
 
 export function validateCartRoute(fastify: FastifyInstance) {
   return async function (req: FastifyRequest<ValidateCartRoute>, reply: FastifyReply<ValidateCartRoute>) {
-    const cart = await validateCartService(fastify, req.body, req.user?.userId, req.body.findActivePromo)
+    const cart = await validateCartService(fastify, req.body, req.user?.userId, {
+      findActivePromo: req.body.findActivePromo,
+    })
     return reply.send(cart)
   }
 }

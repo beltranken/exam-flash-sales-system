@@ -8,16 +8,13 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
-    '^@shared/db$': '<rootDir>/../../shared/db/src/index.ts',
+    '^@db$': '<rootDir>/src/db.ts',
+    '^@cache$': '<rootDir>/src/cache.ts',
+    '^@logger$': '<rootDir>/src/logger.ts',
+    '^@handlers/(.*)$': '<rootDir>/src/handlers/$1',
     '^@shared/cache-contracts$': '<rootDir>/src/tests/shared-cache-contracts.mock.ts',
+    '^@shared/db$': '<rootDir>/../../shared/db/src/index.ts',
     '^@shared/order-contracts$': '<rootDir>/../../shared/order-contracts/src/index.ts',
-    '^@features$': '<rootDir>/src/features/index.ts',
-    '^@schemas$': '<rootDir>/src/common/schemas/index.ts',
-    '^@utils$': '<rootDir>/src/common/utils/index.ts',
-    '^@plugins$': '<rootDir>/src/plugins/index.ts',
-    '^@features/(.*)\\.js$': '<rootDir>/src/features/$1.ts',
-    '^@types$': '<rootDir>/src/common/schemas/index.ts',
-    '^@features/(.*)$': '<rootDir>/src/features/$1',
   },
   transform: {
     '^.+\\.ts$': [
@@ -28,5 +25,4 @@ module.exports = {
       },
     ],
   },
-  collectCoverageFrom: ['src/**/*.ts', '!src/**/*.d.ts'],
 }

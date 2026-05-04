@@ -29,7 +29,7 @@ export function checkoutRoute(fastify: FastifyInstance) {
       throw createHttpError.BadRequest('Unable to load user')
     }
 
-    const cart = await validateCartService(fastify, req.body, req.user.userId, false, {
+    const cart = await validateCartService(fastify, req.body, req.user.userId, {
       skipReservationChecks: true,
     })
 
