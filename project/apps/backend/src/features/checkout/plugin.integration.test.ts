@@ -8,8 +8,8 @@ import {
   toCheckoutResponseCart,
   validateCartService,
 } from './services/index.js'
-import { validateCartService as validateCartRouteService } from './services/validate-cart.service.js'
 import { makeSkipPaymentSkipService } from './services/make-skip-payment.service.js'
+import { validateCartService as validateCartRouteService } from './services/validate-cart.service.js'
 
 jest.mock('../auth/services/get-user.service.js', () => ({
   getUser: jest.fn(),
@@ -84,7 +84,7 @@ describe('checkoutPlugin integration', () => {
       expect(validateCartRouteService).toHaveBeenCalledWith(
         expect.any(Object),
         { findActivePromo: true, items: [{ productId: 10, quantity: 1 }] },
-        undefined,
+        42,
         { findActivePromo: true },
       )
     } finally {
