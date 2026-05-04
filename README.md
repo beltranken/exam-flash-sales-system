@@ -27,12 +27,14 @@ Expected local dependencies:
 
 Run commands from the monorepo root:
 
+1. Install dependencies
+
 ```sh
 cd project
 pnpm install
 ```
 
-Create local environment files from the examples:
+2. Create local environment files from the examples:
 
 ```sh
 cp apps/backend/.env.example apps/backend/.env
@@ -48,7 +50,7 @@ The local environment expects these services to be available:
 - Redis for product stock, usage counters, reservation state, and temporary order tracking
 - RabbitMQ for asynchronous order processing
 
-You can start the required local services with Docker Compose:
+3. You can start the required local services with Docker Compose:
 
 ```sh
 docker compose -f ../infra/local/docker-compose.yml up -d
@@ -56,25 +58,23 @@ docker compose -f ../infra/local/docker-compose.yml up -d
 
 RabbitMQ management UI will be available at `http://localhost:15672`.
 
-Required backend environment variables:
+4. Initial build and code generation steps (only required on initial setup):
 
 ```sh
-PORT=8000
-DATABASE_URL=postgresql://postgres@localhost:5434/exam-flash-sales-system
-CACHE_URL=redis://localhost:6379
-RABBITMQ_URL=amqp://localhost:5672
-JWT_ACCESS_SECRET=local-secret
-COOKIE_SECRET=secret
+pnpm build:main
+pnpm --filter @apps/backend run generate:spec
+pnpm code-gen
+pnpm build:frontend
 ```
 
-Prepare the database:
+5. Prepare the database:
 
 ```sh
-pnpm --filter @shared/db db:push
-pnpm --filter @shared/db seed
+pnpm --filter @shared/db run db:push
+pnpm --filter @shared/db run seed
 ```
 
-Run the main application pieces:
+6. Run the main application pieces:
 
 ```sh
 pnpm code-gen # or pnpm code-gen:watch for auto-regeneration on changes
@@ -84,12 +84,17 @@ pnpm dev
 Alternatively, you can run each piece in a separate terminal for better visibility:
 
 ```sh
+pnpm build:main
+pnpm --filter @apps/backend run generate:spec
 pnpm code-gen
+pnpm build:frontend
 pnpm --filter @apps/backend dev
 pnpm --filter @apps/frontend dev
 pnpm dev:shared
 pnpm dev:services
 ```
+
+7. All services should now be running. You can access the frontend at `http://localhost:5174`
 
 Useful workspace commands:
 
@@ -106,26 +111,31 @@ The repository includes k6 scenarios for exercising flash-sale behavior against 
 
 Run commands from the monorepo root (`project/`). Start local infra services, backend, and worker first.
 
-Run with local k6 install:
+1. First make sure the backend and worker are running, and local infra services are up (PostgreSQL, Redis, RabbitMQ). Ideally run backend and worker with PINO_LOG_LEVEL=error to reduce noise in the logs during stress tests.
 
-Run with Docker (no local k6 install required):
+2. Run with Docker (no local k6 install required):
 
 ```sh
 pnpm --filter @tools/stress-test docker:up
-pnpm --filter @tools/stress-test docker:flash-sale
 ```
 
-Open observability dashboards:
+3. Open observability dashboards:
 
 ```sh
-# Grafana
+# Grafana dashboard
 http://localhost:3000
 
 # Prometheus
 http://localhost:9090
 ```
 
-Stop observability stack:
+4. Run the flash-sale scenario:
+
+```sh
+pnpm --filter @tools/stress-test docker:flash-sale
+```
+
+5. Stop observability stack:
 
 ```sh
 pnpm --filter @tools/stress-test docker:down
@@ -144,8 +154,6 @@ STRESS_THINK_TIME_SECONDS=0
 
 Notes:
 
-- `flash-sale` performs authenticated checkout flow.
-- `ping` can be used for unauthenticated smoke/load checks.
 - Docker runner default API base URL is `http://host.docker.internal:8000`.
 - Default Grafana login is `admin` / `admin` (override with `GRAFANA_ADMIN_USER` and `GRAFANA_ADMIN_PASSWORD`).
 
