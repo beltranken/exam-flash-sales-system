@@ -11,9 +11,9 @@ See [Order Flow](docs/order-flow.md) for the checkout, queue, timeout, and compe
 - Frontend SPA - Browser-based storefront for product browsing, cart management, and checkout submission. It can be served from static hosting or a CDN and calls the main REST API backend.
 - Main REST API backend - Fastify HTTP API for authentication, product browsing, cart validation, checkout requests, Redis reservation checks, and RabbitMQ event publishing. Multiple backend instances can run behind a load balancer to handle traffic spikes and scale the request path horizontally.
 - Order workers - Background workers that consume order events from RabbitMQ and process reservation, submission, timeout, and failure compensation flows. Multiple worker replicas can run in parallel so RabbitMQ distributes work across consumers, allowing order processing capacity to scale horizontally.
-- PostgreSQL - Primary relational database for users, products, orders, payments, and stock records. It is used for durable transactional state because order creation and inventory updates need consistency and auditability.
-- Redis - Low-latency cache and reservation store for flash-sale stock counters, per-user usage limits, promo usage limits, and temporary order tracking. It is used because atomic Lua scripts and in-memory counters let checkout handle high-concurrency reservation checks without putting every request directly on PostgreSQL.
-- RabbitMQ - Message broker for asynchronous order processing, delayed timeout handling, and failure compensation. It is used to keep checkout responsive, absorb traffic spikes, and let the order worker process database updates and rollbacks reliably outside the request path.
+- Postgresql (RDS) - Primary relational database for users, products, orders, payments, and stock records. It is used for durable transactional state because order creation and inventory updates need consistency and auditability.
+- Redis (ElastiCache) - Low-latency cache and reservation store for flash-sale stock counters, per-user usage limits, promo usage limits, and temporary order tracking. It is used because atomic Lua scripts and in-memory counters let checkout handle high-concurrency reservation checks without putting every request directly on Postgresql.
+- RabbitMQ (Amazon MQ) - Message broker for asynchronous order processing, delayed timeout handling, and failure compensation. It is used to keep checkout responsive, absorb traffic spikes, and let the order worker process database updates and rollbacks reliably outside the request path.
 
 ![System overview](docs/system%20overview.jpg)
 
@@ -77,9 +77,18 @@ pnpm --filter @shared/db seed
 Run the main application pieces:
 
 ```sh
+pnpm code-gen # or pnpm code-gen:watch for auto-regeneration on changes
+pnpm dev
+```
+
+Alternatively, you can run each piece in a separate terminal for better visibility:
+
+```sh
+pnpm code-gen
 pnpm --filter @apps/backend dev
 pnpm --filter @apps/frontend dev
-pnpm --filter @services/order-workers dev
+pnpm dev:shared
+pnpm dev:services
 ```
 
 Useful workspace commands:
